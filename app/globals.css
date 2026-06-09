@@ -530,6 +530,179 @@
 }
 
 /* ================================================================
+   MOBILE DRAWER
+   ================================================================ */
+.mobile-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgb(0 0 0 / 0.55);
+  backdrop-filter: blur(4px);
+  animation: fade-in var(--duration-fast) var(--ease-out);
+}
+
+.mobile-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 70;
+  width: min(80vw, 360px);
+  background: var(--background);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  animation: slide-in-left var(--duration-slow) var(--ease-out);
+  overflow-y: auto;
+}
+
+.mobile-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.mobile-drawer-nav {
+  flex: 1;
+  padding: 1rem 0;
+}
+
+.mobile-drawer-nav a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--foreground);
+  transition: background-color var(--duration-fast) var(--ease-in-out),
+    color var(--duration-fast) var(--ease-in-out);
+}
+
+.mobile-drawer-nav a:hover {
+  background: var(--secondary);
+  color: var(--primary);
+}
+
+.mobile-drawer-nav a svg {
+  width: 1rem;
+  height: 1rem;
+  opacity: 0.5;
+}
+
+.mobile-drawer-footer {
+  padding: 1.25rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mobile-drawer-footer .drawer-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: background-color var(--duration-fast) var(--ease-in-out);
+}
+
+.mobile-drawer-footer .drawer-cta-primary {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.mobile-drawer-footer .drawer-cta-primary:hover {
+  background: color-mix(in oklab, var(--primary) 90%, black);
+}
+
+.mobile-drawer-footer .drawer-cta-outline {
+  border: 1px solid var(--border);
+  color: var(--foreground);
+}
+
+.mobile-drawer-footer .drawer-cta-outline:hover {
+  background: var(--secondary);
+}
+
+.mobile-drawer-socials {
+  display: flex;
+  gap: 1rem;
+  padding-top: 0.5rem;
+}
+
+.mobile-drawer-socials a {
+  color: var(--muted-foreground);
+  transition: color var(--duration-fast) var(--ease-in-out);
+}
+
+.mobile-drawer-socials a:hover {
+  color: var(--primary);
+}
+
+/* ================================================================
+   SEARCH OVERLAY
+   ================================================================ */
+.search-overlay {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 1rem;
+  animation: fade-in-down var(--duration-normal) var(--ease-out);
+  box-shadow: var(--shadow-md);
+}
+
+@keyframes fade-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.search-overlay-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 80rem;
+  margin: 0 auto;
+}
+
+.search-overlay-input {
+  flex: 1;
+  height: 2.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0 0.75rem;
+  font-size: 0.875rem;
+  background: var(--card);
+  color: var(--foreground);
+  transition: border-color var(--duration-fast) var(--ease-in-out),
+    box-shadow var(--duration-fast) var(--ease-in-out);
+}
+
+.search-overlay-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 18%, transparent);
+}
+
+.search-overlay-input::placeholder {
+  color: var(--muted-foreground);
+}
+
+/* ================================================================
    PRINT STYLES
    ================================================================ */
 @media print {
