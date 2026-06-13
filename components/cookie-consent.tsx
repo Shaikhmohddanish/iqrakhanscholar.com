@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { X, Cookie, Shield } from 'lucide-react'
 
 const CONSENT_KEY = 'ik-cookie-consent'
@@ -85,13 +86,13 @@ export function CookieConsent() {
                 <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                   We use cookies to enhance your experience, analyse site traffic, and for marketing.
                   You can manage your preferences or read our{' '}
-                  <a href="/cookie-policy" className="text-primary underline underline-offset-2 hover:text-primary/80">
+                  <Link href="/cookie-policy" className="text-primary underline underline-offset-2 hover:text-primary/80">
                     Cookie Policy
-                  </a>{' '}
+                  </Link>{' '}
                   and{' '}
-                  <a href="/privacy" className="text-primary underline underline-offset-2 hover:text-primary/80">
+                  <Link href="/privacy" className="text-primary underline underline-offset-2 hover:text-primary/80">
                     Privacy Policy
-                  </a>.
+                  </Link>.
                 </p>
               </div>
               <button

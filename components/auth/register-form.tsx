@@ -105,9 +105,9 @@ export function RegisterForm() {
         <SubmitButton disabled={!termsAccepted}>Create account</SubmitButton>
 
         {state.ok && state.devLink ? (
-          <a href="/account" className="text-center text-sm font-medium text-primary hover:underline">
+          <Link href="/account" className="text-center text-sm font-medium text-primary hover:underline">
             Continue to your account
-          </a>
+          </Link>
         ) : null}
       </form>
     </div>

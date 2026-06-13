@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
 interface Section {
@@ -57,7 +58,7 @@ export function LegalPageLayout({ title, lastUpdated, sections, children }: Lega
               On this page
             </p>
             {sections.map((section) => (
-              <a
+              <Link
                 key={section.id}
                 href={`#${section.id}`}
                 className={cn(
@@ -68,7 +69,7 @@ export function LegalPageLayout({ title, lastUpdated, sections, children }: Lega
                 )}
               >
                 {section.title}
-              </a>
+              </Link>
             ))}
           </nav>
         </aside>

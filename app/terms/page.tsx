@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { LegalPageLayout } from '@/components/legal/legal-page-layout'
@@ -51,7 +52,7 @@ export default function TermsPage() {
 
           <section id="physical-products">
             <h2>Physical Products</h2>
-            <p>Physical products are subject to our <a href="/refund-policy">Refund Policy</a>. Prices are displayed in the relevant currency and include applicable taxes. Shipping costs are calculated at checkout.</p>
+            <p>Physical products are subject to our <Link href="/refund-policy">Refund Policy</Link>. Prices are displayed in the relevant currency and include applicable taxes. Shipping costs are calculated at checkout.</p>
           </section>
 
           <section id="consultations">

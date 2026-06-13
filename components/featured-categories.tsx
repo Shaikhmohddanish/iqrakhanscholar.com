@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { BookOpen, Package, MessageCircleHeart, ArrowUpRight } from 'lucide-react'
 import { Reveal } from '@/components/reveal'
 
@@ -41,7 +42,7 @@ export function FeaturedCategories() {
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {categories.map((cat, i) => (
             <Reveal key={cat.title} delay={i * 80}>
-              <a
+              <Link
                 href={cat.href}
                 className="group relative flex flex-col rounded-2xl border border-border bg-background p-7 transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
               >
@@ -68,7 +69,7 @@ export function FeaturedCategories() {
                   Explore
                   <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </span>
-              </a>
+              </Link>
             </Reveal>
           ))}
         </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useRef } from 'react'
+import Link from 'next/link'
 import { Document, Page, pdfjs } from 'react-pdf'
 import { useReader } from '@/lib/reader-store'
 import { ReadingStats } from './reading-stats'
@@ -62,9 +63,9 @@ export function ReaderContent({ bookId, userEmail }: ReaderContentProps) {
             <h2 className="text-lg font-semibold text-foreground">Unable to Load Book</h2>
             <p className="mt-1 max-w-sm text-sm text-muted-foreground">{state.error}</p>
           </div>
-          <a href="/library" className="mt-2 text-sm font-medium text-primary hover:underline">
+          <Link href="/library" className="mt-2 text-sm font-medium text-primary hover:underline">
             ← Back to Library
-          </a>
+          </Link>
         </div>
       ) : (
         <div className="relative py-6">

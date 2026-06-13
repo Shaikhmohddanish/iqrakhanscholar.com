@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
@@ -38,7 +39,7 @@ export default function FaqPage() {
               Frequently Asked Questions
             </h1>
             <p className="mt-3 text-muted-foreground">
-              Can&apos;t find what you&apos;re looking for? <a href="/contact" className="text-primary hover:underline">Contact us</a>
+              Can&apos;t find what you&apos;re looking for? <Link href="/contact" className="text-primary hover:underline">Contact us</Link>
             </p>
           </div>
 

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { OtpInput } from "@/components/auth/otp-input"
 import { QrCode, Copy, CheckCircle2, ShieldCheck } from "lucide-react"
 
@@ -128,9 +129,9 @@ export function TwoFactorSetup() {
       </div>
       <p className="font-heading text-xl font-semibold text-foreground">2FA enabled!</p>
       <p className="text-sm text-muted-foreground">Your account is now protected with two-factor authentication.</p>
-      <a href="/account/settings?tab=security" className="h-10 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90 inline-flex items-center">
+      <Link href="/account/settings?tab=security" className="h-10 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90 inline-flex items-center">
         Back to settings
-      </a>
+      </Link>
     </div>
   )
 }

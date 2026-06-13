@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { Upload, Image as ImageIcon, Folder } from "lucide-react"
 
 export const metadata: Metadata = {
@@ -37,12 +38,12 @@ export default function AdminMediaPage() {
             Configure storage in Admin → Settings → Cloudinary.
           </p>
         </div>
-        <a
+        <Link
           href="/admin/settings?tab=cloudinary"
           className="flex h-9 items-center gap-2 rounded-full border border-border px-5 text-sm font-medium text-foreground hover:bg-muted"
         >
           Configure storage
-        </a>
+        </Link>
       </div>
     </div>
   )

@@ -81,12 +81,12 @@ export function HeroSection({ videoSrc }: HeroSectionProps = {}) {
             >
               Book Consultation
             </Link>
-            <a
+            <Link
               href="#community"
               className="inline-flex h-12 items-center justify-center rounded-full px-4 text-sm font-medium text-foreground/70 underline-offset-4 transition-colors hover:text-primary hover:underline"
             >
               Join the Community
-            </a>
+            </Link>
           </div>
 
           {/* Social proof */}

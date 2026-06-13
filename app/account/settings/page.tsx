@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { getCurrentUser } from "@/lib/session"
 import { getAddresses } from "@/lib/users"
 import { ProfileForm } from "@/components/account/profile-form"
@@ -45,7 +46,7 @@ export default async function SettingsPage({
           const Icon = tab.icon
           const isActive = activeTab === tab.id
           return (
-            <a
+            <Link
               key={tab.id}
               href={`?tab=${tab.id}`}
               className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
@@ -57,7 +58,7 @@ export default async function SettingsPage({
             >
               <Icon className="size-4" />
               {tab.label}
-            </a>
+            </Link>
           )
         })}
       </nav>

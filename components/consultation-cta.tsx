@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { Check, CalendarCheck, Clock, Video } from 'lucide-react'
 import { Reveal } from '@/components/reveal'
 
@@ -108,12 +109,12 @@ export function ConsultationCta() {
               </div>
             ))}
 
-            <a
+            <Link
               href="/consultation"
               className="mt-2 inline-flex h-12 w-full items-center justify-center rounded-full bg-accent px-7 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90"
             >
               Book Your Session Now
-            </a>
+            </Link>
             <p className="text-center text-xs text-primary-foreground/60">
               Limited slots available each month · Secure checkout
             </p>

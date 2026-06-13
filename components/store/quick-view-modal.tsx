@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { X, Star, ShoppingBag, Check, Loader2 } from 'lucide-react'
 import { formatPrice, type PublicProduct } from '@/lib/product-types'
 import { useCart } from '@/components/cart/cart-provider'
@@ -123,12 +124,12 @@ export function QuickViewModal({ product, open, onClose }: QuickViewModalProps) 
                     <><ShoppingBag className="size-4" /> Add to Cart</>
                   )}
                 </button>
-                <a
+                <Link
                   href={`/store/${product.slug}`}
                   className="flex h-11 items-center rounded-lg border border-border px-4 text-sm font-medium text-foreground transition-colors hover:bg-muted"
                 >
                   View Details
-                </a>
+                </Link>
               </div>
             </div>
           </div>

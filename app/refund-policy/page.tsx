@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { LegalPageLayout } from '@/components/legal/legal-page-layout'
@@ -54,7 +55,7 @@ export default function RefundPolicyPage() {
             <h2>How to Request a Refund</h2>
             <p>To request a refund, you can:</p>
             <ul>
-              <li>Submit a refund request through your <a href="/account/orders">Orders</a> page</li>
+              <li>Submit a refund request through your <Link href="/account/orders">Orders</Link> page</li>
               <li>Email us at <a href="mailto:support@iqrakhan.com">support@iqrakhan.com</a> with your order number</li>
             </ul>
           </section>

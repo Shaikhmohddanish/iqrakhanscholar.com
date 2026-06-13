@@ -1,8 +1,10 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { getDb } from "@/lib/mongodb"
 import { KpiCard } from "@/components/admin/kpi-card"
 import { RecentActivity } from "@/components/admin/recent-activity"
 import type { PublicOrder } from "@/lib/order-types"
+import type { OrderDoc } from "@/lib/orders"
 import { LayoutDashboard, ShoppingBag, BookOpen, CalendarClock, Users, TrendingUp } from "lucide-react"
 import { formatPrice } from "@/lib/product-types"
 
@@ -25,16 +27,16 @@ async function getDashboardStats() {
     db.collection("users").countDocuments(),
     db.collection("bookings").countDocuments(),
     db.collection("products").countDocuments(),
-    db.collection("orders").find({}).sort({ createdAt: -1 }).limit(8).toArray(),
+    db.collection<OrderDoc>("orders").find({}).sort({ createdAt: -1 }).limit(8).toArray(),
   ])
 
-  const revDocs = await db.collection("orders").find({ paymentStatus: "paid" }, { projection: { total: 1 } }).toArray()
-  const totalRevenue = revDocs.reduce((acc, d) => acc + ((d as { total: number }).total || 0), 0)
+  const revDocs = await db.collection<OrderDoc>("orders").find({ paymentStatus: "paid" }, { projection: { total: 1 } }).toArray()
+  const totalRevenue = revDocs.reduce((acc, d) => acc + (d.total || 0), 0)
 
-  const recentOrders: PublicOrder[] = recentOrderDocs.map((d) => ({
-    ...(d as Omit<PublicOrder, "id">),
-    id: d._id.toString(),
-  }))
+  const recentOrders: PublicOrder[] = recentOrderDocs.map((d) => {
+    const { _id, ...rest } = d
+    return { id: _id.toString(), ...rest }
+  })
 
   return { totalOrders, totalUsers, totalBookings, totalProducts, totalRevenue, recentOrders }
 }
@@ -65,7 +67,7 @@ export default async function AdminDashboardPage() {
       <div className="rounded-xl border border-border bg-card">
         <div className="flex items-center justify-between border-b border-border px-5 py-4">
           <h2 className="font-heading text-base font-semibold text-foreground">Recent orders</h2>
-          <a href="/admin/orders" className="text-sm font-medium text-primary hover:underline">View all</a>
+          <Link href="/admin/orders" className="text-sm font-medium text-primary hover:underline">View all</Link>
         </div>
         <div className="px-5">
           <RecentActivity orders={recentOrders} />

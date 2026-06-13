@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import { ArrowRight, Clock } from 'lucide-react'
 import { blogPosts } from '@/lib/site-data'
 import { Reveal } from '@/components/reveal'
@@ -20,13 +21,13 @@ export function BlogHub() {
               beautifully as a Muslim woman.
             </p>
           </div>
-          <a
+          <Link
             href="/blog"
             className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-primary underline-offset-4 hover:underline"
           >
             View all articles
             <ArrowRight className="size-4" />
-          </a>
+          </Link>
         </Reveal>
 
         <div className="mt-12 grid gap-6 md:grid-cols-3">
@@ -35,7 +36,7 @@ export function BlogHub() {
             <article
               className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
             >
-              <a href="/blog" className="relative aspect-[16/10] overflow-hidden">
+              <Link href="/blog" className="relative aspect-[16/10] overflow-hidden">
                 <Image
                   src={post.image || '/placeholder.svg'}
                   alt={post.title}
@@ -46,12 +47,12 @@ export function BlogHub() {
                 <span className="absolute left-3 top-3 rounded-full bg-background/90 px-3 py-1 text-xs font-medium text-primary backdrop-blur">
                   {post.category}
                 </span>
-              </a>
+              </Link>
               <div className="flex flex-1 flex-col p-6">
                 <h3 className="font-heading text-lg font-semibold leading-snug text-foreground">
-                  <a href="/blog" className="hover:text-primary">
+                  <Link href="/blog" className="hover:text-primary">
                     {post.title}
-                  </a>
+                  </Link>
                 </h3>
                 <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
                   {post.excerpt}
@@ -61,13 +62,13 @@ export function BlogHub() {
                     <Clock className="size-3.5" />
                     {post.readTime}
                   </span>
-                  <a
+                  <Link
                     href="/blog"
                     className="inline-flex items-center gap-1 text-sm font-medium text-primary"
                   >
                     Read
                     <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-                  </a>
+                  </Link>
                 </div>
               </div>
             </article>

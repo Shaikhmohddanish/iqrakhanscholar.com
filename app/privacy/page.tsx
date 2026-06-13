@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { LegalPageLayout } from '@/components/legal/legal-page-layout'
@@ -93,7 +94,7 @@ export default function PrivacyPage() {
 
           <section id="cookies">
             <h2>Cookies</h2>
-            <p>We use cookies for essential site functionality, analytics (with consent), and preference storage. You can manage cookie preferences at any time via the cookie banner or our <a href="/cookie-policy">Cookie Policy</a>.</p>
+            <p>We use cookies for essential site functionality, analytics (with consent), and preference storage. You can manage cookie preferences at any time via the cookie banner or our <Link href="/cookie-policy">Cookie Policy</Link>.</p>
           </section>
 
           <section id="your-rights">

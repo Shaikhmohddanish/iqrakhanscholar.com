@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Star, Check, Shield, Truck, Download, RotateCcw } from 'lucide-react'
 import { getProductBySlug, getAllProducts } from '@/lib/products'
@@ -137,7 +138,7 @@ export default async function ProductPage({ params }: { params: Params }) {
                   <p className="font-medium text-foreground">14-Day Returns</p>
                   <p className="text-sm text-muted-foreground">
                     Not satisfied? Return unused items within 14 days for a full refund.
-                    See our <a href="/refund-policy" className="text-primary hover:underline">refund policy</a>.
+                    See our <Link href="/refund-policy" className="text-primary hover:underline">refund policy</Link>.
                   </p>
                 </div>
               </div>

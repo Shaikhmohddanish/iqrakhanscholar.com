@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { Settings, Globe, CreditCard, Mail, Image, CalendarClock, Users } from "lucide-react"
 
 export const metadata: Metadata = {
@@ -33,7 +34,7 @@ export default async function AdminSettingsPage({
         {TABS.map((t) => {
           const Icon = t.icon
           return (
-            <a
+            <Link
               key={t.id}
               href={`?tab=${t.id}`}
               className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${tab === t.id ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
@@ -41,7 +42,7 @@ export default async function AdminSettingsPage({
             >
               <Icon className="size-4" />
               {t.label}
-            </a>
+            </Link>
           )
         })}
       </nav>

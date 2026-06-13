@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { getCurrentUser } from "@/lib/session"
 import { listNotifications } from "@/lib/notifications"
 import { NotificationItem } from "@/components/account/notification-item"
@@ -44,7 +45,7 @@ export default async function NotificationsPage({
       {/* Filter tabs */}
       <div className="flex flex-wrap gap-2">
         {FILTERS.map((f) => (
-          <a
+          <Link
             key={f.label}
             href={f.value ? `?type=${f.value}` : "/account/notifications"}
             className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
@@ -54,7 +55,7 @@ export default async function NotificationsPage({
             }`}
           >
             {f.label}
-          </a>
+          </Link>
         ))}
       </div>
 
