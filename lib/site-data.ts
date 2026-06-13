@@ -1,16 +1,16 @@
 export const navLinks = [
-  { label: 'About', href: '#about' },
-  { label: 'Digital Library', href: '#digital' },
-  { label: 'Store', href: '#store' },
-  { label: 'Consultation', href: '#consultation' },
-  { label: 'Knowledge Hub', href: '#blog' },
+  { label: 'About', href: '/about' },
+  { label: 'Library', href: '/library' },
+  { label: 'Store', href: '/store' },
+  { label: 'Consultation', href: '/consultation' },
+  { label: 'Blog', href: '/blog' },
 ]
 
 export const stats = [
-  { value: '480K+', label: 'Instagram Community' },
-  { value: '12,000+', label: 'Students Impacted' },
-  { value: '3,500+', label: 'Sessions Conducted' },
-  { value: '60,000+', label: 'Books & Guides Sold' },
+  { value: '480K+', label: 'Instagram Community', numeric: 480, suffix: 'K+' },
+  { value: '12,000+', label: 'Students Impacted', numeric: 12000, suffix: '+' },
+  { value: '3,500+', label: 'Sessions Conducted', numeric: 3500, suffix: '+' },
+  { value: '60,000+', label: 'Books & Guides Sold', numeric: 60000, suffix: '+' },
 ]
 
 export type Product = {

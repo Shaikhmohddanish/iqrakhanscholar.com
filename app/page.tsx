@@ -13,15 +13,20 @@ import { DailyReflection } from '@/components/daily-reflection'
 import { FaqSection } from '@/components/faq-section'
 import { SiteFooter } from '@/components/site-footer'
 import { StructuredData } from '@/components/structured-data'
-import { digitalProducts, physicalProducts } from '@/lib/site-data'
+import { getProductsByType } from '@/lib/products'
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [digital, physical] = await Promise.all([
+    getProductsByType('digital'),
+    getProductsByType('physical'),
+  ])
+
   return (
     <>
       <StructuredData />
       <AnnouncementBar />
       <SiteHeader />
-      <main>
+      <main id="main-content">
         <HeroSection />
         <FeaturedCategories />
         <AboutSection />
@@ -30,16 +35,18 @@ export default function HomePage() {
           eyebrow="Digital Library"
           title="Featured digital products"
           description="Instantly downloadable ebooks, study guides, and resource packs to learn at your own pace."
-          products={digitalProducts}
+          products={digital.slice(0, 3)}
           ctaLabel="Browse the full library"
+          ctaHref="/library"
         />
         <ProductShowcase
           id="store"
           eyebrow="Physical Store"
           title="Featured books & journals"
           description="Lovingly crafted books, journals, and planners to bring your practice into everyday life."
-          products={physicalProducts}
+          products={physical.slice(0, 3)}
           ctaLabel="Visit the store"
+          ctaHref="/store"
           variant="muted"
         />
         <ConsultationCta />

@@ -20,7 +20,7 @@ export function AuthShell({
   footer?: ReactNode
 }) {
   return (
-    <main className="flex min-h-screen flex-col lg:flex-row">
+    <main className="flex min-h-dvh flex-col lg:flex-row">
       {/* Brand panel */}
       <section className="bg-arabesque relative hidden flex-col justify-between p-12 text-primary-foreground lg:flex lg:w-[45%]">
         <Link href="/" className="font-heading text-2xl font-semibold tracking-tight">

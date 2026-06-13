@@ -1,34 +1,53 @@
-import type { Metadata } from "next"
-import { Suspense } from "react"
-import { getAllProducts, type ProductType } from "@/lib/products"
-import { StoreFilters } from "@/components/store/store-filters"
-import { StoreProductCard } from "@/components/store/store-product-card"
+import type { Metadata } from 'next'
+import { queryProducts, getProductFacets } from '@/lib/products'
+import { getCurrentUser } from '@/lib/session'
+import { getWishlist } from '@/lib/wishlist'
+import { Breadcrumb } from '@/components/ui/breadcrumb'
+import { StoreClient } from '@/components/store/store-client'
 
 export const metadata: Metadata = {
-  title: "Store — Books, Journals & Digital Resources",
+  title: 'Store — Books, Journals & Digital Resources',
   description:
-    "Shop signed hardcover books, premium Islamic journals and planners, plus instant-download ebooks, study guides and resource packs by Iqra Khan.",
-  alternates: { canonical: "/store" },
+    'Shop signed hardcover books, premium Islamic journals and planners, plus instant-download ebooks, study guides and resource packs by Iqra Khan.',
+  alternates: { canonical: '/store' },
 }
 
-type SearchParams = Promise<{ type?: string; sort?: string }>
+export default async function StorePage() {
+  const [initial, facets, user] = await Promise.all([
+    queryProducts({ page: 1, limit: 8, sort: 'featured' }),
+    getProductFacets(),
+    getCurrentUser(),
+  ])
+  const wishlistIds = user ? new Set(await getWishlist(user.id)) : new Set<string>()
 
-export default async function StorePage({ searchParams }: { searchParams: SearchParams }) {
-  const { type, sort } = await searchParams
-  let products = await getAllProducts()
-
-  if (type === "digital" || type === "physical") {
-    products = products.filter((p) => p.type === (type as ProductType))
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Iqra Khan Store',
+    description: 'Islamic books, journals, and digital resources by Iqra Khan.',
+    numberOfItems: initial.total,
+    itemListElement: initial.items.map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': 'Product',
+        name: p.title,
+        url: `https://iqrakhan.com/store/${p.slug}`,
+        image: p.image,
+      },
+    })),
   }
 
-  if (sort === "price-asc") products = [...products].sort((a, b) => a.price - b.price)
-  else if (sort === "price-desc") products = [...products].sort((a, b) => b.price - a.price)
-  else if (sort === "rating")
-    products = [...products].sort((a, b) => b.rating - a.rating || b.reviews - a.reviews)
-
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      <header className="max-w-2xl">
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      <Breadcrumb items={[{ label: 'Store' }]} />
+
+      <header className="mt-6 max-w-2xl">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">The Store</p>
         <h1 className="mt-3 text-balance font-heading text-4xl font-semibold text-foreground sm:text-5xl">
           Knowledge you can hold &amp; download
@@ -40,22 +59,14 @@ export default async function StorePage({ searchParams }: { searchParams: Search
       </header>
 
       <div className="mt-10">
-        <Suspense fallback={<div className="h-12" />}>
-          <StoreFilters />
-        </Suspense>
+        <StoreClient
+          initialItems={initial.items}
+          initialHasMore={initial.hasMore}
+          initialTotal={initial.total}
+          facets={facets}
+          wishlistIds={wishlistIds}
+        />
       </div>
-
-      {products.length === 0 ? (
-        <p className="mt-16 text-center text-muted-foreground">
-          No products match this filter yet. Try a different category.
-        </p>
-      ) : (
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {products.map((product) => (
-            <StoreProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      )}
     </div>
   )
 }

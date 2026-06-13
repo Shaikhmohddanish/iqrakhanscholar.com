@@ -1,12 +1,13 @@
 import Image from 'next/image'
 import { ArrowRight, Clock } from 'lucide-react'
 import { blogPosts } from '@/lib/site-data'
+import { Reveal } from '@/components/reveal'
 
 export function BlogHub() {
   return (
     <section id="blog" className="scroll-mt-20">
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
+        <Reveal className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
           <div className="max-w-2xl">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
               Knowledge Hub
@@ -20,21 +21,21 @@ export function BlogHub() {
             </p>
           </div>
           <a
-            href="#"
+            href="/blog"
             className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-primary underline-offset-4 hover:underline"
           >
             View all articles
             <ArrowRight className="size-4" />
           </a>
-        </div>
+        </Reveal>
 
         <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {blogPosts.map((post) => (
+          {blogPosts.map((post, i) => (
+            <Reveal key={post.title} delay={i * 80}>
             <article
-              key={post.title}
               className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
             >
-              <a href="#" className="relative aspect-[16/10] overflow-hidden">
+              <a href="/blog" className="relative aspect-[16/10] overflow-hidden">
                 <Image
                   src={post.image || '/placeholder.svg'}
                   alt={post.title}
@@ -48,7 +49,7 @@ export function BlogHub() {
               </a>
               <div className="flex flex-1 flex-col p-6">
                 <h3 className="font-heading text-lg font-semibold leading-snug text-foreground">
-                  <a href="#" className="hover:text-primary">
+                  <a href="/blog" className="hover:text-primary">
                     {post.title}
                   </a>
                 </h3>
@@ -61,7 +62,7 @@ export function BlogHub() {
                     {post.readTime}
                   </span>
                   <a
-                    href="#"
+                    href="/blog"
                     className="inline-flex items-center gap-1 text-sm font-medium text-primary"
                   >
                     Read
@@ -70,6 +71,7 @@ export function BlogHub() {
                 </div>
               </div>
             </article>
+            </Reveal>
           ))}
         </div>
       </div>

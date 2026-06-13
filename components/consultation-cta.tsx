@@ -1,4 +1,5 @@
 import { Check, CalendarCheck, Clock, Video } from 'lucide-react'
+import { Reveal } from '@/components/reveal'
 
 const includes = [
   'A private, confidential 1-to-1 video session',
@@ -34,6 +35,7 @@ export function ConsultationCta() {
     <section id="consultation" className="scroll-mt-20 bg-arabesque text-primary-foreground">
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+          <Reveal>
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
               One-to-One Consultation
@@ -72,7 +74,9 @@ export function ConsultationCta() {
               </span>
             </div>
           </div>
+          </Reveal>
 
+          <Reveal delay={100}>
           <div className="space-y-4">
             {tiers.map((tier) => (
               <div
@@ -105,7 +109,7 @@ export function ConsultationCta() {
             ))}
 
             <a
-              href="#"
+              href="/consultation"
               className="mt-2 inline-flex h-12 w-full items-center justify-center rounded-full bg-accent px-7 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90"
             >
               Book Your Session Now
@@ -114,6 +118,7 @@ export function ConsultationCta() {
               Limited slots available each month · Secure checkout
             </p>
           </div>
+          </Reveal>
         </div>
       </div>
     </section>

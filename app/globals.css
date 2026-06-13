@@ -136,59 +136,68 @@
 }
 
 /* ================================================================
-   DARK MODE — Brand-consistent teal + gold dark palette
+   DARK MODE — Near-black / Blue / White palette
    ================================================================ */
 .dark {
-  --background: #0f1512;
-  --foreground: #e8e6e1;
-  --card: #1a2420;
-  --card-foreground: #e8e6e1;
-  --popover: #1a2420;
-  --popover-foreground: #e8e6e1;
-  --primary: #3ec9b4;
-  --primary-foreground: #0f1512;
-  --secondary: #1e2f2a;
-  --secondary-foreground: #3ec9b4;
-  --muted: #1e2924;
-  --muted-foreground: #8a9690;
-  --accent: #e6c44a;
-  --accent-foreground: #0f1512;
+  /* Core */
+  --background: #0a0e1a;
+  --foreground: #f5f8ff;
+  --card: #111726;
+  --card-foreground: #f5f8ff;
+  --popover: #111726;
+  --popover-foreground: #f5f8ff;
+
+  /* Brand */
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --secondary: #16203a;
+  --secondary-foreground: #bfdbfe;
+
+  /* Neutral */
+  --muted: #131a2a;
+  --muted-foreground: #9aa7bd;
+
+  /* Accent */
+  --accent: #3b82f6;
+  --accent-foreground: #ffffff;
+
+  /* Utility */
   --destructive: #ef4444;
-  --border: #2a3832;
-  --input: #2a3832;
-  --ring: #3ec9b4;
+  --border: #1e2940;
+  --input: #1e2940;
+  --ring: #2563eb;
 
-  /* Semantic */
+  /* Semantic — readable on near-black */
   --success: #22c55e;
-  --success-foreground: #0f1512;
+  --success-foreground: #ffffff;
   --warning: #f59e0b;
-  --warning-foreground: #0f1512;
+  --warning-foreground: #ffffff;
   --info: #3b82f6;
-  --info-foreground: #0f1512;
+  --info-foreground: #ffffff;
 
-  /* Charts */
-  --chart-1: #3ec9b4;
-  --chart-2: #e6c44a;
-  --chart-3: #5ddbc6;
-  --chart-4: #c9a832;
-  --chart-5: #8a9690;
+  /* Charts — blue family */
+  --chart-1: #2563eb;
+  --chart-2: #60a5fa;
+  --chart-3: #3b82f6;
+  --chart-4: #93c5fd;
+  --chart-5: #1d4ed8;
 
   /* Sidebar */
-  --sidebar: #1a2420;
-  --sidebar-foreground: #e8e6e1;
-  --sidebar-primary: #3ec9b4;
-  --sidebar-primary-foreground: #0f1512;
-  --sidebar-accent: #1e2f2a;
-  --sidebar-accent-foreground: #3ec9b4;
-  --sidebar-border: #2a3832;
-  --sidebar-ring: #3ec9b4;
+  --sidebar: #0d1322;
+  --sidebar-foreground: #f5f8ff;
+  --sidebar-primary: #2563eb;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #16203a;
+  --sidebar-accent-foreground: #bfdbfe;
+  --sidebar-border: #1e2940;
+  --sidebar-ring: #2563eb;
 
   /* Elevation */
-  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.2);
-  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.25);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.35), 0 2px 4px -2px rgb(0 0 0 / 0.25);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.2);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.2);
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.5), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.6), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.3);
 }
 
 /* ================================================================
@@ -204,6 +213,14 @@
   html {
     @apply font-sans;
     scroll-behavior: smooth;
+    /* Prevent mobile font inflation that causes text to grow and overlap adjacent elements */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Ensure all anchor targets clear the sticky header (h-16 = 4rem) */
+  :where(section, h1, h2, h3, h4, h5, h6)[id] {
+    scroll-margin-top: 6rem;
   }
 
   /* Respect reduced motion */
@@ -232,10 +249,10 @@
    SKIP TO CONTENT — Accessibility
    ================================================================ */
 .skip-to-content {
-  position: absolute;
-  top: -100%;
+  position: fixed;
+  bottom: 1rem;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(200%);
   z-index: 9999;
   padding: 0.75rem 1.5rem;
   background: var(--primary);
@@ -244,10 +261,15 @@
   font-size: 0.875rem;
   border-radius: var(--radius);
   text-decoration: none;
-  transition: top var(--duration-fast) var(--ease-out);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform var(--duration-fast) var(--ease-out),
+    opacity var(--duration-fast) var(--ease-out);
 }
 .skip-to-content:focus {
-  top: 1rem;
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
   outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
@@ -412,6 +434,86 @@
 }
 
 /* ================================================================
+   SCROLL REVEAL
+   ================================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.55s var(--ease-out), transform 0.55s var(--ease-out);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ================================================================
+   HERO — Ken Burns portrait zoom
+   ================================================================ */
+@keyframes ken-burns {
+  0%   { transform: scale(1); }
+  100% { transform: scale(1.08); }
+}
+.animate-ken-burns {
+  animation: ken-burns 12s ease-in-out infinite alternate;
+}
+
+/* Floating gradient blob drift */
+@keyframes float-slow {
+  0%   { transform: translate(0, 0) scale(1); }
+  33%  { transform: translate(20px, -16px) scale(1.05); }
+  66%  { transform: translate(-12px, 10px) scale(0.97); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+.animate-float-slow {
+  animation: float-slow 14s ease-in-out infinite;
+}
+
+/* Secondary drift, offset phase */
+@keyframes float-slow-2 {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(-18px, 14px) scale(1.04); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+.animate-float-slow-2 {
+  animation: float-slow-2 18s ease-in-out infinite;
+}
+
+/* Staggered fade-in-up delays (used for hero text sequence) */
+.animate-delay-100 { animation-delay: 100ms; }
+.animate-delay-200 { animation-delay: 200ms; }
+.animate-delay-300 { animation-delay: 300ms; }
+.animate-delay-400 { animation-delay: 400ms; }
+.animate-delay-500 { animation-delay: 500ms; }
+.animate-delay-600 { animation-delay: 600ms; }
+.animate-delay-700 { animation-delay: 700ms; }
+
+/* Ensures elements are hidden before the animation starts */
+.animate-fade-in-up {
+  animation-fill-mode: both;
+}
+
+/* ================================================================
+   REDUCED MOTION — disable all decorative motion
+   ================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .animate-ken-burns,
+  .animate-float-slow,
+  .animate-float-slow-2 {
+    animation: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .animate-fade-in-up {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ================================================================
    BACKDROP / OVERLAY
    ================================================================ */
 .backdrop-overlay {
@@ -419,7 +521,6 @@
   inset: 0;
   z-index: 50;
   background: rgb(0 0 0 / 0.5);
-  backdrop-filter: blur(4px);
 }
 
 /* ================================================================

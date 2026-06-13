@@ -1,23 +1,35 @@
 import type { Metadata } from "next"
-import { CalendarClock } from "lucide-react"
-import { PageHeading, ComingSoon } from "@/components/account/coming-soon"
+import { getCurrentUser } from "@/lib/session"
+import { getBookingsByUser, seedAvailability } from "@/lib/bookings"
+import { BookingWizard } from "@/components/account/booking-wizard"
+import { MyBookingsList } from "@/components/account/my-bookings-list"
+import { PageHeading } from "@/components/account/coming-soon"
 
 export const metadata: Metadata = {
   title: "Consultations",
   robots: { index: false },
 }
 
-export default function BookingsPage() {
+export default async function BookingsPage() {
+  const user = await getCurrentUser()
+  if (!user) return null
+
+  await seedAvailability()
+  const bookings = await getBookingsByUser(user.id)
+
   return (
-    <div>
+    <div className="flex flex-col gap-8">
       <PageHeading
-        title="Consultations"
-        description="View your upcoming and past one-to-one consultation bookings with Iqra."
+        title="Book a Consultation"
+        description="Schedule a private one-to-one session with Iqra Khan. Choose your session type, pick a date and time, and we will confirm your booking."
       />
-      <ComingSoon
-        icon={<CalendarClock className="size-6" />}
-        message="You have no consultations scheduled. Once booking is enabled, your sessions will appear here with join links and reminders."
-      />
+
+      <BookingWizard />
+
+      <section>
+        <h2 className="mb-4 font-heading text-xl font-semibold text-foreground">My Bookings</h2>
+        <MyBookingsList bookings={bookings} />
+      </section>
     </div>
   )
 }

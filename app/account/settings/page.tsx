@@ -1,62 +1,106 @@
 import type { Metadata } from "next"
 import { getCurrentUser } from "@/lib/session"
-import { PageHeading } from "@/components/account/coming-soon"
+import { getAddresses } from "@/lib/users"
+import { ProfileForm } from "@/components/account/profile-form"
+import { AddressManager } from "@/components/account/address-form"
+import { SecuritySettings } from "@/components/account/security-settings"
+import { DataPrivacySection } from "@/components/account/data-privacy-section"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { CircleCheck, CircleAlert } from "lucide-react"
+import { User, MapPin, ShieldCheck, Lock } from "lucide-react"
+import { PageHeading } from "@/components/account/coming-soon"
 
 export const metadata: Metadata = {
   title: "Settings",
   robots: { index: false },
 }
 
-export default async function SettingsPage() {
-  const user = await getCurrentUser()
+const TABS = [
+  { id: "profile", label: "Profile", icon: User },
+  { id: "addresses", label: "Addresses", icon: MapPin },
+  { id: "security", label: "Security", icon: ShieldCheck },
+  { id: "privacy", label: "Privacy & Data", icon: Lock },
+]
+
+export default async function SettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string }>
+}) {
+  const [user, params] = await Promise.all([getCurrentUser(), searchParams])
   if (!user) return null
 
-  const rows = [
-    { label: "Full name", value: user.name },
-    { label: "Email", value: user.email },
-    { label: "Account type", value: user.role, capitalize: true },
-  ]
+  const activeTab = params.tab ?? "profile"
+  const addresses = activeTab === "addresses" ? await getAddresses(user.id) : []
 
   return (
-    <div>
+    <div className="flex flex-col gap-6">
       <PageHeading
         title="Settings"
-        description="Manage your profile information and account preferences."
+        description="Manage your profile, addresses, security, and data privacy."
       />
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-heading text-lg">Profile</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-0 divide-y divide-border">
-          {rows.map((row) => (
-            <div
-              key={row.label}
-              className="flex items-center justify-between py-3.5 first:pt-0 last:pb-0"
+      {/* Tab navigation */}
+      <nav className="flex flex-wrap gap-1 rounded-xl bg-muted p-1" aria-label="Settings tabs">
+        {TABS.map((tab) => {
+          const Icon = tab.icon
+          const isActive = activeTab === tab.id
+          return (
+            <a
+              key={tab.id}
+              href={`?tab=${tab.id}`}
+              className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                isActive
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+              aria-current={isActive ? "page" : undefined}
             >
-              <span className="text-sm text-muted-foreground">{row.label}</span>
-              <span className={"text-sm font-medium text-foreground" + (row.capitalize ? " capitalize" : "")}>
-                {row.value}
-              </span>
-            </div>
-          ))}
-          <div className="flex items-center justify-between py-3.5 last:pb-0">
-            <span className="text-sm text-muted-foreground">Email status</span>
-            {user.emailVerified ? (
-              <Badge variant="secondary" className="gap-1">
-                <CircleCheck className="size-3.5" /> Verified
-              </Badge>
-            ) : (
-              <Badge variant="outline" className="gap-1 border-accent/50 text-accent-foreground">
-                <CircleAlert className="size-3.5" /> Unverified
-              </Badge>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+              <Icon className="size-4" />
+              {tab.label}
+            </a>
+          )
+        })}
+      </nav>
+
+      {/* Tab content */}
+      {activeTab === "profile" && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-heading text-lg">Profile information</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ProfileForm user={user} />
+          </CardContent>
+        </Card>
+      )}
+
+      {activeTab === "addresses" && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-heading text-lg">Saved addresses</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <AddressManager addresses={addresses} />
+          </CardContent>
+        </Card>
+      )}
+
+      {activeTab === "security" && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-heading text-lg">Security</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <SecuritySettings />
+          </CardContent>
+        </Card>
+      )}
+
+      {activeTab === "privacy" && (
+        <div>
+          <DataPrivacySection />
+        </div>
+      )}
     </div>
   )
 }

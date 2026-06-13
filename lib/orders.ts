@@ -1,34 +1,12 @@
 import "server-only"
 import { ObjectId, type WithId } from "mongodb"
 import { getDb } from "./mongodb"
-import type { ProductType } from "./product-types"
+import type { OrderStatus, PaymentStatus, OrderItem, ShippingAddress, PublicOrder } from "./order-types"
 
-export type OrderStatus = "processing" | "fulfilled" | "cancelled"
-export type PaymentStatus = "paid" | "pending" | "failed"
-
-export interface OrderItem {
-  productId: string
-  slug: string
-  title: string
-  image: string
-  price: number // unit price in cents at time of purchase
-  type: ProductType
-  quantity: number
-}
-
-export interface ShippingAddress {
-  fullName: string
-  line1: string
-  line2?: string
-  city: string
-  state?: string
-  postalCode: string
-  country: string
-}
+export type { OrderStatus, PaymentStatus, OrderItem, ShippingAddress, PublicOrder }
 
 export interface OrderDoc {
   _id?: ObjectId
-  // human-friendly order number
   reference: string
   userId: string
   email: string
@@ -39,16 +17,11 @@ export interface OrderDoc {
   currency: string
   status: OrderStatus
   paymentStatus: PaymentStatus
-  // present only when the order contains physical goods
   shippingAddress?: ShippingAddress | null
   hasDigital: boolean
   hasPhysical: boolean
   createdAt: Date
   updatedAt: Date
-}
-
-export interface PublicOrder extends Omit<OrderDoc, "_id"> {
-  id: string
 }
 
 function toPublicOrder(doc: WithId<OrderDoc>): PublicOrder {
@@ -107,4 +80,17 @@ export async function getPurchasedProductIds(userId: string): Promise<string[]> 
     }
   }
   return [...ids]
+}
+
+// Returns the set of product slugs the user has purchased — used by the PDF reader.
+export async function getPurchasedProductSlugs(userId: string): Promise<string[]> {
+  const col = await ordersCol()
+  const docs = await col.find({ userId, paymentStatus: "paid" }).project({ items: 1 }).toArray()
+  const slugs = new Set<string>()
+  for (const d of docs as unknown as { items: OrderItem[] }[]) {
+    for (const item of d.items) {
+      if (item.type === "digital") slugs.add(item.slug)
+    }
+  }
+  return [...slugs]
 }

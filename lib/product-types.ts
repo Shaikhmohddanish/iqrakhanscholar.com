@@ -13,6 +13,7 @@ export interface PublicProduct {
   price: number
   currency: string
   image: string
+  images: string[]
   badge?: string
   rating: number
   reviews: number
@@ -21,6 +22,10 @@ export interface PublicProduct {
   highlights: string[]
   stock: number | null
   featured: boolean
+  // Digital book fields
+  author?: string
+  pageCount?: number
+  hasPdf?: boolean  // true when a PDF has been uploaded (pdfPublicId is never sent to client)
 }
 
 export function formatPrice(cents: number, currency = "USD"): string {

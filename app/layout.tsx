@@ -4,6 +4,8 @@ import { Inter, Playfair_Display, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import { readCart } from '@/lib/cart'
 import { CartProvider } from '@/components/cart/cart-provider'
+import { CookieConsent } from '@/components/cookie-consent'
+import { ThemeProvider } from '@/components/theme-provider'
 
 const inter = Inter({
   variable: '--font-inter',
@@ -74,10 +76,22 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`bg-background ${inter.variable} ${playfair.variable} ${geistMono.variable}`}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+      className={`${inter.variable} ${playfair.variable} ${geistMono.variable}`}
     >
       <body className="font-sans antialiased">
-        <CartProvider initialItems={cart.items}>{children}</CartProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <CartProvider initialItems={cart.items}>
+            {children}
+            <CookieConsent />
+          </CartProvider>
+        </ThemeProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

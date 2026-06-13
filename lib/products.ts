@@ -15,6 +15,7 @@ export interface ProductDoc {
   price: number
   currency: string
   image: string
+  images?: string[]
   badge?: string
   rating: number
   reviews: number
@@ -25,6 +26,10 @@ export interface ProductDoc {
   // physical-only stock count; null for digital (unlimited)
   stock: number | null
   featured: boolean
+  // digital book fields
+  author?: string
+  pageCount?: number
+  pdfPublicId?: string  // Cloudinary authenticated public_id — server-only, never sent to client
   createdAt: Date
   updatedAt: Date
 }
@@ -39,6 +44,7 @@ export function toPublicProduct(doc: ProductDoc): PublicProduct {
     price: doc.price,
     currency: doc.currency,
     image: doc.image,
+    images: doc.images ?? (doc.image ? [doc.image] : []),
     badge: doc.badge,
     rating: doc.rating,
     reviews: doc.reviews,
@@ -47,6 +53,9 @@ export function toPublicProduct(doc: ProductDoc): PublicProduct {
     highlights: doc.highlights,
     stock: doc.stock,
     featured: doc.featured,
+    author: doc.author,
+    pageCount: doc.pageCount,
+    hasPdf: !!doc.pdfPublicId,  // pdfPublicId itself is never exposed to the client
   }
 }
 
@@ -80,6 +89,79 @@ export async function getProductsByIds(ids: string[]): Promise<PublicProduct[]> 
   const objectIds = ids.filter((id) => ObjectId.isValid(id)).map((id) => new ObjectId(id))
   const docs = await col.find({ _id: { $in: objectIds } }).toArray()
   return docs.map(toPublicProduct)
+}
+
+export interface ProductQuery {
+  page?: number
+  limit?: number
+  type?: string
+  categories?: string[]
+  minPrice?: number
+  maxPrice?: number
+  sort?: string
+  q?: string
+}
+
+export async function queryProducts(opts: ProductQuery = {}): Promise<{
+  items: PublicProduct[]
+  total: number
+  hasMore: boolean
+  page: number
+}> {
+  const { page = 1, limit = 8, type, categories, minPrice, maxPrice, sort = 'featured', q } = opts
+  const col = await productsCol()
+
+  const filter: Record<string, unknown> = {}
+  if (type) filter.type = type
+  if (categories && categories.length > 0) filter.category = { $in: categories }
+  if (minPrice !== undefined || maxPrice !== undefined) {
+    filter.price = {}
+    if (minPrice !== undefined) (filter.price as Record<string, number>).$gte = minPrice
+    if (maxPrice !== undefined) (filter.price as Record<string, number>).$lte = maxPrice
+  }
+  if (q) {
+    const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')
+    filter.$or = [{ title: re }, { category: re }, { shortDescription: re }]
+  }
+
+  const sortMap: Record<string, Record<string, number>> = {
+    featured: { featured: -1, createdAt: 1 },
+    'price-asc': { price: 1 },
+    'price-desc': { price: -1 },
+    rating: { rating: -1, reviews: -1 },
+    newest: { createdAt: -1 },
+  }
+  const mongoSort = sortMap[sort] ?? sortMap.featured
+
+  const skip = (page - 1) * limit
+  const [docs, total] = await Promise.all([
+    col.find(filter).sort(mongoSort).skip(skip).limit(limit).toArray(),
+    col.countDocuments(filter),
+  ])
+
+  return {
+    items: docs.map(toPublicProduct),
+    total,
+    hasMore: skip + docs.length < total,
+    page,
+  }
+}
+
+export async function getProductFacets(): Promise<{
+  categories: string[]
+  minPrice: number
+  maxPrice: number
+}> {
+  const col = await productsCol()
+  const [cats, priceAgg] = await Promise.all([
+    col.distinct('category'),
+    col.aggregate<{ min: number; max: number }>([
+      { $group: { _id: null, min: { $min: '$price' }, max: { $max: '$price' } } },
+    ]).toArray(),
+  ])
+  const min = priceAgg[0]?.min ?? 0
+  const max = priceAgg[0]?.max ?? 10000
+  return { categories: (cats as string[]).sort(), minPrice: min, maxPrice: max }
 }
 
 // Atomically decrement stock for a physical product, never below zero.

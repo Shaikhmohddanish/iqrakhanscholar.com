@@ -3,7 +3,7 @@ import { ACCESS_COOKIE, REFRESH_COOKIE, verifyAccessToken } from "@/lib/tokens"
 import { hasRole } from "@/lib/types"
 
 // Routes that require an authenticated session.
-const PROTECTED = ["/account", "/library", "/read"]
+const PROTECTED = ["/account", "/library", "/read", "/reader"]
 // Routes that require an elevated role.
 const ROLE_GATES: { prefix: string; role: "editor" | "admin" }[] = [
   { prefix: "/admin", role: "admin" },
@@ -52,6 +52,7 @@ export const config = {
     "/account/:path*",
     "/library/:path*",
     "/read/:path*",
+    "/reader/:path*",
     "/admin/:path*",
     "/login",
     "/register",

@@ -10,6 +10,8 @@ import {
   CalendarClock,
   Settings,
   ShieldCheck,
+  Heart,
+  Bell,
 } from "lucide-react"
 import type { Role } from "@/lib/types"
 import { hasRole } from "@/lib/types"
@@ -19,10 +21,17 @@ const NAV = [
   { href: "/account/library", label: "My Library", icon: BookMarked },
   { href: "/account/orders", label: "Orders", icon: ShoppingBag },
   { href: "/account/bookings", label: "Consultations", icon: CalendarClock },
+  { href: "/account/wishlist", label: "Wishlist", icon: Heart },
+  { href: "/account/notifications", label: "Notifications", icon: Bell },
   { href: "/account/settings", label: "Settings", icon: Settings },
 ]
 
-export function AccountNav({ role }: { role: Role }) {
+interface AccountNavProps {
+  role: Role
+  unreadNotifications?: number
+}
+
+export function AccountNav({ role, unreadNotifications = 0 }: AccountNavProps) {
   const pathname = usePathname()
 
   return (
@@ -30,20 +39,29 @@ export function AccountNav({ role }: { role: Role }) {
       {NAV.map((item) => {
         const active = item.exact ? pathname === item.href : pathname.startsWith(item.href)
         const Icon = item.icon
+        const badge = item.href === "/account/notifications" && unreadNotifications > 0 ? unreadNotifications : null
+
         return (
           <Link
             key={item.href}
             href={item.href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
+              "flex items-center justify-between gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
               active
                 ? "bg-secondary text-secondary-foreground"
                 : "text-muted-foreground hover:bg-muted hover:text-foreground",
             )}
           >
-            <Icon className="size-4" />
-            {item.label}
+            <span className="flex items-center gap-3">
+              <Icon className="size-4" />
+              {item.label}
+            </span>
+            {badge && (
+              <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                {badge > 9 ? "9+" : badge}
+              </span>
+            )}
           </Link>
         )
       })}
