@@ -2,21 +2,12 @@
 
 import { useTransition } from "react"
 import { updateUserRoleAction } from "@/app/actions/admin/users"
-import type { Role } from "@/lib/types"
+import type { AdminUserRow } from "@/lib/types"
 import { ROLES } from "@/lib/types"
 import { Search } from "lucide-react"
 import { useState } from "react"
 
-type UserRow = {
-  _id?: unknown
-  name: string
-  email: string
-  role: Role
-  emailVerified: boolean
-  createdAt: Date
-}
-
-export function AdminUsersClient({ users }: { users: UserRow[] }) {
+export function AdminUsersClient({ users }: { users: AdminUserRow[] }) {
   const [search, setSearch] = useState("")
   const [pending, startTransition] = useTransition()
 
@@ -59,16 +50,14 @@ export function AdminUsersClient({ users }: { users: UserRow[] }) {
             {filtered.length === 0 ? (
               <tr><td colSpan={5} className="py-8 text-center text-sm text-muted-foreground">No users found.</td></tr>
             ) : (
-              filtered.map((user) => {
-                const id = String(user._id)
-                return (
-                  <tr key={id} className="hover:bg-muted/20">
+              filtered.map((user) => (
+                  <tr key={user.id} className="hover:bg-muted/20">
                     <td className="px-4 py-3 font-medium text-foreground">{user.name}</td>
                     <td className="hidden px-4 py-3 text-muted-foreground sm:table-cell">{user.email}</td>
                     <td className="px-4 py-3">
                       <select
                         value={user.role}
-                        onChange={(e) => handleRoleChange(id, e.target.value)}
+                        onChange={(e) => handleRoleChange(user.id, e.target.value)}
                         disabled={pending}
                         className="rounded-lg border border-border bg-background px-2 py-1 text-xs capitalize focus:outline-none"
                       >
@@ -84,8 +73,7 @@ export function AdminUsersClient({ users }: { users: UserRow[] }) {
                       {new Date(user.createdAt).toLocaleDateString()}
                     </td>
                   </tr>
-                )
-              })
+              ))
             )}
           </tbody>
         </table>

@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { Minus, Plus, Check, ShoppingBag, Loader2, Truck, Download } from "lucide-react"
+import { Minus, Plus, Check, ShoppingBag, Truck, Download } from "lucide-react"
+import { BarLoader } from "@/components/ui/bar-loader"
 import { useCart } from "@/components/cart/cart-provider"
 import { formatPrice, type PublicProduct } from "@/lib/product-types"
 
@@ -72,7 +73,7 @@ export function ProductBuyPanel({ product }: { product: PublicProduct }) {
         {soldOut ? (
           "Sold Out"
         ) : isPending && !added ? (
-          <Loader2 className="size-4 animate-spin" />
+          <BarLoader size="md" />
         ) : added ? (
           <>
             <Check className="size-4" /> Added to Cart

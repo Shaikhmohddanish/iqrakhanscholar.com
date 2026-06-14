@@ -134,6 +134,7 @@ export function LibraryClient({
                 price={book.price}
                 currency={book.currency}
                 category={book.category}
+                className="w-44 shrink-0 sm:w-48"
               />
             ))}
           </BookSection>
@@ -152,6 +153,7 @@ export function LibraryClient({
                 price={book.price}
                 currency={book.currency}
                 category={book.category}
+                className="w-44 shrink-0 sm:w-48"
               />
             ))}
           </BookSection>

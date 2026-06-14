@@ -2,7 +2,8 @@
 
 import { useState, useTransition } from "react"
 import type { PublicOrder } from "@/lib/order-types"
-import { X, Loader2 } from "lucide-react"
+import { X } from "lucide-react"
+import { BarLoader } from "@/components/ui/bar-loader"
 
 interface RefundRequestModalProps {
   order: PublicOrder | null
@@ -80,7 +81,7 @@ export function RefundRequestModal({ order, onClose }: RefundRequestModalProps) 
                 disabled={pending || !reason.trim()}
                 className="flex h-9 flex-1 items-center justify-center gap-2 rounded-full bg-primary text-sm font-medium text-primary-foreground disabled:opacity-60"
               >
-                {pending && <Loader2 className="size-3.5 animate-spin" />}
+                {pending && <BarLoader size="sm" />}
                 Submit request
               </button>
               <button type="button" onClick={onClose} className="h-9 rounded-full border border-border px-4 text-sm font-medium text-foreground hover:bg-muted">

@@ -263,6 +263,7 @@ export default async function BookDetailPage({ params }: { params: Params }) {
                     price={b.price}
                     currency={b.currency}
                     category={b.category}
+                    className="w-44 shrink-0 sm:w-48"
                   />
                 ))}
               </BookSection>

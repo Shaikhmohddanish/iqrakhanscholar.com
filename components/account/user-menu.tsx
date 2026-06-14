@@ -12,7 +12,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { LogOut, Settings, ChevronDown, Loader2 } from "lucide-react"
+import { LogOut, Settings, ChevronDown } from "lucide-react"
+import { BarLoader } from "@/components/ui/bar-loader"
 import { logoutAction } from "@/app/actions/auth"
 import type { PublicUser } from "@/lib/types"
 
@@ -68,7 +69,7 @@ export function UserMenu({ user }: { user: PublicUser }) {
           }}
           className="cursor-pointer text-destructive focus:text-destructive"
         >
-          {pending ? <Loader2 className="size-4 animate-spin" /> : <LogOut className="size-4" />}
+          {pending ? <BarLoader size="md" /> : <LogOut className="size-4" />}
           Sign out
         </DropdownMenuItem>
       </DropdownMenuContent>

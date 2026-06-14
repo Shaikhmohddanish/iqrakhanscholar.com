@@ -4,7 +4,8 @@ import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import type { PublicArticle } from "@/lib/blog"
 import { createArticleAction, updateArticleAction, publishArticleAction } from "@/app/actions/admin/blog"
-import { Loader2, CheckCircle2, Globe } from "lucide-react"
+import { CheckCircle2, Globe } from "lucide-react"
+import { BarLoader } from "@/components/ui/bar-loader"
 import { ImageUpload } from "./image-upload"
 
 export function ArticleForm({ article }: { article?: PublicArticle }) {
@@ -123,7 +124,7 @@ export function ArticleForm({ article }: { article?: PublicArticle }) {
 
       <div className="flex flex-wrap gap-3">
         <button type="submit" disabled={pending} className="flex h-10 items-center gap-2 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground disabled:opacity-60">
-          {pending && <Loader2 className="size-3.5 animate-spin" />}
+          {pending && <BarLoader size="sm" />}
           {article ? "Save changes" : "Create draft"}
         </button>
         {article && article.status !== "published" && (

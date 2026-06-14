@@ -27,7 +27,7 @@ export default async function HomePage() {
       <AnnouncementBar />
       <SiteHeader />
       <main id="main-content">
-        <HeroSection />
+        <HeroSection videoSrc="/video/background.mp4" />
         <FeaturedCategories />
         <AboutSection />
         <ProductShowcase

@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Star, Eye, ShoppingBag, Check, Loader2 } from 'lucide-react'
+import { Star, Eye, ShoppingBag, Check } from 'lucide-react'
+import { BarLoader } from '@/components/ui/bar-loader'
 import { formatPrice, type PublicProduct } from '@/lib/product-types'
 import { useCart } from '@/components/cart/cart-provider'
 import { WishlistButton } from './wishlist-button'
@@ -111,7 +112,7 @@ export function ProductCard({
             {soldOut ? 'Sold Out' : added ? (
               <><Check className="size-4" /> Added</>
             ) : isPending ? (
-              <Loader2 className="size-4 animate-spin" />
+              <BarLoader size="md" />
             ) : (
               <><ShoppingBag className="size-4" /> Add</>
             )}

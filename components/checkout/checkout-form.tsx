@@ -4,7 +4,8 @@ import { useActionState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useFormStatus } from "react-dom"
-import { Loader2, Lock, ShieldCheck } from "lucide-react"
+import { Lock, ShieldCheck } from "lucide-react"
+import { BarLoader } from "@/components/ui/bar-loader"
 import { useCart } from "@/components/cart/cart-provider"
 import { formatPrice } from "@/lib/product-types"
 import { placeOrderAction, type CheckoutState } from "@/app/actions/checkout"
@@ -23,7 +24,7 @@ function PayButton({ total }: { total: number }) {
       className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-70"
     >
       {pending ? (
-        <Loader2 className="size-4 animate-spin" />
+        <BarLoader size="md" />
       ) : (
         <>
           <Lock className="size-4" />

@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { Check, ShoppingBag, Loader2 } from "lucide-react"
+import { Check, ShoppingBag } from "lucide-react"
+import { BarLoader } from "@/components/ui/bar-loader"
 import { cn } from "@/lib/utils"
 import { useCart } from "./cart-provider"
 import type { PublicProduct } from "@/lib/product-types"
@@ -62,7 +63,7 @@ export function AddToCartButton({
       )}
     >
       {isPending && !added ? (
-        <Loader2 className="size-4 animate-spin" />
+        <BarLoader size="md" />
       ) : added ? (
         <Check className="size-4" />
       ) : (

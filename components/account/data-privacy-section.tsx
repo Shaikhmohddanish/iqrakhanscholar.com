@@ -2,7 +2,8 @@
 
 import { useState, useTransition } from "react"
 import { exportDataAction, deleteAccountAction } from "@/app/actions/account"
-import { Download, Trash2, AlertTriangle, Loader2 } from "lucide-react"
+import { Download, Trash2, AlertTriangle } from "lucide-react"
+import { BarLoader } from "@/components/ui/bar-loader"
 
 export function DataPrivacySection() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
@@ -41,7 +42,7 @@ export function DataPrivacySection() {
           disabled={pending}
           className="mt-4 flex h-9 items-center gap-2 rounded-full border border-border px-5 text-sm font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-60"
         >
-          {pending ? <Loader2 className="size-3.5 animate-spin" /> : <Download className="size-3.5" />}
+          {pending ? <BarLoader size="sm" /> : <Download className="size-3.5" />}
           Export data
         </button>
 
@@ -96,7 +97,7 @@ export function DataPrivacySection() {
                 disabled={pending}
                 className="flex h-9 items-center gap-2 rounded-full bg-destructive px-5 text-sm font-medium text-destructive-foreground disabled:opacity-60"
               >
-                {pending && <Loader2 className="size-3.5 animate-spin" />}
+                {pending && <BarLoader size="sm" />}
                 Yes, delete everything
               </button>
               <button

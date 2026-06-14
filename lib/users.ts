@@ -1,7 +1,7 @@
 import "server-only"
 import { ObjectId, type Collection } from "mongodb"
 import { getDb } from "./mongodb"
-import type { UserDoc } from "./types"
+import type { UserDoc, AdminUserRow } from "./types"
 
 export interface AddressDoc {
   id: string
@@ -140,10 +140,21 @@ export async function exportUserData(userId: string): Promise<Record<string, unk
   return { ...safe, _id: userId }
 }
 
+function toAdminUserRow(doc: UserDoc & { _id: ObjectId }): AdminUserRow {
+  return {
+    id: doc._id.toString(),
+    name: doc.name,
+    email: doc.email,
+    role: doc.role,
+    emailVerified: doc.emailVerified,
+    createdAt: doc.createdAt,
+  }
+}
+
 // Admin: list all users
 export async function getAllUsers(
   options: { page?: number; limit?: number } = {},
-): Promise<{ users: Omit<UserDoc, "passwordHash" | "refreshTokens">[]; total: number }> {
+): Promise<{ users: AdminUserRow[]; total: number }> {
   const col = await usersCollection()
   const { page = 1, limit = 20 } = options
   const [docs, total] = await Promise.all([
@@ -155,7 +166,7 @@ export async function getAllUsers(
       .toArray(),
     col.countDocuments(),
   ])
-  return { users: docs as Omit<UserDoc, "passwordHash" | "refreshTokens">[], total }
+  return { users: docs.map((d) => toAdminUserRow(d as UserDoc & { _id: ObjectId })), total }
 }
 
 export async function updateUserRole(userId: string, role: string): Promise<void> {

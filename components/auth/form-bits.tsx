@@ -3,14 +3,26 @@
 import { useFormStatus } from "react-dom"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { CircleAlert, CircleCheck, Loader2 } from "lucide-react"
+import { BarLoader } from "@/components/ui/bar-loader"
+import { CircleAlert, CircleCheck } from "lucide-react"
 
-export function SubmitButton({ children, disabled }: { children: React.ReactNode; disabled?: boolean }) {
+export function SubmitButton({
+  children,
+  disabled,
+  loading,
+  pendingLabel,
+}: {
+  children: React.ReactNode
+  disabled?: boolean
+  loading?: boolean
+  pendingLabel?: string
+}) {
   const { pending } = useFormStatus()
+  const busy = pending || loading
   return (
-    <Button type="submit" className="w-full" size="lg" disabled={pending || disabled}>
-      {pending ? <Loader2 className="size-4 animate-spin" /> : null}
-      {children}
+    <Button type="submit" className="w-full" size="lg" disabled={busy || disabled}>
+      {busy ? <BarLoader size="md" /> : null}
+      {busy && pendingLabel ? pendingLabel : children}
     </Button>
   )
 }

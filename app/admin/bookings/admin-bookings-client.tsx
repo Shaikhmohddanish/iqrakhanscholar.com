@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useTransition } from "react"
-import type { PublicBooking, BookingStatus, AvailabilityDoc } from "@/lib/booking-types"
+import type { PublicBooking, BookingStatus, PublicAvailability } from "@/lib/booking-types"
 import { SESSION_TYPES } from "@/lib/booking-types"
 import { adminUpdateBookingStatusAction, setAvailabilityAction } from "@/app/actions/admin/bookings"
 import { Calendar, CheckCircle2, XCircle, Clock, Plus, Trash2 } from "lucide-react"
@@ -30,7 +30,7 @@ export function AdminBookingsClient({
   availability,
 }: {
   bookings: PublicBooking[]
-  availability: AvailabilityDoc[]
+  availability: PublicAvailability[]
 }) {
   const [tab, setTab] = useState<"bookings" | "availability">("bookings")
   const [pending, startTransition] = useTransition()

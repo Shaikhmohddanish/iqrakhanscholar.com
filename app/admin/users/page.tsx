@@ -16,7 +16,7 @@ export default async function AdminUsersPage() {
         <h1 className="font-heading text-2xl font-bold text-foreground">Users</h1>
         <p className="text-sm text-muted-foreground">{total} registered user{total !== 1 ? "s" : ""}</p>
       </div>
-      <AdminUsersClient users={users as Parameters<typeof AdminUsersClient>[0]["users"]} />
+      <AdminUsersClient users={users} />
     </div>
   )
 }

@@ -3,7 +3,8 @@
 import { useState, useTransition } from "react"
 import type { PublicUser } from "@/lib/types"
 import { updateProfileAction } from "@/app/actions/account"
-import { Loader2, CheckCircle2 } from "lucide-react"
+import { CheckCircle2 } from "lucide-react"
+import { BarLoader } from "@/components/ui/bar-loader"
 
 export function ProfileForm({ user }: { user: PublicUser }) {
   const [name, setName] = useState(user.name)
@@ -61,7 +62,7 @@ export function ProfileForm({ user }: { user: PublicUser }) {
           disabled={pending}
           className="flex h-9 items-center gap-2 rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
         >
-          {pending && <Loader2 className="size-3.5 animate-spin" />}
+          {pending && <BarLoader size="sm" />}
           Save changes
         </button>
         {message && (

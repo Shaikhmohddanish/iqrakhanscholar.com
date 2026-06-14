@@ -6,7 +6,8 @@ import Image from "next/image"
 import type { PublicProduct } from "@/lib/product-types"
 import { formatPrice } from "@/lib/product-types"
 import { deleteProductAction } from "@/app/actions/admin/products"
-import { Pencil, Trash2, Plus, Loader2, Search } from "lucide-react"
+import { Pencil, Trash2, Plus, Search } from "lucide-react"
+import { BarLoader } from "@/components/ui/bar-loader"
 
 export function ProductTable({ products }: { products: PublicProduct[] }) {
   const [search, setSearch] = useState("")
@@ -96,7 +97,7 @@ export function ProductTable({ products }: { products: PublicProduct[] }) {
                         disabled={deleting === product.id || pending}
                         className="flex size-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-destructive/10 hover:text-destructive disabled:opacity-50"
                       >
-                        {deleting === product.id ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
+                        {deleting === product.id ? <BarLoader size="md" /> : <Trash2 className="size-4" />}
                       </button>
                     </div>
                   </td>

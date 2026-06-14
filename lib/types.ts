@@ -34,6 +34,15 @@ export interface UserDoc {
 }
 
 // Shape safe to expose to the client / store in the access token.
+export interface AdminUserRow {
+  id: string
+  name: string
+  email: string
+  role: Role
+  emailVerified: boolean
+  createdAt: Date
+}
+
 export interface PublicUser {
   id: string
   name: string

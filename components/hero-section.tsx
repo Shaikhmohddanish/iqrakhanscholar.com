@@ -1,36 +1,62 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { Star, ArrowRight, Play } from 'lucide-react'
+import { Star, ArrowRight } from 'lucide-react'
 import { CountUp } from '@/components/count-up'
 
 interface HeroSectionProps {
-  /** Optional path to a background video (mp4 / webm). Falls back to portrait image. */
+  /** Optional path to a full-bleed background video (mp4 / webm) shown behind the hero. */
   videoSrc?: string
 }
 
 export function HeroSection({ videoSrc }: HeroSectionProps = {}) {
   return (
     <section id="top" className="relative overflow-hidden">
-      {/* Drifting background blobs */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-32 -left-32 size-[500px] rounded-full bg-primary/8 blur-[100px] animate-float-slow"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute top-1/2 -right-24 size-[380px] rounded-full bg-accent/10 blur-[80px] animate-float-slow-2"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-20 left-1/3 size-[320px] rounded-full bg-primary/6 blur-[90px] animate-float-slow"
-        style={{ animationDelay: '4s' }}
-      />
+      {/* Full-bleed background video + readability overlay */}
+      {videoSrc && (
+        <>
+          <video
+            src={videoSrc}
+            autoPlay
+            muted
+            loop
+            playsInline
+            poster="/iqra-hero.png"
+            aria-hidden
+            className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-gradient-to-br from-background/90 via-background/75 to-background/60"
+          />
+        </>
+      )}
 
-      {/* Islamic geometric dot pattern (subtle) */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.025] bg-arabesque"
-      />
+      {/* Decorative blobs + pattern — skipped when a video carries the visual interest
+          (they're barely visible over video and add costly per-frame compositing). */}
+      {!videoSrc && (
+        <>
+          {/* Drifting background blobs */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -top-32 -left-32 size-[500px] rounded-full bg-primary/8 blur-[100px] animate-float-slow"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute top-1/2 -right-24 size-[380px] rounded-full bg-accent/10 blur-[80px] animate-float-slow-2"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -bottom-20 left-1/3 size-[320px] rounded-full bg-primary/6 blur-[90px] animate-float-slow"
+            style={{ animationDelay: '4s' }}
+          />
+
+          {/* Islamic geometric dot pattern (subtle) */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 opacity-[0.025] bg-arabesque"
+          />
+        </>
+      )}
 
       <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-4 pt-12 pb-16 sm:px-6 lg:grid-cols-2 lg:gap-8 lg:px-8 lg:pt-20 lg:pb-24">
         {/* ── Copy ── */}
@@ -129,46 +155,20 @@ export function HeroSection({ videoSrc }: HeroSectionProps = {}) {
         {/* ── Visual ── */}
         <div className="relative animate-fade-in-up animate-delay-200">
           <div className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-[2rem] border border-border shadow-2xl shadow-primary/10 lg:max-w-lg">
-            {videoSrc ? (
-              /* Video slot — drop your mp4/webm here */
-              <video
-                src={videoSrc}
-                autoPlay
-                muted
-                loop
-                playsInline
-                poster="/iqra-hero.png"
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            ) : (
-              /* Portrait with slow Ken Burns zoom */
-              <Image
-                src="/iqra-hero.png"
-                alt="Iqra Khan, Islamic scholar and educator"
-                fill
-                priority
-                className="object-cover animate-ken-burns"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
-            )}
+            {/* Portrait with slow Ken Burns zoom */}
+            <Image
+              src="/iqra-hero.png"
+              alt="Iqra Khan, Islamic scholar and educator"
+              fill
+              priority
+              className="object-cover animate-ken-burns"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-primary/30 via-transparent to-transparent" />
-
-            {/* Play button shown only when video is wired up */}
-            {videoSrc && (
-              <button
-                type="button"
-                aria-label="Play video"
-                className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity hover:opacity-100"
-              >
-                <span className="flex size-16 items-center justify-center rounded-full bg-card/90 text-primary backdrop-blur shadow-lg">
-                  <Play className="size-7 fill-current" />
-                </span>
-              </button>
-            )}
           </div>
 
           {/* Floating Quran quote card */}
-          <div className="absolute -bottom-6 left-2 hidden rounded-2xl border border-border bg-card/95 p-4 shadow-xl backdrop-blur sm:block lg:-left-6">
+          <div className="absolute -bottom-6 left-2 hidden rounded-2xl border border-border bg-card/95 p-4 shadow-xl sm:block lg:-left-6">
             <p className="font-heading text-sm font-semibold text-foreground">
               &ldquo;Verily, with hardship comes ease.&rdquo;
             </p>

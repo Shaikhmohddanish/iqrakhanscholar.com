@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Star, Eye, ShoppingBag, SlidersHorizontal, Check, Loader2 } from 'lucide-react'
+import { Star, Eye, ShoppingBag, SlidersHorizontal, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { formatPrice, type PublicProduct } from '@/lib/product-types'
 import { useCart } from '@/components/cart/cart-provider'

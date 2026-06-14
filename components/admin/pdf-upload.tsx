@@ -1,7 +1,8 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Loader2, UploadCloud, FileText, X } from "lucide-react"
+import { UploadCloud, FileText, X } from "lucide-react"
+import { BarLoader } from "@/components/ui/bar-loader"
 
 interface PdfUploadProps {
   slug: string
@@ -77,7 +78,7 @@ export function PdfUpload({
       ) : (
         <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-background py-8 text-center transition-colors hover:border-primary hover:bg-muted/50">
           {uploading ? (
-            <Loader2 className="size-6 animate-spin text-primary" />
+            <BarLoader size="lg" className="text-primary" />
           ) : (
             <UploadCloud className="size-6 text-muted-foreground" />
           )}

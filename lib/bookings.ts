@@ -1,9 +1,9 @@
 import "server-only"
 import { ObjectId, type WithId } from "mongodb"
 import { getDb } from "./mongodb"
-import type { SessionType, BookingStatus, BookingPaymentStatus, PublicBooking } from "./booking-types"
+import type { SessionType, BookingStatus, BookingPaymentStatus, PublicBooking, PublicAvailability } from "./booking-types"
 
-export type { SessionType, BookingStatus, BookingPaymentStatus, PublicBooking }
+export type { SessionType, BookingStatus, BookingPaymentStatus, PublicBooking, PublicAvailability }
 export { SESSION_TYPES } from "./booking-types"
 
 export interface BookingDoc {
@@ -32,6 +32,11 @@ export interface AvailabilityDoc {
 }
 
 function toPublicBooking(doc: WithId<BookingDoc>): PublicBooking {
+  const { _id, ...rest } = doc
+  return { id: _id.toString(), ...rest }
+}
+
+function toPublicAvailability(doc: WithId<AvailabilityDoc>): PublicAvailability {
   const { _id, ...rest } = doc
   return { id: _id.toString(), ...rest }
 }
@@ -199,9 +204,10 @@ export async function setAvailability(date: string, slots: string[]): Promise<vo
 export async function getAvailability(
   fromDate: string,
   toDate: string,
-): Promise<AvailabilityDoc[]> {
+): Promise<PublicAvailability[]> {
   const col = await availabilityCol()
-  return col.find({ date: { $gte: fromDate, $lte: toDate } }).sort({ date: 1 }).toArray()
+  const docs = await col.find({ date: { $gte: fromDate, $lte: toDate } }).sort({ date: 1 }).toArray()
+  return docs.map(toPublicAvailability)
 }
 
 // Seed default availability (next 30 weekdays, 9am–5pm slots)

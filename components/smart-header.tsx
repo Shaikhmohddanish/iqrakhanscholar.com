@@ -20,8 +20,8 @@ import {
   Bell,
   ShieldCheck,
   LogOut,
-  Loader2,
 } from 'lucide-react'
+import { BarLoader } from '@/components/ui/bar-loader'
 import { navLinks } from '@/lib/site-data'
 import { cn } from '@/lib/utils'
 import { CartButton } from '@/components/cart/cart-button'
@@ -143,7 +143,7 @@ export function SmartHeader({ user }: SmartHeaderProps) {
         className={cn(
           'sticky top-0 z-50 w-full border-b transition-all duration-300',
           scrolled
-            ? 'border-border bg-background/95 backdrop-blur-sm shadow-[var(--shadow-sm)]'
+            ? 'border-border bg-background shadow-[var(--shadow-sm)]'
             : 'border-transparent bg-background/40 backdrop-blur-sm',
         )}
       >
@@ -336,7 +336,7 @@ export function SmartHeader({ user }: SmartHeaderProps) {
                         className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-destructive transition-colors hover:bg-destructive/10 disabled:opacity-50"
                       >
                         {pending ? (
-                          <Loader2 className="size-4 animate-spin" />
+                          <BarLoader size="md" />
                         ) : (
                           <LogOut className="size-4" />
                         )}
@@ -543,7 +543,7 @@ export function SmartHeader({ user }: SmartHeaderProps) {
                     className="drawer-cta drawer-cta-outline text-destructive"
                   >
                     {pending ? (
-                      <Loader2 className="mr-2 size-4 animate-spin" />
+                      <BarLoader size="md" className="mr-2" />
                     ) : (
                       <LogOut className="mr-2 size-4" />
                     )}

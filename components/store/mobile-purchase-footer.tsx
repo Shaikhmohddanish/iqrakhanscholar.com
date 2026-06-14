@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ShoppingBag, Check, Loader2 } from 'lucide-react'
+import { ShoppingBag, Check } from 'lucide-react'
 import { formatPrice, type PublicProduct } from '@/lib/product-types'
 import { useCart } from '@/components/cart/cart-provider'
 import { cn } from '@/lib/utils'

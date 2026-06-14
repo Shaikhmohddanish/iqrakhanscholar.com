@@ -3,7 +3,8 @@
 import { useState, useTransition } from "react"
 import type { AddressDoc } from "@/lib/users"
 import { saveAddressAction, deleteAddressAction } from "@/app/actions/account"
-import { Plus, Pencil, Trash2, MapPin, Loader2 } from "lucide-react"
+import { Plus, Pencil, Trash2, MapPin } from "lucide-react"
+import { BarLoader } from "@/components/ui/bar-loader"
 
 interface AddressFormProps {
   addresses: AddressDoc[]
@@ -150,7 +151,7 @@ export function AddressManager({ addresses }: AddressFormProps) {
           {error && <p className="mt-3 text-sm text-destructive">{error}</p>}
           <div className="mt-4 flex gap-3">
             <button type="button" onClick={handleSave} disabled={pending} className="flex h-9 items-center gap-2 rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground disabled:opacity-60">
-              {pending && <Loader2 className="size-3.5 animate-spin" />}
+              {pending && <BarLoader size="sm" />}
               Save address
             </button>
             <button type="button" onClick={handleClose} className="h-9 rounded-full border border-border px-5 text-sm font-medium text-foreground hover:bg-muted">

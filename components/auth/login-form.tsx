@@ -60,7 +60,7 @@ export function LoginForm() {
           Keep me signed in for 30 days
         </label>
 
-        <SubmitButton>Sign in</SubmitButton>
+        <SubmitButton loading={state.ok} pendingLabel="Signing in…">Sign in</SubmitButton>
       </form>
     </div>
   )

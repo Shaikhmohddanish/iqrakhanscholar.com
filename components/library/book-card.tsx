@@ -43,7 +43,7 @@ export function BookCard({
     <Link
       href={`/library/${slug}`}
       className={cn(
-        'group relative flex w-44 shrink-0 flex-col overflow-hidden rounded-xl border border-border bg-card transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 sm:w-48',
+        'group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5',
         className,
       )}
     >

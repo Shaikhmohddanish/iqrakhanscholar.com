@@ -1,6 +1,7 @@
 "use client"
 
-import { X, AlertTriangle, Loader2 } from "lucide-react"
+import { X, AlertTriangle } from "lucide-react"
+import { BarLoader } from "@/components/ui/bar-loader"
 
 interface ConfirmModalProps {
   open: boolean
@@ -52,7 +53,7 @@ export function ConfirmModal({
             disabled={pending}
             className={`flex h-9 flex-1 items-center justify-center gap-2 rounded-full text-sm font-medium disabled:opacity-60 ${variant === "danger" ? "bg-destructive text-destructive-foreground hover:bg-destructive/90" : "bg-primary text-primary-foreground hover:bg-primary/90"}`}
           >
-            {pending && <Loader2 className="size-3.5 animate-spin" />}
+            {pending && <BarLoader size="sm" />}
             {confirmLabel}
           </button>
           <button type="button" onClick={onClose} className="h-9 rounded-full border border-border px-4 text-sm font-medium text-foreground hover:bg-muted">

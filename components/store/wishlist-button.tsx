@@ -1,6 +1,7 @@
 'use client'
 
-import { Heart, Loader2 } from 'lucide-react'
+import { Heart } from 'lucide-react'
+import { BarLoader } from '@/components/ui/bar-loader'
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
@@ -50,7 +51,7 @@ export function WishlistButton({
   )
 
   const icon = pending ? (
-    <Loader2 className={cn(iconSize, 'animate-spin text-muted-foreground')} />
+    <BarLoader size={size === 'sm' ? 'sm' : 'md'} className="text-muted-foreground" />
   ) : (
     <Heart
       className={cn(

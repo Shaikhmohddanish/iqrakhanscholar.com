@@ -102,7 +102,9 @@ export function RegisterForm() {
           </label>
         </div>
 
-        <SubmitButton disabled={!termsAccepted}>Create account</SubmitButton>
+        <SubmitButton disabled={!termsAccepted} loading={state.ok && !state.devLink} pendingLabel="Creating account…">
+          Create account
+        </SubmitButton>
 
         {state.ok && state.devLink ? (
           <Link href="/account" className="text-center text-sm font-medium text-primary hover:underline">

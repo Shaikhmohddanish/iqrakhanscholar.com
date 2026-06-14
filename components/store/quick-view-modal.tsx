@@ -2,7 +2,8 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { X, Star, ShoppingBag, Check, Loader2 } from 'lucide-react'
+import { X, Star, ShoppingBag, Check } from 'lucide-react'
+import { BarLoader } from '@/components/ui/bar-loader'
 import { formatPrice, type PublicProduct } from '@/lib/product-types'
 import { useCart } from '@/components/cart/cart-provider'
 import { useState } from 'react'
@@ -52,6 +53,7 @@ export function QuickViewModal({ product, open, onClose }: QuickViewModalProps) 
           <X className="size-5" />
         </button>
 
+        <div className="max-h-[90vh] overflow-y-auto">
         <div className="grid sm:grid-cols-2">
           {/* Image */}
           <div className="relative aspect-square bg-muted">
@@ -117,7 +119,7 @@ export function QuickViewModal({ product, open, onClose }: QuickViewModalProps) 
                   {soldOut ? (
                     'Sold Out'
                   ) : isPending && !added ? (
-                    <Loader2 className="size-4 animate-spin" />
+                    <BarLoader size="md" />
                   ) : added ? (
                     <><Check className="size-4" /> Added</>
                   ) : (
@@ -133,6 +135,7 @@ export function QuickViewModal({ product, open, onClose }: QuickViewModalProps) 
               </div>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>

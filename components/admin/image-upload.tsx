@@ -1,7 +1,8 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { UploadCloud, Loader2, X, GripVertical, Star } from "lucide-react"
+import { UploadCloud, X, GripVertical, Star } from "lucide-react"
+import { BarLoader } from "@/components/ui/bar-loader"
 
 interface ImageUploadProps {
   kind: "product" | "blog" | "book"
@@ -177,7 +178,7 @@ export function ImageUpload({ kind, value, onChange, multiple = false }: ImageUp
           onDragOver={(e) => e.preventDefault()}
         >
           {uploading > 0 ? (
-            <Loader2 className="size-6 animate-spin text-primary" />
+            <BarLoader size="lg" className="text-primary" />
           ) : (
             <UploadCloud className="size-6 text-muted-foreground" />
           )}
@@ -204,7 +205,7 @@ export function ImageUpload({ kind, value, onChange, multiple = false }: ImageUp
       {multiple && value.length > 0 && (
         <label className="flex w-fit cursor-pointer items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-sm text-muted-foreground hover:border-primary hover:text-foreground">
           {uploading > 0 ? (
-            <Loader2 className="size-4 animate-spin" />
+            <BarLoader size="md" />
           ) : (
             <UploadCloud className="size-4" />
           )}

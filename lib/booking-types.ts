@@ -48,6 +48,13 @@ export const SESSION_TYPES: SessionTypeInfo[] = [
   },
 ]
 
+export interface PublicAvailability {
+  id: string
+  date: string
+  slots: string[]
+  createdAt: Date
+}
+
 export interface PublicBooking {
   id: string
   userId: string

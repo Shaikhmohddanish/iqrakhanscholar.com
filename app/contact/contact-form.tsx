@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Send, Loader2, CheckCircle } from 'lucide-react'
+import { Send, CheckCircle } from 'lucide-react'
+import { BarLoader } from '@/components/ui/bar-loader'
 
 type FormState = 'idle' | 'submitting' | 'success' | 'error'
 
@@ -132,7 +133,7 @@ export function ContactForm() {
       >
         {state === 'submitting' ? (
           <>
-            <Loader2 className="size-4 animate-spin" />
+            <BarLoader size="md" />
             Sending...
           </>
         ) : (
