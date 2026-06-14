@@ -67,7 +67,7 @@ export const libraryBooks: LibraryBook[] = [
     author: 'Iqra Khan',
     coverImage: '/product-ebook-salah.png',
     description:
-      'Discover the lost art of khushuʿ — the deep stillness and presence that transforms salah from routine into a living conversation with Allah. Rooted in Quran and Sunnah, this book offers gentle, actionable practices to quiet the restless heart and pray with meaning.',
+      'Discover the lost art of khushuʿ - the deep stillness and presence that transforms salah from routine into a living conversation with Allah. Rooted in Quran and Sunnah, this book offers gentle, actionable practices to quiet the restless heart and pray with meaning.',
     category: 'Worship',
     pageCount: 120,
     rating: 5,

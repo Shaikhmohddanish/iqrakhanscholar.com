@@ -35,7 +35,7 @@ function ReaderInner({ bookId, bookTitle, bookAuthor, userEmail }: Omit<ReaderSh
       {/* Keyboard listener (renders nothing) */}
       <ReaderNavigation />
 
-      {/* Top toolbar — desktop only */}
+      {/* Top toolbar - desktop only */}
       <div className="hidden sm:block">
         <ReaderToolbar bookTitle={bookTitle} bookAuthor={bookAuthor} bookId={bookId} />
       </div>
@@ -52,12 +52,12 @@ function ReaderInner({ bookId, bookTitle, bookAuthor, userEmail }: Omit<ReaderSh
         <ReaderSettings />
       </div>
 
-      {/* Bottom progress — desktop only */}
+      {/* Bottom progress - desktop only */}
       <div className="hidden sm:block">
         <ReaderProgress />
       </div>
 
-      {/* Mobile toolbar — mobile only */}
+      {/* Mobile toolbar - mobile only */}
       <MobileReader bookTitle={bookTitle} bookId={bookId} />
     </div>
   )

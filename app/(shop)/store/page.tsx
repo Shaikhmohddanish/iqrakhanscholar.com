@@ -6,7 +6,7 @@ import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { StoreClient } from '@/components/store/store-client'
 
 export const metadata: Metadata = {
-  title: 'Store — Books, Journals & Digital Resources',
+  title: 'Store - Books, Journals & Digital Resources',
   description:
     'Shop signed hardcover books, premium Islamic journals and planners, plus instant-download ebooks, study guides and resource packs by Iqra Khan.',
   alternates: { canonical: '/store' },
@@ -53,7 +53,7 @@ export default async function StorePage() {
           Knowledge you can hold &amp; download
         </h1>
         <p className="mt-4 text-pretty leading-relaxed text-muted-foreground">
-          A carefully curated collection of books, journals, and digital resources — each crafted to
+          A carefully curated collection of books, journals, and digital resources - each crafted to
           help you draw closer to Allah with clarity, beauty, and intention.
         </p>
       </header>

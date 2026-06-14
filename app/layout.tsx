@@ -29,7 +29,7 @@ const siteUrl = 'https://iqrakhan.com'
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Iqra Khan — Islamic Scholar, Educator & Mentor for Muslim Women',
+    default: 'Iqra Khan - Islamic Scholar, Educator & Mentor for Muslim Women',
     template: '%s | Iqra Khan',
   },
   description:
@@ -51,15 +51,15 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: siteUrl,
     siteName: 'Iqra Khan',
-    title: 'Iqra Khan — Authentic Islamic Knowledge for Modern Muslim Women',
+    title: 'Iqra Khan - Authentic Islamic Knowledge for Modern Muslim Women',
     description:
       'Learn. Grow. Transform your life through Quran & Sunnah with books, courses, and personal mentorship.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Iqra Khan — Islamic Scholar & Educator',
+    title: 'Iqra Khan - Islamic Scholar & Educator',
     description:
-      'Authentic Islamic knowledge for the modern Muslim woman — books, resources, and one-to-one mentorship.',
+      'Authentic Islamic knowledge for the modern Muslim woman - books, resources, and one-to-one mentorship.',
   },
   alternates: {
     canonical: siteUrl,

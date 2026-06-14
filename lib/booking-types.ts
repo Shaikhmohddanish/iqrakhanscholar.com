@@ -33,7 +33,7 @@ export const SESSION_TYPES: SessionTypeInfo[] = [
   {
     id: "intensive",
     title: "Intensive Study Session",
-    description: "A 90-minute deep-dive into a specific topic — Quran, Fiqh, or personal development.",
+    description: "A 90-minute deep-dive into a specific topic - Quran, Fiqh, or personal development.",
     duration: 90,
     price: 12000,
     currency: "USD",

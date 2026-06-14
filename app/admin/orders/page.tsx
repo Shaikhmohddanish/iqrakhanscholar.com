@@ -4,7 +4,7 @@ import type { PublicOrder } from "@/lib/order-types"
 import { AdminOrdersClient } from "./admin-orders-client"
 
 export const metadata: Metadata = {
-  title: "Orders — Admin",
+  title: "Orders - Admin",
   robots: { index: false },
 }
 

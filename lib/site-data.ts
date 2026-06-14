@@ -129,7 +129,7 @@ export const blogPosts = [
     category: 'Worship',
     readTime: '8 min read',
     excerpt:
-      'Practical, Sunnah-rooted steps to anchor your five daily prayers — even in your busiest seasons.',
+      'Practical, Sunnah-rooted steps to anchor your five daily prayers - even in your busiest seasons.',
     image: '/blog-salah.png',
   },
   {
@@ -145,7 +145,7 @@ export const blogPosts = [
     category: 'Women in Islam',
     readTime: '9 min read',
     excerpt:
-      'Revisiting the dignity, autonomy, and spiritual station Islam grants to women — straight from the sources.',
+      'Revisiting the dignity, autonomy, and spiritual station Islam grants to women - straight from the sources.',
     image: '/blog-women.png',
   },
 ]
@@ -153,7 +153,7 @@ export const blogPosts = [
 export const faqs = [
   {
     q: 'Who are your teachings and resources designed for?',
-    a: 'Everything is created with the modern Muslim woman in mind — whether you are returning to your faith, deepening your practice, or seeking clarity in a specific area of life. The language is accessible and rooted firmly in authentic Quran & Sunnah.',
+    a: 'Everything is created with the modern Muslim woman in mind - whether you are returning to your faith, deepening your practice, or seeking clarity in a specific area of life. The language is accessible and rooted firmly in authentic Quran & Sunnah.',
   },
   {
     q: 'Are the digital products delivered instantly?',

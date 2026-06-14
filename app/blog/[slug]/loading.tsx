@@ -7,7 +7,7 @@ export default function BlogDetailLoading() {
       <Skeleton className="h-4 w-40" />
 
       <div className="mt-8 grid gap-10 lg:grid-cols-3">
-        {/* Article — 2/3 width */}
+        {/* Article - 2/3 width */}
         <article className="lg:col-span-2">
           {/* Back link */}
           <Skeleton className="h-4 w-28" />
@@ -58,7 +58,7 @@ export default function BlogDetailLoading() {
           </div>
         </article>
 
-        {/* Sidebar — 1/3 width */}
+        {/* Sidebar - 1/3 width */}
         <aside className="space-y-6">
           {/* TOC */}
           <div className="rounded-xl border border-border bg-card p-5">

@@ -50,7 +50,7 @@ export function BookingConfirmation({ sessionType, date, slot, onBookAgain }: Bo
           </div>
           <div className="flex items-center gap-3">
             <Clock className="size-4 shrink-0 text-primary" />
-            <span className="text-foreground">{formatSlot(slot)} — {session.duration} minutes</span>
+            <span className="text-foreground">{formatSlot(slot)} - {session.duration} minutes</span>
           </div>
         </div>
       </div>

@@ -47,7 +47,7 @@ export function FilterDrawer({
 
   return (
     <div className="fixed inset-0 z-[60]">
-      {/* Backdrop — same stacking context, renders before panel so it stays behind */}
+      {/* Backdrop - same stacking context, renders before panel so it stays behind */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in"
         onClick={onClose}

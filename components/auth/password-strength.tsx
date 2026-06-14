@@ -34,7 +34,7 @@ export function PasswordStrength({ password }: PasswordStrengthProps) {
       </div>
       <p className="text-xs text-muted-foreground">
         Strength: <span className="font-medium text-foreground">{label}</span>
-        {score < 3 && " — use uppercase, numbers, and symbols to strengthen."}
+        {score < 3 && " - use uppercase, numbers, and symbols to strengthen."}
       </p>
     </div>
   )

@@ -1,4 +1,4 @@
-// Client-safe — only imports from site-data (no server-only)
+// Client-safe - only imports from site-data (no server-only)
 import { blogPosts } from '@/lib/site-data'
 
 export interface BlogPostItem {

@@ -6,17 +6,17 @@ interface BookTocPreviewProps {
 
 // Mock chapter list
 const defaultChapters = [
-  'Introduction — Setting Your Intention',
-  'Chapter 1 — Understanding the Foundation',
-  'Chapter 2 — The Heart of the Matter',
-  'Chapter 3 — Daily Practices',
-  'Chapter 4 — Overcoming Obstacles',
-  'Chapter 5 — Building Consistency',
-  'Chapter 6 — Community & Support',
-  'Chapter 7 — Advanced Concepts',
-  'Chapter 8 — Living It Daily',
-  'Conclusion — Your Journey Forward',
-  'Appendix — Additional Resources',
+  'Introduction - Setting Your Intention',
+  'Chapter 1 - Understanding the Foundation',
+  'Chapter 2 - The Heart of the Matter',
+  'Chapter 3 - Daily Practices',
+  'Chapter 4 - Overcoming Obstacles',
+  'Chapter 5 - Building Consistency',
+  'Chapter 6 - Community & Support',
+  'Chapter 7 - Advanced Concepts',
+  'Chapter 8 - Living It Daily',
+  'Conclusion - Your Journey Forward',
+  'Appendix - Additional Resources',
 ]
 
 export function BookTocPreview({ chapters = defaultChapters }: Partial<BookTocPreviewProps>) {

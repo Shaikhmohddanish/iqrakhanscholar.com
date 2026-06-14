@@ -67,7 +67,7 @@ export function MobileReader({ bookTitle, bookId }: MobileReaderProps) {
 
         {/* Page info */}
         <span className="text-sm tabular-nums">
-          {state.currentPage} / {state.totalPages || '—'}
+          {state.currentPage} / {state.totalPages || '-'}
         </span>
 
         {/* Next page */}

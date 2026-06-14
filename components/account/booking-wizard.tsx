@@ -100,7 +100,7 @@ export function BookingWizard() {
             ))}
           </div>
           <p className="mt-2 text-xs text-muted-foreground">
-            Step {step} of 5 — {STEPS[step - 1]?.label}
+            Step {step} of 5 - {STEPS[step - 1]?.label}
           </p>
         </div>
       )}

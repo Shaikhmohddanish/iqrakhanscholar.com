@@ -35,7 +35,7 @@ export function RefundRequestModal({ order, onClose }: RefundRequestModalProps) 
         aria-label="Request refund"
       >
         <div className="flex items-center justify-between border-b border-border px-5 py-4">
-          <p className="font-heading text-base font-semibold">Request refund — {order.reference}</p>
+          <p className="font-heading text-base font-semibold">Request refund - {order.reference}</p>
           <button type="button" onClick={onClose} className="flex size-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted">
             <X className="size-4" />
           </button>

@@ -25,7 +25,7 @@ export function ProductGallery({ images, title }: ProductGalleryProps) {
       >
         <Image
           src={gallery[activeIndex]}
-          alt={`${title} — image ${activeIndex + 1}`}
+          alt={`${title} - image ${activeIndex + 1}`}
           fill
           priority
           className={cn(

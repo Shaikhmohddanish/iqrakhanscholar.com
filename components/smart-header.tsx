@@ -134,7 +134,7 @@ export function SmartHeader({ user }: SmartHeaderProps) {
 
   return (
     <>
-      {/* Skip to content — accessibility */}
+      {/* Skip to content - accessibility */}
       <a href="#main-content" className="skip-to-content">
         Skip to content
       </a>
@@ -153,7 +153,7 @@ export function SmartHeader({ user }: SmartHeaderProps) {
         >
           {/* ── Left: Hamburger + Search (mobile) / Logo (desktop) ── */}
           <div className="relative z-20 flex items-center gap-1 lg:gap-2.5">
-            {/* Hamburger — mobile only */}
+            {/* Hamburger - mobile only */}
             <button
               type="button"
               onClick={() => setDrawerOpen(true)}
@@ -163,7 +163,7 @@ export function SmartHeader({ user }: SmartHeaderProps) {
               <Menu className="size-5" />
             </button>
 
-            {/* Search — mobile only */}
+            {/* Search - mobile only */}
             <button
               type="button"
               onClick={() => setSearchOpen((v) => !v)}
@@ -173,7 +173,7 @@ export function SmartHeader({ user }: SmartHeaderProps) {
               <Search className="size-5" />
             </button>
 
-            {/* Logo — desktop only (left-aligned on desktop) */}
+            {/* Logo - desktop only (left-aligned on desktop) */}
             <Link href="/" className="hidden items-center gap-2.5 lg:flex">
               <span className="flex size-9 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
                 IK
@@ -258,10 +258,10 @@ export function SmartHeader({ user }: SmartHeaderProps) {
                 {/* Cart */}
                 <CartButton />
 
-                {/* Theme toggle — desktop */}
+                {/* Theme toggle - desktop */}
                 <ThemeToggle className="hidden lg:inline-flex" />
 
-                {/* Avatar dropdown — desktop */}
+                {/* Avatar dropdown - desktop */}
                 <div className="relative hidden lg:block" ref={avatarRef}>
                   <button
                     type="button"
@@ -346,7 +346,7 @@ export function SmartHeader({ user }: SmartHeaderProps) {
                   )}
                 </div>
 
-                {/* User icon — mobile only (links to account) */}
+                {/* User icon - mobile only (links to account) */}
                 <Link
                   href="/account"
                   className="inline-flex size-10 items-center justify-center rounded-md text-foreground/80 transition-colors hover:text-foreground lg:hidden"
@@ -372,7 +372,7 @@ export function SmartHeader({ user }: SmartHeaderProps) {
                 {/* Cart */}
                 <CartButton />
 
-                {/* Theme toggle — desktop */}
+                {/* Theme toggle - desktop */}
                 <ThemeToggle className="hidden lg:inline-flex" />
 
                 {/* Desktop: Sign In + CTA */}
@@ -519,7 +519,7 @@ export function SmartHeader({ user }: SmartHeaderProps) {
             )}
 
             <div className="mobile-drawer-footer">
-              {/* Theme toggle — always visible in drawer */}
+              {/* Theme toggle - always visible in drawer */}
               <ThemeToggle variant="labeled" />
 
               {user ? (

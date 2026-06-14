@@ -3,7 +3,7 @@ import { getAllUsers } from "@/lib/users"
 import { AdminUsersClient } from "./admin-users-client"
 
 export const metadata: Metadata = {
-  title: "Users — Admin",
+  title: "Users - Admin",
   robots: { index: false },
 }
 

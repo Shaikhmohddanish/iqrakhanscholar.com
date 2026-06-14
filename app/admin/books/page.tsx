@@ -6,7 +6,7 @@ import { formatPrice } from "@/lib/product-types"
 import { Plus, Pencil } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Books — Admin",
+  title: "Books - Admin",
   robots: { index: false },
 }
 

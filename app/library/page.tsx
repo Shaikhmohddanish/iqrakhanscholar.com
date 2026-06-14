@@ -7,7 +7,7 @@ import { LibraryClient, type LibraryItem } from './library-client'
 import { queryProducts, getProductFacets } from '@/lib/products'
 
 export const metadata: Metadata = {
-  title: 'Digital Library — Islamic Books & Guides',
+  title: 'Digital Library - Islamic Books & Guides',
   description:
     'Explore our curated digital library of Islamic books, study guides, and resources. Read in-browser with our immersive PDF reader.',
 }
@@ -77,7 +77,7 @@ export default async function LibraryPage() {
               Digital Library
             </h1>
             <p className="mt-2 text-lg text-muted-foreground">
-              Islamic books &amp; guides — read in-browser, anytime, anywhere.
+              Islamic books &amp; guides - read in-browser, anytime, anywhere.
             </p>
           </div>
 

@@ -34,7 +34,7 @@ export function ReaderProgress() {
       </div>
 
       <span className="shrink-0 text-xs tabular-nums">
-        Page {state.currentPage} of {state.totalPages || '—'}
+        Page {state.currentPage} of {state.totalPages || '-'}
       </span>
 
       <span className="shrink-0 text-xs tabular-nums opacity-60">{percent}%</span>

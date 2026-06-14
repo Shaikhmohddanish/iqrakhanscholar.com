@@ -10,11 +10,11 @@ const pillars = [
   },
   {
     title: 'My Mission',
-    text: 'To make authentic Islamic knowledge accessible, beautiful, and deeply practical for everyday life — grounded firmly in Quran and Sunnah.',
+    text: 'To make authentic Islamic knowledge accessible, beautiful, and deeply practical for everyday life - grounded firmly in Quran and Sunnah.',
   },
   {
     title: 'My Vision',
-    text: 'A global community of women who feel confident, anchored, and joyful in their faith — supporting one another every step of the way.',
+    text: 'A global community of women who feel confident, anchored, and joyful in their faith - supporting one another every step of the way.',
   },
 ]
 

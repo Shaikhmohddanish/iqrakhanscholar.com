@@ -13,7 +13,7 @@ export default function ContactLoading() {
       </div>
 
       <div className="mt-10 grid gap-10 lg:grid-cols-3">
-        {/* Contact form — 2/3 */}
+        {/* Contact form - 2/3 */}
         <div className="lg:col-span-2 space-y-5">
           <div className="grid gap-5 sm:grid-cols-2">
             <div className="space-y-2">
@@ -36,7 +36,7 @@ export default function ContactLoading() {
           <Skeleton className="h-11 w-36 rounded-lg" />
         </div>
 
-        {/* Contact info — 1/3 */}
+        {/* Contact info - 1/3 */}
         <aside className="space-y-6">
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="rounded-xl border border-border bg-card p-5">

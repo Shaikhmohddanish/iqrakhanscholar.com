@@ -4,7 +4,7 @@ import { getAllArticles, seedArticles } from "@/lib/blog"
 import { Plus, Pencil, Eye } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Blog — Admin",
+  title: "Blog - Admin",
   robots: { index: false },
 }
 
@@ -49,7 +49,7 @@ export default async function AdminBlogPage() {
                     </span>
                   </td>
                   <td className="hidden px-4 py-3 text-muted-foreground md:table-cell">
-                    {article.publishedAt ? new Date(article.publishedAt).toLocaleDateString() : "—"}
+                    {article.publishedAt ? new Date(article.publishedAt).toLocaleDateString() : "-"}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1">

@@ -6,7 +6,7 @@ import { LegalPageLayout } from '@/components/legal/legal-page-layout'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'Iqra Khan privacy policy — how we collect, use, and protect your personal data in compliance with GDPR.',
+  description: 'Iqra Khan privacy policy - how we collect, use, and protect your personal data in compliance with GDPR.',
 }
 
 const sections = [
@@ -84,10 +84,10 @@ export default function PrivacyPage() {
             <h2>Third-Party Processors</h2>
             <p>We share data with the following processors:</p>
             <ul>
-              <li><strong>Razorpay</strong> — Payment processing</li>
-              <li><strong>MongoDB Atlas</strong> — Database hosting (EU region)</li>
-              <li><strong>Cloudinary</strong> — Image and media hosting</li>
-              <li><strong>Vercel</strong> — Website hosting and analytics</li>
+              <li><strong>Razorpay</strong> - Payment processing</li>
+              <li><strong>MongoDB Atlas</strong> - Database hosting (EU region)</li>
+              <li><strong>Cloudinary</strong> - Image and media hosting</li>
+              <li><strong>Vercel</strong> - Website hosting and analytics</li>
             </ul>
             <p>All processors are contractually bound to protect your data in accordance with GDPR.</p>
           </section>

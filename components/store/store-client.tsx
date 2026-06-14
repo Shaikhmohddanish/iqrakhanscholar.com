@@ -193,7 +193,7 @@ export function StoreClient({
             )}
             {error && (
               <p className="py-4 text-center text-sm text-destructive">
-                {error} — <button type="button" onClick={clearAll} className="underline">retry</button>
+                {error} - <button type="button" onClick={clearAll} className="underline">retry</button>
               </p>
             )}
           </div>

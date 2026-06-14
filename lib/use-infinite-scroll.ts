@@ -91,7 +91,7 @@ export function useInfiniteScroll<T extends { id: string }>({
   // When params change, reset to page 1
   useEffect(() => {
     if (paramsKeyRef.current === paramsKey && initialItems.length > 0 && page === 1) {
-      // First mount with initialItems — skip refetch
+      // First mount with initialItems - skip refetch
       paramsKeyRef.current = paramsKey
       return
     }

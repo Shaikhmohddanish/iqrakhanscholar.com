@@ -4,7 +4,7 @@ export const metadata: Metadata = {
   robots: 'noindex, nofollow',
 }
 
-// Minimal layout — no SiteHeader/SiteFooter.
+// Minimal layout - no SiteHeader/SiteFooter.
 // Print CSS hides the reader so PDFs can't be captured via print-to-PDF.
 export default function ReaderLayout({ children }: { children: React.ReactNode }) {
   return (

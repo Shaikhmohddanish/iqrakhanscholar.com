@@ -111,7 +111,7 @@ export function AddressManager({ addresses }: AddressFormProps) {
             <div className="flex items-start gap-2">
               <MapPin className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
               <div className="text-sm text-foreground">
-                <p className="font-medium">{addr.label} — {addr.fullName}</p>
+                <p className="font-medium">{addr.label} - {addr.fullName}</p>
                 <p className="text-muted-foreground">{addr.line1}{addr.line2 ? `, ${addr.line2}` : ""}</p>
                 <p className="text-muted-foreground">{addr.city}{addr.state ? `, ${addr.state}` : ""} {addr.postalCode}</p>
                 <p className="text-muted-foreground">{addr.country}</p>

@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   )
   const title = post?.title ?? slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
   return {
-    title: `${title} — Iqra Khan Blog`,
+    title: `${title} - Iqra Khan Blog`,
     description: post?.excerpt ?? `Read "${title}" on the Iqra Khan Knowledge Hub.`,
   }
 }
@@ -47,7 +47,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
           />
 
           <div className="mt-8 grid gap-10 lg:grid-cols-3">
-            {/* Article — 2/3 */}
+            {/* Article - 2/3 */}
             <article className="lg:col-span-2">
               <Link
                 href="/blog"
@@ -109,11 +109,11 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
                   Here are some practical, Sunnah-rooted steps you can implement in your daily life:
                 </p>
                 <ol>
-                  <li>Begin with sincere intention (niyyah) — purify your heart before every action.</li>
-                  <li>Start small and build gradually — the Sunnah emphasises consistency over quantity.</li>
-                  <li>Create a supportive environment — surround yourself with reminders of Allah.</li>
-                  <li>Seek knowledge actively — understanding deepens practice.</li>
-                  <li>Make dua regularly — ask Allah for steadfastness and guidance.</li>
+                  <li>Begin with sincere intention (niyyah) - purify your heart before every action.</li>
+                  <li>Start small and build gradually - the Sunnah emphasises consistency over quantity.</li>
+                  <li>Create a supportive environment - surround yourself with reminders of Allah.</li>
+                  <li>Seek knowledge actively - understanding deepens practice.</li>
+                  <li>Make dua regularly - ask Allah for steadfastness and guidance.</li>
                 </ol>
 
                 <h2 id="community">The Role of Community</h2>
@@ -125,7 +125,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
                 </p>
 
                 <blockquote>
-                  &ldquo;Verily, in the remembrance of Allah do hearts find rest.&rdquo; — Quran 13:28
+                  &ldquo;Verily, in the remembrance of Allah do hearts find rest.&rdquo; - Quran 13:28
                 </blockquote>
 
                 <h2 id="final-thoughts">Final Thoughts</h2>
@@ -168,7 +168,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
               </div>
             </article>
 
-            {/* Sidebar — 1/3 */}
+            {/* Sidebar - 1/3 */}
             <div className="space-y-6">
               <TableOfContents headings={tocHeadings} />
               <BlogSidebar currentSlug={slug} />

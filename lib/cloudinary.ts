@@ -9,7 +9,7 @@ cloudinary.config({
 
 /**
  * Upload a PDF buffer to Cloudinary as a private authenticated asset.
- * Returns the public_id — the raw URL is never exposed to clients.
+ * Returns the public_id - the raw URL is never exposed to clients.
  */
 export async function uploadPdf(buffer: Buffer, slug: string): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -32,7 +32,7 @@ export async function uploadPdf(buffer: Buffer, slug: string): Promise<string> {
 
 /**
  * Upload an image buffer to Cloudinary as a public asset.
- * Returns the secure_url — stored directly in the DB and safe to send to clients.
+ * Returns the secure_url - stored directly in the DB and safe to send to clients.
  */
 export async function uploadImage(buffer: Buffer, folder: 'products' | 'blog' | 'books'): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -56,7 +56,7 @@ export async function uploadImage(buffer: Buffer, folder: 'products' | 'blog' | 
 
 /**
  * Generate a short-lived signed URL for a private PDF asset.
- * Must only be called server-side — never serialise this URL to the client.
+ * Must only be called server-side - never serialise this URL to the client.
  */
 export function signedPdfUrl(publicId: string): string {
   return cloudinary.url(publicId, {

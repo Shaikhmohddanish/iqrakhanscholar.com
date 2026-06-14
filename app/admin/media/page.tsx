@@ -3,7 +3,7 @@ import Link from "next/link"
 import { Upload, Image as ImageIcon, Folder } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Media — Admin",
+  title: "Media - Admin",
   robots: { index: false },
 }
 

@@ -29,7 +29,7 @@ export interface ProductDoc {
   // digital book fields
   author?: string
   pageCount?: number
-  pdfPublicId?: string  // Cloudinary authenticated public_id — server-only, never sent to client
+  pdfPublicId?: string  // Cloudinary authenticated public_id - server-only, never sent to client
   createdAt: Date
   updatedAt: Date
 }
@@ -189,7 +189,7 @@ const SEED_PRODUCTS: Omit<ProductDoc, "_id" | "createdAt" | "updatedAt">[] = [
     reviews: 218,
     shortDescription: "A practical guide to attaining presence and serenity in your prayer.",
     description:
-      "Discover the lost art of khushuʿ — the deep stillness and presence that transforms salah from routine into a living conversation with Allah. Rooted in Quran and Sunnah, this ebook offers gentle, actionable practices to quiet the restless heart and pray with meaning.",
+      "Discover the lost art of khushuʿ - the deep stillness and presence that transforms salah from routine into a living conversation with Allah. Rooted in Quran and Sunnah, this ebook offers gentle, actionable practices to quiet the restless heart and pray with meaning.",
     highlights: [
       "120-page beautifully designed PDF",
       "Instant download to any device",
@@ -234,7 +234,7 @@ const SEED_PRODUCTS: Omit<ProductDoc, "_id" | "createdAt" | "updatedAt">[] = [
     reviews: 312,
     shortDescription: "A curated collection of authentic supplications for every day.",
     description:
-      "A beautifully formatted resource pack of authentic duʿas drawn from the Quran and Sunnah, organised around the rhythms of a modern woman's day — from morning intentions to evening gratitude.",
+      "A beautifully formatted resource pack of authentic duʿas drawn from the Quran and Sunnah, organised around the rhythms of a modern woman's day - from morning intentions to evening gratitude.",
     highlights: [
       "60+ authentic supplications",
       "Arabic, transliteration & translation",
@@ -257,7 +257,7 @@ const SEED_PRODUCTS: Omit<ProductDoc, "_id" | "createdAt" | "updatedAt">[] = [
     reviews: 96,
     shortDescription: "A signed hardcover on reclaiming faith, dignity, and purpose.",
     description:
-      "A heartfelt hardcover exploring what it means to grow into your fullest self as a Muslim woman — anchored in faith, free of comparison, and rooted in purpose. This signed edition includes a personal handwritten note.",
+      "A heartfelt hardcover exploring what it means to grow into your fullest self as a Muslim woman - anchored in faith, free of comparison, and rooted in purpose. This signed edition includes a personal handwritten note.",
     highlights: [
       "Premium hardcover, 240 pages",
       "Personally signed by Iqra Khan",
@@ -302,7 +302,7 @@ const SEED_PRODUCTS: Omit<ProductDoc, "_id" | "createdAt" | "updatedAt">[] = [
     reviews: 88,
     shortDescription: "A daily planner that places salah and intentions at the centre.",
     description:
-      "A thoughtfully designed daily planner that organises your day around your five prayers and spiritual intentions — helping you stay productive without losing sight of what matters most.",
+      "A thoughtfully designed daily planner that organises your day around your five prayers and spiritual intentions - helping you stay productive without losing sight of what matters most.",
     highlights: [
       "Undated 12-month layout",
       "Prayer & habit trackers",

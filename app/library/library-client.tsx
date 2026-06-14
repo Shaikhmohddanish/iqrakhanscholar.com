@@ -80,7 +80,7 @@ export function LibraryClient({
       </div>
 
       {isFiltering ? (
-        /* Search / filter results — infinite grid */
+        /* Search / filter results - infinite grid */
         <div className="mt-8">
           {isLoading ? (
             <GridSkeleton variant="book" count={8} />
@@ -118,7 +118,7 @@ export function LibraryClient({
           </div>
         </div>
       ) : (
-        /* Default — Netflix rows + All books infinite */
+        /* Default - Netflix rows + All books infinite */
         <div className="mt-8 space-y-10">
           <BookSection title="Recently Added" subtitle="Fresh knowledge for your journey">
             {recentlyAdded.map((book) => (

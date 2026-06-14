@@ -163,13 +163,13 @@ export default async function ProductPage({ params }: { params: Params }) {
 
       {/* Product main grid */}
       <div className="mt-6 grid gap-10 lg:grid-cols-2">
-        {/* Left — Gallery */}
+        {/* Left - Gallery */}
         <ProductGallery
           images={product.images.length > 0 ? product.images : [product.image]}
           title={product.title}
         />
 
-        {/* Right — Product info */}
+        {/* Right - Product info */}
         <div>
           <div className="flex items-start justify-between gap-3">
             <div>

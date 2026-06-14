@@ -4,7 +4,7 @@ import { ArticleForm } from "@/components/admin/article-form"
 import { ChevronLeft } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "New Article — Admin",
+  title: "New Article - Admin",
   robots: { index: false },
 }
 

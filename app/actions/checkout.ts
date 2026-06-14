@@ -33,7 +33,7 @@ export async function placeOrderAction(
     return { error: "Your cart is empty." }
   }
 
-  // Re-price against the DB — never trust client-supplied prices.
+  // Re-price against the DB - never trust client-supplied prices.
   const products = await getProductsByIds(cart.items.map((i) => i.productId))
   const byId = new Map(products.map((p) => [p.id, p]))
 

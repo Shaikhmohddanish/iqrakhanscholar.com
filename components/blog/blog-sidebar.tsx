@@ -32,7 +32,7 @@ export function BlogSidebar({ currentSlug }: BlogSidebarProps) {
           </div>
         </div>
         <p className="mt-3 text-sm text-muted-foreground">
-          Sharing authentic Islamic knowledge for the modern Muslim woman — rooted in Quran & Sunnah.
+          Sharing authentic Islamic knowledge for the modern Muslim woman - rooted in Quran & Sunnah.
         </p>
         <Link
           href="/about"

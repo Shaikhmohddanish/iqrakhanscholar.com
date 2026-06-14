@@ -62,7 +62,7 @@ export default function TermsPage() {
 
           <section id="intellectual-property">
             <h2>Intellectual Property</h2>
-            <p>All content on the Platform — including text, graphics, logos, images, digital products, and course materials — is owned by Iqra Khan and protected by copyright law. Unauthorised reproduction is strictly prohibited.</p>
+            <p>All content on the Platform - including text, graphics, logos, images, digital products, and course materials - is owned by Iqra Khan and protected by copyright law. Unauthorised reproduction is strictly prohibited.</p>
           </section>
 
           <section id="prohibited">

@@ -48,7 +48,7 @@ export function StoreHeader() {
         <div className="relative mx-auto flex h-16 max-w-7xl items-center px-4 sm:px-6 lg:px-8">
           {/* ── Left: Hamburger + Search (mobile) / Logo (desktop) ── */}
           <div className="flex items-center gap-1 lg:gap-2">
-            {/* Hamburger — mobile only */}
+            {/* Hamburger - mobile only */}
             <button
               type="button"
               onClick={() => setDrawerOpen(true)}
@@ -58,7 +58,7 @@ export function StoreHeader() {
               <Menu className="size-5" />
             </button>
 
-            {/* Search — mobile only */}
+            {/* Search - mobile only */}
             <button
               type="button"
               onClick={() => setSearchOpen((v) => !v)}
@@ -68,7 +68,7 @@ export function StoreHeader() {
               <Search className="size-5" />
             </button>
 
-            {/* Logo — desktop (left-aligned) */}
+            {/* Logo - desktop (left-aligned) */}
             <Link href="/" className="hidden items-center gap-2 sm:flex">
               <span className="flex size-9 items-center justify-center rounded-full bg-primary font-heading text-base font-bold text-primary-foreground">
                 IK
@@ -110,7 +110,7 @@ export function StoreHeader() {
 
           {/* ── Right: User + Cart (mobile) / Account + Cart (desktop) ── */}
           <div className="ml-auto flex items-center gap-1">
-            {/* Account — desktop only */}
+            {/* Account - desktop only */}
             <Link
               href="/account"
               className="hidden rounded-full px-4 py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-primary sm:inline-flex"
@@ -118,7 +118,7 @@ export function StoreHeader() {
               Account
             </Link>
 
-            {/* User icon — mobile only */}
+            {/* User icon - mobile only */}
             <Link
               href="/account"
               className="inline-flex size-10 items-center justify-center rounded-md text-foreground/80 transition-colors hover:text-foreground sm:hidden"

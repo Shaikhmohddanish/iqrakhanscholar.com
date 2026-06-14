@@ -3,7 +3,7 @@ import { getAllProductsAdmin } from "@/lib/products-admin"
 import { ProductTable } from "@/components/admin/product-table"
 
 export const metadata: Metadata = {
-  title: "Products — Admin",
+  title: "Products - Admin",
   robots: { index: false },
 }
 

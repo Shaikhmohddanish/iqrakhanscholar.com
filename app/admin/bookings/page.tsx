@@ -3,7 +3,7 @@ import { getAllBookings, getAvailability } from "@/lib/bookings"
 import { AdminBookingsClient } from "./admin-bookings-client"
 
 export const metadata: Metadata = {
-  title: "Bookings — Admin",
+  title: "Bookings - Admin",
   robots: { index: false },
 }
 

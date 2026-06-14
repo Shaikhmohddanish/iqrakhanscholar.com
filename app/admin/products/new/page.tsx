@@ -4,7 +4,7 @@ import { ProductForm } from "@/components/admin/product-form"
 import { ChevronLeft } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "New Product — Admin",
+  title: "New Product - Admin",
   robots: { index: false },
 }
 

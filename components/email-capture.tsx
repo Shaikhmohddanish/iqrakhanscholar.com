@@ -28,7 +28,7 @@ export function EmailCapture() {
               </h2>
               <p className="mt-4 text-pretty leading-relaxed text-muted-foreground">
                 A beautifully designed 30-page guide with daily habits, duas,
-                and reflections to help you grow closer to Allah — yours
+                and reflections to help you grow closer to Allah - yours
                 completely free.
               </p>
               <ul className="mt-6 space-y-2.5">

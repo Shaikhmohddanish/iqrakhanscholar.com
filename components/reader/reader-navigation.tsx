@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import { useReader } from '@/lib/reader-store'
 
-// Renders nothing — attaches keyboard listeners for page navigation and reader controls.
+// Renders nothing - attaches keyboard listeners for page navigation and reader controls.
 export function ReaderNavigation() {
   const { state, dispatch } = useReader()
 

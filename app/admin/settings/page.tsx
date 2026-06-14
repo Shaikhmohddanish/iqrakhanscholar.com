@@ -3,7 +3,7 @@ import Link from "next/link"
 import { Settings, Globe, CreditCard, Mail, Image, CalendarClock, Users } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Settings — Admin",
+  title: "Settings - Admin",
   robots: { index: false },
 }
 

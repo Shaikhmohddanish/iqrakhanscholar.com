@@ -136,7 +136,7 @@ const saveProgressToDb = debounce((bookId: string, currentPage: number, totalPag
 export function ReaderProvider({ children, bookId }: { children: ReactNode; bookId: string }) {
   const [state, dispatch] = useReducer(reducer, defaultState)
 
-  // Restore last read page — try localStorage first, then DB
+  // Restore last read page - try localStorage first, then DB
   useEffect(() => {
     const savedPage = localStorage.getItem(`reader:${bookId}:page`)
     if (savedPage) {
@@ -170,7 +170,7 @@ export function ReaderProvider({ children, bookId }: { children: ReactNode; book
       .catch(() => {})
   }, [bookId]) // runs once on mount
 
-  // Persist current page — localStorage (instant) + DB (debounced)
+  // Persist current page - localStorage (instant) + DB (debounced)
   useEffect(() => {
     if (state.totalPages > 0) {
       localStorage.setItem(`reader:${bookId}:page`, String(state.currentPage))
@@ -178,7 +178,7 @@ export function ReaderProvider({ children, bookId }: { children: ReactNode; book
     }
   }, [state.currentPage, state.totalPages, bookId])
 
-  // Persist bookmarks — localStorage (instant) + DB
+  // Persist bookmarks - localStorage (instant) + DB
   useEffect(() => {
     localStorage.setItem(`reader:${bookId}:bookmarks`, JSON.stringify(state.bookmarks))
   }, [state.bookmarks, bookId])

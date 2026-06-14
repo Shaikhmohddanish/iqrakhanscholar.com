@@ -130,7 +130,7 @@ export async function seedArticles(): Promise<{ seeded: number }> {
       title: "The Power of Istighfar: How Seeking Forgiveness Transforms Your Heart",
       slug: "power-of-istighfar",
       excerpt: "Discover how the simple act of seeking Allah's forgiveness can transform your heart and open doors you never imagined.",
-      content: "<p>Istighfar — seeking forgiveness from Allah — is one of the most powerful acts of worship a Muslim can engage in...</p>",
+      content: "<p>Istighfar - seeking forgiveness from Allah - is one of the most powerful acts of worship a Muslim can engage in...</p>",
       coverImage: "/placeholder.svg",
       category: "Spirituality",
       tags: ["istighfar", "tawbah", "heart", "worship"],

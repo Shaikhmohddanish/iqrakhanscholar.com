@@ -55,7 +55,7 @@ export async function confirmPaymentAction(bookingId: string) {
   const user = await requireUser()
   if (!user) return { error: "Unauthorized" }
 
-  // Mock payment — mark as paid and confirmed
+  // Mock payment - mark as paid and confirmed
   const { updateBookingStatus } = await import("@/lib/bookings")
   const { getDb } = await import("@/lib/mongodb")
   const { ObjectId } = await import("mongodb")

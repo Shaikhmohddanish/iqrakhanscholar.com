@@ -69,7 +69,7 @@ export async function getOrderById(id: string, userId: string): Promise<PublicOr
   return doc ? toPublicOrder(doc) : null
 }
 
-// Returns the set of product ids the user has purchased (paid) — used by the digital library.
+// Returns the set of product ids the user has purchased (paid) - used by the digital library.
 export async function getPurchasedProductIds(userId: string): Promise<string[]> {
   const col = await ordersCol()
   const docs = await col.find({ userId, paymentStatus: "paid" }).project({ items: 1 }).toArray()
@@ -82,7 +82,7 @@ export async function getPurchasedProductIds(userId: string): Promise<string[]> 
   return [...ids]
 }
 
-// Returns the set of product slugs the user has purchased — used by the PDF reader.
+// Returns the set of product slugs the user has purchased - used by the PDF reader.
 export async function getPurchasedProductSlugs(userId: string): Promise<string[]> {
   const col = await ordersCol()
   const docs = await col.find({ userId, paymentStatus: "paid" }).project({ items: 1 }).toArray()

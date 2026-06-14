@@ -17,9 +17,9 @@ import {
 export const metadata: Metadata = {
   title: 'About Iqra Khan',
   description:
-    'Learn about Iqra Khan — an Islamic scholar, educator, and mentor dedicated to empowering Muslim women through authentic Quran & Sunnah knowledge.',
+    'Learn about Iqra Khan - an Islamic scholar, educator, and mentor dedicated to empowering Muslim women through authentic Quran & Sunnah knowledge.',
   openGraph: {
-    title: 'About Iqra Khan — Islamic Scholar & Educator',
+    title: 'About Iqra Khan - Islamic Scholar & Educator',
     description:
       'Discover the journey, mission, and qualifications of Iqra Khan.',
   },
@@ -101,7 +101,7 @@ export default function AboutPage() {
                 </div>
               </div>
 
-              {/* Image placeholder — geometric pattern */}
+              {/* Image placeholder - geometric pattern */}
               <div className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-3xl bg-arabesque">
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center">
@@ -212,7 +212,7 @@ export default function AboutPage() {
             <blockquote className="mt-6 font-heading text-2xl font-semibold leading-relaxed text-primary-foreground sm:text-3xl">
               &ldquo;The best of you are those who learn the Quran and teach it.&rdquo;
             </blockquote>
-            <p className="mt-4 text-sm text-primary-foreground/70">— Prophet Muhammad ﷺ</p>
+            <p className="mt-4 text-sm text-primary-foreground/70">- Prophet Muhammad ﷺ</p>
             <div className="mt-10 flex flex-wrap justify-center gap-4">
               <Link
                 href="/consultation"

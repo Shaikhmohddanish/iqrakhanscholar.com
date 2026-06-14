@@ -52,7 +52,7 @@ export function PriceRangeFilter({
     <div className={cn('space-y-3', className)}>
       <div className="flex items-center justify-between text-sm">
         <span className="font-medium text-foreground">{formatCents(localValue[0], currency)}</span>
-        <span className="text-muted-foreground">—</span>
+        <span className="text-muted-foreground">-</span>
         <span className="font-medium text-foreground">{formatCents(localValue[1], currency)}</span>
       </div>
 

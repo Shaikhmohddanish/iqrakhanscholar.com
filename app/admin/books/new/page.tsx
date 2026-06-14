@@ -4,7 +4,7 @@ import { BookForm } from "@/components/admin/book-form"
 import { ChevronLeft } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "New Book — Admin",
+  title: "New Book - Admin",
   robots: { index: false },
 }
 

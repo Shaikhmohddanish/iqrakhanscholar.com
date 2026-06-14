@@ -6,7 +6,7 @@ import { Document, Page, pdfjs } from 'react-pdf'
 import { useReader } from '@/lib/reader-store'
 import { ReadingStats } from './reading-stats'
 
-// Use CDN worker — avoids webpack bundling issues in Next.js
+// Use CDN worker - avoids webpack bundling issues in Next.js
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
 const pageBg: Record<string, string> = {
@@ -88,7 +88,7 @@ export function ReaderContent({ bookId, userEmail }: ReaderContentProps) {
             />
           </Document>
 
-          {/* Watermark overlay — user email, subtle, prevents screenshot-to-text */}
+          {/* Watermark overlay - user email, subtle, prevents screenshot-to-text */}
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 flex items-end justify-end p-4 text-right text-[10px] font-mono opacity-10 select-none"

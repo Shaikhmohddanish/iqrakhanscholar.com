@@ -134,7 +134,7 @@ export function DataTable<T extends Record<string, unknown>>({
         )}
       </div>
 
-      {/* Table — desktop */}
+      {/* Table - desktop */}
       <div className="hidden overflow-hidden rounded-xl border border-border md:block">
         <table className="w-full text-sm">
           <thead>
@@ -189,7 +189,7 @@ export function DataTable<T extends Record<string, unknown>>({
         </table>
       </div>
 
-      {/* Card view — mobile */}
+      {/* Card view - mobile */}
       <div className="space-y-3 md:hidden">
         {paginated.length === 0 ? (
           <p className="py-12 text-center text-sm text-muted-foreground">{emptyMessage}</p>

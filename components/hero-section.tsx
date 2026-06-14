@@ -31,7 +31,7 @@ export function HeroSection({ videoSrc }: HeroSectionProps = {}) {
         </>
       )}
 
-      {/* Decorative blobs + pattern — skipped when a video carries the visual interest
+      {/* Decorative blobs + pattern - skipped when a video carries the visual interest
           (they're barely visible over video and add costly per-frame compositing). */}
       {!videoSrc && (
         <>
@@ -86,7 +86,7 @@ export function HeroSection({ videoSrc }: HeroSectionProps = {}) {
           <p
             className="mt-6 text-pretty text-lg leading-relaxed text-muted-foreground animate-fade-in-up animate-delay-300"
           >
-            Learn. Grow. Transform your life through Quran &amp; Sunnah — with
+            Learn. Grow. Transform your life through Quran &amp; Sunnah - with
             trusted books, guided resources, and personal mentorship rooted in
             timeless wisdom.
           </p>

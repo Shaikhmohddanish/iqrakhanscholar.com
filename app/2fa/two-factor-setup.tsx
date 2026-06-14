@@ -67,7 +67,7 @@ export function TwoFactorSetup() {
           </div>
         </div>
         <button type="button" onClick={() => setStep("verify")} className="h-11 w-full rounded-full bg-primary text-sm font-medium text-primary-foreground hover:bg-primary/90">
-          I have scanned it — continue
+          I have scanned it - continue
         </button>
       </div>
     )

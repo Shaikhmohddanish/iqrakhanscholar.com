@@ -9,7 +9,7 @@ import { BlogListClient } from '@/components/blog/blog-list-client'
 import { blogPosts } from '@/lib/site-data'
 
 export const metadata: Metadata = {
-  title: 'Blog — Knowledge Hub',
+  title: 'Blog - Knowledge Hub',
   description:
     'Explore Islamic articles, guides, and reflections on worship, parenting, faith, and more by Iqra Khan.',
 }
@@ -39,7 +39,7 @@ export default function BlogPage() {
             </p>
           </div>
 
-          {/* Featured article — server-rendered */}
+          {/* Featured article - server-rendered */}
           {featured && (
             <Link
               href={`/blog/${toSlug(featured.title)}`}

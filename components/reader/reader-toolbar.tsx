@@ -107,7 +107,7 @@ export function ReaderToolbar({ bookTitle, bookAuthor, bookId }: ReaderToolbarPr
             aria-label="Current page"
             className="w-12 rounded border border-current/20 bg-transparent px-1 py-0.5 text-center text-sm focus:outline-none focus:ring-1 focus:ring-current/40"
           />
-          <span className="text-xs opacity-50">/ {state.totalPages || '—'}</span>
+          <span className="text-xs opacity-50">/ {state.totalPages || '-'}</span>
         </form>
 
         <button

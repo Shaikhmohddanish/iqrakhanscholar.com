@@ -24,7 +24,7 @@ export default async function ReaderPage({
   const product = await getProductBySlug(slug)
   if (!product || product.type !== "digital") notFound()
 
-  // Entitlement check — never render the reader unless the user paid for it.
+  // Entitlement check - never render the reader unless the user paid for it.
   const purchasedIds = await getPurchasedProductIds(user.id)
   const owns = purchasedIds.includes(product.id)
 

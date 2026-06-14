@@ -1,6 +1,6 @@
-# Complete SaaS Application — Production UI Implementation
+# Complete SaaS Application - Production UI Implementation
 
-Build every production-ready screen for **Iqra Khan** — an Islamic brand SaaS combining ecommerce, digital library, PDF book reader, booking system, and admin panel.
+Build every production-ready screen for **Iqra Khan** - an Islamic brand SaaS combining ecommerce, digital library, PDF book reader, booking system, and admin panel.
 
 ## Existing Stack (No Changes)
 
@@ -23,9 +23,9 @@ Build every production-ready screen for **Iqra Khan** — an Islamic brand SaaS 
 | # | Question | Answer |
 |---|----------|--------|
 | 1 | Admin auth | Same auth system with role-based guards |
-| 2 | Book format | **PDF files** — rendered in-browser after login + purchase. No download, no export |
-| 3 | Payment | **Razorpay** — mocked for now, full UI ready |
-| 4 | Booking calendar | **Real availability from DB** — schema + UI for live slots |
+| 2 | Book format | **PDF files** - rendered in-browser after login + purchase. No download, no export |
+| 3 | Payment | **Razorpay** - mocked for now, full UI ready |
+| 4 | Booking calendar | **Real availability from DB** - schema + UI for live slots |
 
 ---
 
@@ -50,7 +50,7 @@ Build every production-ready screen for **Iqra Khan** — an Islamic brand SaaS 
 
 > [!WARNING]
 > ### Fix 3: Footer Navigation
-> **Problem:** Footer links use `#` anchors — they don't work when navigating from other pages.
+> **Problem:** Footer links use `#` anchors - they don't work when navigating from other pages.
 >
 > **Solution:** Update all footer links to use proper route paths (`/about`, `/library`, `/store`, `/blog`, `/consultation`, `/contact`, `/privacy`, `/refund-policy`, `/terms`).
 
@@ -73,13 +73,13 @@ Build every production-ready screen for **Iqra Khan** — an Islamic brand SaaS 
 - Reduced motion support via `prefers-reduced-motion`
 
 ### GDPR / EU ePrivacy Compliance
-- **Cookie consent banner** — shown on first visit, blocks non-essential cookies until consent
+- **Cookie consent banner** - shown on first visit, blocks non-essential cookies until consent
 - **Privacy policy** page with full GDPR Article 13/14 disclosures
 - **Data controller** contact information
-- **Right to erasure** — account deletion option in settings
-- **Data export** — download personal data option
-- **Cookie policy** — separate or within privacy policy
-- **Consent logging** — store consent timestamp and choices
+- **Right to erasure** - account deletion option in settings
+- **Data export** - download personal data option
+- **Cookie policy** - separate or within privacy policy
+- **Consent logging** - store consent timestamp and choices
 
 ### SEO Standards
 - Unique `<title>` and `<meta description>` per page
@@ -106,7 +106,7 @@ Build every production-ready screen for **Iqra Khan** — an Islamic brand SaaS 
 
 ---
 
-## Phase 1 — Design System Foundation + Critical UX Fixes
+## Phase 1 - Design System Foundation + Critical UX Fixes
 
 ### Unified Header System
 
@@ -242,7 +242,7 @@ Accessibility skip link
 
 ---
 
-## Phase 2 — Public Website Pages
+## Phase 2 - Public Website Pages
 
 All pages use `SmartHeader` + `SiteFooter`. Breadcrumbs on every non-home page.
 
@@ -264,9 +264,9 @@ All pages use `SmartHeader` + `SiteFooter`. Breadcrumbs on every non-home page.
 
 ### Blog Pages
 
-#### [NEW] `app/blog/page.tsx` — Blog list with category tabs, search, featured article, grid, pagination, sidebar
+#### [NEW] `app/blog/page.tsx` - Blog list with category tabs, search, featured article, grid, pagination, sidebar
 #### [NEW] `app/blog/loading.tsx`
-#### [NEW] `app/blog/[slug]/page.tsx` — Article detail with TOC, author card, share, related articles, JSON-LD Article
+#### [NEW] `app/blog/[slug]/page.tsx` - Article detail with TOC, author card, share, related articles, JSON-LD Article
 #### [NEW] `app/blog/[slug]/loading.tsx`
 #### [NEW] `components/blog/article-card.tsx`
 #### [NEW] `components/blog/blog-sidebar.tsx`
@@ -304,8 +304,8 @@ All pages use `SmartHeader` + `SiteFooter`. Breadcrumbs on every non-home page.
 
 ### Legal Pages (GDPR Compliant)
 
-#### [NEW] `app/faq/page.tsx` — Categorized accordion + JSON-LD FAQPage
-#### [NEW] `app/privacy/page.tsx` — Full GDPR privacy policy with:
+#### [NEW] `app/faq/page.tsx` - Categorized accordion + JSON-LD FAQPage
+#### [NEW] `app/privacy/page.tsx` - Full GDPR privacy policy with:
   - Data controller identity
   - Types of data collected
   - Purpose of processing
@@ -316,8 +316,8 @@ All pages use `SmartHeader` + `SiteFooter`. Breadcrumbs on every non-home page.
   - User rights (access, rectification, erasure, portability, objection)
   - Contact for data protection
 #### [NEW] `app/refund-policy/page.tsx`
-#### [NEW] `app/terms/page.tsx` — Terms of Service
-#### [NEW] `app/cookie-policy/page.tsx` — Dedicated cookie policy
+#### [NEW] `app/terms/page.tsx` - Terms of Service
+#### [NEW] `app/cookie-policy/page.tsx` - Dedicated cookie policy
 
 #### [NEW] `components/legal/legal-page-layout.tsx`
 Shared layout with sidebar table of contents
@@ -334,7 +334,7 @@ Shared layout with sidebar table of contents
 
 ---
 
-## Phase 3 — Store & Product Detail
+## Phase 3 - Store & Product Detail
 
 ### Store Page (Complete Redesign)
 
@@ -357,8 +357,8 @@ Shared layout with sidebar table of contents
 - Hover image scale + quick actions overlay
 - Wishlist heart, quick view, sale price, stock badge, rating
 
-#### [NEW] `components/store/store-sidebar.tsx` — Desktop sticky filter sidebar
-#### [NEW] `components/store/filter-drawer.tsx` — Mobile filter drawer
+#### [NEW] `components/store/store-sidebar.tsx` - Desktop sticky filter sidebar
+#### [NEW] `components/store/filter-drawer.tsx` - Mobile filter drawer
 #### [NEW] `components/store/quick-view-modal.tsx`
 #### [NEW] `components/store/product-grid-toggle.tsx`
 #### [NEW] `components/store/recently-viewed.tsx`
@@ -393,7 +393,7 @@ Shared layout with sidebar table of contents
 
 ---
 
-## Phase 4 — Digital Library & Book Detail
+## Phase 4 - Digital Library & Book Detail
 
 ### Digital Library (Netflix-Style)
 
@@ -438,15 +438,15 @@ Shared layout with sidebar table of contents
 
 ---
 
-## Phase 5 — PDF Book Reader (Kindle-Style)
+## Phase 5 - PDF Book Reader (Kindle-Style)
 
 > [!IMPORTANT]
-> Books are **PDF files**. The reader renders PDFs in-browser using a canvas-based PDF renderer (pdf.js or similar). **No download button, no export, no right-click save.** The PDF URL is never exposed to the client — it's proxied through an API route that verifies purchase.
+> Books are **PDF files**. The reader renders PDFs in-browser using a canvas-based PDF renderer (pdf.js or similar). **No download button, no export, no right-click save.** The PDF URL is never exposed to the client - it's proxied through an API route that verifies purchase.
 
 ### Reader Implementation
 
 #### [NEW] `app/reader/[bookId]/page.tsx`
-Client-side reader shell — full immersive experience, no site header/footer
+Client-side reader shell - full immersive experience, no site header/footer
 
 #### [NEW] `app/reader/[bookId]/layout.tsx`
 Minimal layout (no chrome)
@@ -502,7 +502,7 @@ Client-side state: current page, zoom, settings, bookmarks (synced to DB)
 
 ---
 
-## Phase 6 — Auth Pages Enhancement
+## Phase 6 - Auth Pages Enhancement
 
 #### [MODIFY] [auth-shell.tsx](file:///Users/admin/Documents/Danish%20work/Islamic-brand-website/components/auth/auth-shell.tsx)
 - Split layout: left side = form, right side = testimonial carousel + Islamic geometric pattern
@@ -520,15 +520,15 @@ Client-side state: current page, zoom, settings, bookmarks (synced to DB)
 - Terms acceptance checkbox (required, links to /terms and /privacy)
 - GDPR consent checkbox
 
-#### [NEW] `app/2fa/page.tsx` — 2FA setup with QR placeholder + backup codes + OTP input
-#### [NEW] `app/account-recovery/page.tsx` — Multi-step recovery wizard
+#### [NEW] `app/2fa/page.tsx` - 2FA setup with QR placeholder + backup codes + OTP input
+#### [NEW] `app/account-recovery/page.tsx` - Multi-step recovery wizard
 #### [NEW] `components/auth/social-login-buttons.tsx`
 #### [NEW] `components/auth/password-strength.tsx`
 #### [NEW] `components/auth/otp-input.tsx`
 
 ---
 
-## Phase 7 — Customer Dashboard
+## Phase 7 - Customer Dashboard
 
 All dashboard pages use `SmartHeader` (full website nav) + account sidebar.
 
@@ -600,7 +600,7 @@ All dashboard pages use `SmartHeader` (full website nav) + account sidebar.
 Multi-step booking wizard + my bookings list:
 
 **Step 1:** Select session type (cards with pricing)
-**Step 2:** Choose date (calendar — **real availability from DB**)
+**Step 2:** Choose date (calendar - **real availability from DB**)
 **Step 3:** Choose time slot (**real available slots from DB**)
 **Step 4:** Fill details (name, topic, notes)
 **Step 5:** Payment summary (Razorpay mock)
@@ -614,7 +614,7 @@ Plus: My bookings list (upcoming/past), reschedule, cancel
 #### [NEW] `components/account/date-picker-step.tsx`
 #### [NEW] `components/account/time-slot-picker.tsx`
 #### [NEW] `components/account/booking-details-form.tsx`
-#### [NEW] `components/account/booking-payment-step.tsx` — Razorpay mock UI
+#### [NEW] `components/account/booking-payment-step.tsx` - Razorpay mock UI
 #### [NEW] `components/account/booking-confirmation.tsx`
 #### [NEW] `components/account/my-bookings-list.tsx`
 
@@ -664,11 +664,11 @@ Tabbed: Profile, Addresses, Security, Preferences
 #### [NEW] `components/account/address-form.tsx`
 #### [NEW] `components/account/security-settings.tsx`
 #### [NEW] `components/account/notification-preferences.tsx`
-#### [NEW] `components/account/data-privacy-section.tsx` — GDPR rights (delete account, export data)
+#### [NEW] `components/account/data-privacy-section.tsx` - GDPR rights (delete account, export data)
 
 ---
 
-## Phase 8 — Admin Panel
+## Phase 8 - Admin Panel
 
 Separate admin experience at `/admin`. Uses SmartHeader variant with admin branding.
 
@@ -682,7 +682,7 @@ Separate admin experience at `/admin`. Uses SmartHeader variant with admin brand
 
 #### [NEW] `components/admin/admin-sidebar.tsx`
 #### [NEW] `components/admin/admin-header.tsx`
-#### [NEW] `components/admin/admin-search.tsx` — Global search modal
+#### [NEW] `components/admin/admin-search.tsx` - Global search modal
 
 ---
 
@@ -704,11 +704,11 @@ Separate admin experience at `/admin`. Uses SmartHeader variant with admin brand
 
 ### Product Management
 
-#### [NEW] `app/admin/products/page.tsx` — Data table
-#### [NEW] `app/admin/products/new/page.tsx` — Create form
-#### [NEW] `app/admin/products/[id]/page.tsx` — Edit form
+#### [NEW] `app/admin/products/page.tsx` - Data table
+#### [NEW] `app/admin/products/new/page.tsx` - Create form
+#### [NEW] `app/admin/products/[id]/page.tsx` - Edit form
 #### [NEW] `app/admin/products/loading.tsx`
-#### [NEW] `components/admin/product-form.tsx` — Full form (title, description, price, images, category, variants, inventory, SEO)
+#### [NEW] `components/admin/product-form.tsx` - Full form (title, description, price, images, category, variants, inventory, SEO)
 #### [NEW] `components/admin/product-table.tsx`
 #### [NEW] `components/admin/media-upload-zone.tsx`
 #### [NEW] `components/admin/product-variant-builder.tsx`
@@ -720,18 +720,18 @@ Separate admin experience at `/admin`. Uses SmartHeader variant with admin brand
 
 ### Digital Book Management
 
-#### [NEW] `app/admin/books/page.tsx` — Books list
-#### [NEW] `app/admin/books/new/page.tsx` — Create book
-#### [NEW] `app/admin/books/[id]/page.tsx` — Edit book
-#### [NEW] `app/admin/books/[id]/chapters/page.tsx` — Chapter/page builder
+#### [NEW] `app/admin/books/page.tsx` - Books list
+#### [NEW] `app/admin/books/new/page.tsx` - Create book
+#### [NEW] `app/admin/books/[id]/page.tsx` - Edit book
+#### [NEW] `app/admin/books/[id]/chapters/page.tsx` - Chapter/page builder
 #### [NEW] `app/admin/books/loading.tsx`
 #### [NEW] `components/admin/book-form.tsx`
 #### [NEW] `components/admin/book-table.tsx`
-#### [NEW] `components/admin/chapter-builder.tsx` — CMS-style: create/reorder chapters, create/reorder pages, draft/publish, auto-save
-#### [NEW] `components/admin/page-editor.tsx` — Rich text page content
-#### [NEW] `components/admin/book-analytics.tsx` — Readers, progress, completion
+#### [NEW] `components/admin/chapter-builder.tsx` - CMS-style: create/reorder chapters, create/reorder pages, draft/publish, auto-save
+#### [NEW] `components/admin/page-editor.tsx` - Rich text page content
+#### [NEW] `components/admin/book-analytics.tsx` - Readers, progress, completion
 #### [NEW] `components/admin/purchasers-list.tsx`
-#### [NEW] `components/admin/pdf-upload.tsx` — PDF file upload for book content
+#### [NEW] `components/admin/pdf-upload.tsx` - PDF file upload for book content
 
 ---
 
@@ -750,14 +750,14 @@ Separate admin experience at `/admin`. Uses SmartHeader variant with admin brand
 
 ### Booking Management
 
-#### [NEW] `app/admin/bookings/page.tsx` — Calendar + table
+#### [NEW] `app/admin/bookings/page.tsx` - Calendar + table
 #### [NEW] `app/admin/bookings/[id]/page.tsx`
 #### [NEW] `app/admin/bookings/loading.tsx`
-#### [NEW] `components/admin/booking-calendar.tsx` — Monthly/weekly view with slots
+#### [NEW] `components/admin/booking-calendar.tsx` - Monthly/weekly view with slots
 #### [NEW] `components/admin/booking-table.tsx`
 #### [NEW] `components/admin/booking-detail.tsx`
 #### [NEW] `components/admin/booking-approval.tsx`
-#### [NEW] `components/admin/availability-manager.tsx` — Set available dates/times in DB
+#### [NEW] `components/admin/availability-manager.tsx` - Set available dates/times in DB
 
 ---
 
@@ -767,7 +767,7 @@ Separate admin experience at `/admin`. Uses SmartHeader variant with admin brand
 #### [NEW] `app/admin/blog/new/page.tsx`
 #### [NEW] `app/admin/blog/[id]/page.tsx`
 #### [NEW] `app/admin/blog/loading.tsx`
-#### [NEW] `components/admin/article-form.tsx` — Rich text, categories, tags, SEO, draft/publish
+#### [NEW] `components/admin/article-form.tsx` - Rich text, categories, tags, SEO, draft/publish
 #### [NEW] `components/admin/article-table.tsx`
 #### [NEW] `components/admin/category-manager.tsx`
 #### [NEW] `components/admin/tag-manager.tsx`
@@ -791,13 +791,13 @@ Separate admin experience at `/admin`. Uses SmartHeader variant with admin brand
 
 ### Settings Module
 
-#### [NEW] `app/admin/settings/page.tsx` — Tabbed settings
+#### [NEW] `app/admin/settings/page.tsx` - Tabbed settings
 #### [NEW] `components/admin/settings-general.tsx`
 #### [NEW] `components/admin/settings-seo.tsx`
-#### [NEW] `components/admin/settings-payment.tsx` — Razorpay keys config
+#### [NEW] `components/admin/settings-payment.tsx` - Razorpay keys config
 #### [NEW] `components/admin/settings-email.tsx`
 #### [NEW] `components/admin/settings-cloudinary.tsx`
-#### [NEW] `components/admin/settings-booking.tsx` — Session durations, buffer, max/day
+#### [NEW] `components/admin/settings-booking.tsx` - Session durations, buffer, max/day
 #### [NEW] `components/admin/settings-users.tsx`
 #### [NEW] `components/admin/settings-roles.tsx`
 

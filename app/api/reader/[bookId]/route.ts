@@ -42,7 +42,7 @@ export async function GET(
     }
   }
 
-  // 4. Serve PDF — never expose the Cloudinary URL to the client
+  // 4. Serve PDF - never expose the Cloudinary URL to the client
   if (!product.pdfPublicId) {
     return NextResponse.json(
       { error: "PDF not yet available for this book" },

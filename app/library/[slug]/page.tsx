@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const product = await getProductBySlug(slug)
   if (!product || product.type !== 'digital') return { title: 'Book not found' }
   return {
-    title: `${product.title} — Digital Library`,
+    title: `${product.title} - Digital Library`,
     description: product.description,
     alternates: { canonical: `/library/${product.slug}` },
   }

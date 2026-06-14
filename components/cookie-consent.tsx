@@ -148,7 +148,7 @@ export function CookieConsent() {
             </div>
 
             <div className="mt-4 space-y-3">
-              {/* Necessary — always on */}
+              {/* Necessary - always on */}
               <label className="flex items-center justify-between rounded-lg border border-border p-3">
                 <div>
                   <p className="text-sm font-medium text-foreground">Necessary</p>
