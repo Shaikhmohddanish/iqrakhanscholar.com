@@ -1,16 +1,17 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata } from 'next'
-import { Inter, Playfair_Display, Geist_Mono } from 'next/font/google'
+import { Jost, Playfair_Display, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import { readCart } from '@/lib/cart'
 import { CartProvider } from '@/components/cart/cart-provider'
 import { CookieConsent } from '@/components/cookie-consent'
 import { ThemeProvider } from '@/components/theme-provider'
 
-const inter = Inter({
-  variable: '--font-inter',
+const jost = Jost({
+  variable: '--font-jost',
   subsets: ['latin'],
   display: 'swap',
+  weight: ['300', '400', '500', '600', '700'],
 })
 
 const playfair = Playfair_Display({
@@ -78,13 +79,13 @@ export default async function RootLayout({
       lang="en"
       data-scroll-behavior="smooth"
       suppressHydrationWarning
-      className={`${inter.variable} ${playfair.variable} ${geistMono.variable}`}
+      className={`${jost.variable} ${playfair.variable} ${geistMono.variable}`}
     >
       <body className="font-sans antialiased">
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="light"
+          enableSystem={false}
           disableTransitionOnChange
         >
           <CartProvider initialItems={cart.items}>

@@ -157,7 +157,7 @@ export function CookieConsent() {
                 <div className="relative">
                   <input type="checkbox" checked disabled className="peer sr-only" />
                   <div className="h-6 w-10 rounded-full bg-primary" />
-                  <div className="absolute left-[18px] top-[2px] size-5 rounded-full bg-white shadow" />
+                  <div className="absolute left-[18px] top-[2px] size-5 rounded-full bg-background shadow" />
                 </div>
               </label>
 
@@ -175,7 +175,7 @@ export function CookieConsent() {
                     className="peer sr-only"
                   />
                   <div className={`h-6 w-10 rounded-full transition-colors ${analytics ? 'bg-primary' : 'bg-border'}`} />
-                  <div className={`absolute top-[2px] size-5 rounded-full bg-white shadow transition-transform ${analytics ? 'left-[18px]' : 'left-[2px]'}`} />
+                  <div className={`absolute top-[2px] size-5 rounded-full bg-background shadow transition-transform ${analytics ? 'left-[18px]' : 'left-[2px]'}`} />
                 </div>
               </label>
 
@@ -193,7 +193,7 @@ export function CookieConsent() {
                     className="peer sr-only"
                   />
                   <div className={`h-6 w-10 rounded-full transition-colors ${marketing ? 'bg-primary' : 'bg-border'}`} />
-                  <div className={`absolute top-[2px] size-5 rounded-full bg-white shadow transition-transform ${marketing ? 'left-[18px]' : 'left-[2px]'}`} />
+                  <div className={`absolute top-[2px] size-5 rounded-full bg-background shadow transition-transform ${marketing ? 'left-[18px]' : 'left-[2px]'}`} />
                 </div>
               </label>
             </div>
