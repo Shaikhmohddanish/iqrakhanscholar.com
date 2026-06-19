@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import Image from "next/image"
-import { getCurrentUser } from "@/lib/session"
+import { getCurrentUser, isUserVerified } from "@/lib/session"
 import { getOrdersByUser, getPurchasedProductIds } from "@/lib/orders"
 import { getBookingsByUser } from "@/lib/bookings"
 import { getWishlist } from "@/lib/wishlist"
@@ -11,11 +11,11 @@ import { listNotifications } from "@/lib/notifications"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { VerifyEmailBanner } from "@/components/account/verify-email-banner"
 import {
   BookMarked,
   ShoppingBag,
   CalendarClock,
-  MailWarning,
   TriangleAlert,
   ArrowRight,
   Heart,
@@ -42,6 +42,9 @@ export default async function AccountOverviewPage({
 }) {
   const [user, params] = await Promise.all([getCurrentUser(), searchParams])
   if (!user) return null
+
+  // Claim can be stale right after verifying; confirm against the DB.
+  const emailVerified = user.emailVerified || (await isUserVerified(user.id))
 
   const [orders, purchasedIds, bookings, wishlistIds, allProgress] = await Promise.all([
     getOrdersByUser(user.id),
@@ -90,15 +93,7 @@ export default async function AccountOverviewPage({
           <AlertDescription>You don&apos;t have permission to view that area.</AlertDescription>
         </Alert>
       )}
-      {!user.emailVerified && (
-        <Alert className="border-accent/40 bg-accent/10">
-          <MailWarning className="size-4" />
-          <AlertTitle>Verify your email address</AlertTitle>
-          <AlertDescription>
-            We sent a verification link to {user.email}. Please confirm to unlock all features.
-          </AlertDescription>
-        </Alert>
-      )}
+      {!emailVerified && <VerifyEmailBanner email={user.email} />}
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">

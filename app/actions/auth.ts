@@ -3,23 +3,18 @@
 import { cookies } from "next/headers"
 import { ObjectId } from "mongodb"
 import { hashPassword, verifyPassword, generateToken, hashToken } from "@/lib/crypto"
-import {
-  ACCESS_COOKIE,
-  REFRESH_COOKIE,
-  cookieOptions,
-  signAccessToken,
-  signRefreshToken,
-} from "@/lib/tokens"
+import { ACCESS_COOKIE, REFRESH_COOKIE } from "@/lib/tokens"
 import {
   usersCollection,
   findUserByEmail,
   normalizeEmail,
-  addRefreshToken,
   removeRefreshToken,
 } from "@/lib/users"
-import { toPublicUser, type UserDoc, type Role } from "@/lib/types"
+import { establishSession } from "@/lib/auth-session"
+import { getCurrentUser } from "@/lib/session"
+import type { UserDoc, Role } from "@/lib/types"
 import { registerSchema, loginSchema, forgotSchema, resetSchema } from "@/lib/validation"
-import { sendAuthEmail } from "@/lib/email"
+import { sendAuthEmail, emailConfigured } from "@/lib/email"
 
 export interface AuthState {
   ok?: boolean
@@ -34,17 +29,6 @@ function siteUrl(path: string): string {
   const base =
     process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "http://localhost:3000"
   return `${base}${path}`
-}
-
-async function establishSession(user: UserDoc) {
-  const publicUser = toPublicUser(user)
-  const accessToken = await signAccessToken(publicUser)
-  const refreshToken = await signRefreshToken(publicUser.id)
-  await addRefreshToken(publicUser.id, hashToken(refreshToken))
-
-  const store = await cookies()
-  store.set(ACCESS_COOKIE, accessToken, cookieOptions.access)
-  store.set(REFRESH_COOKIE, refreshToken, cookieOptions.refresh)
 }
 
 function zodFieldErrors(error: { issues: { path: (string | number)[]; message: string }[] }) {
@@ -72,7 +56,12 @@ export async function registerAction(
   const { name, email, password } = parsed.data
   const existing = await findUserByEmail(email)
   if (existing) {
-    return { ok: false, fieldErrors: { email: "An account with this email already exists" } }
+    // A Google-only account (no password) can't log in with email yet. Point
+    // them at the right path instead of a generic "already exists".
+    const message = existing.passwordHash
+      ? "An account with this email already exists"
+      : "This email is registered with Google. Sign in with Google, or use “Forgot password” to set a password."
+    return { ok: false, fieldErrors: { email: message } }
   }
 
   const { raw, hashed } = generateToken()
@@ -81,6 +70,7 @@ export async function registerAction(
     name,
     email: normalizeEmail(email),
     passwordHash: await hashPassword(password),
+    authProvider: "password",
     role: "customer",
     emailVerified: false,
     verificationToken: hashed,
@@ -103,7 +93,8 @@ export async function registerAction(
   return {
     ok: true,
     message: "Account created. Check your email to verify your address.",
-    devLink: process.env.NODE_ENV === "development" ? link : undefined,
+    devLink:
+      process.env.NODE_ENV === "development" && !emailConfigured() ? link : undefined,
   }
 }
 
@@ -118,7 +109,17 @@ export async function loginAction(_prev: AuthState, formData: FormData): Promise
 
   const { email, password } = parsed.data
   const user = await findUserByEmail(email)
-  if (!user || !(await verifyPassword(password, user.passwordHash))) {
+  if (!user) {
+    return { ok: false, error: "Incorrect email or password" }
+  }
+  // Accounts created via Google have no password set.
+  if (!user.passwordHash) {
+    return {
+      ok: false,
+      error: "This account uses Google sign-in. Use “Continue with Google” above.",
+    }
+  }
+  if (!(await verifyPassword(password, user.passwordHash))) {
     return { ok: false, error: "Incorrect email or password" }
   }
 
@@ -169,7 +170,8 @@ export async function forgotPasswordAction(
     return {
       ok: true,
       message: "If an account exists, a reset link has been sent.",
-      devLink: process.env.NODE_ENV === "development" ? link : undefined,
+      devLink:
+      process.env.NODE_ENV === "development" && !emailConfigured() ? link : undefined,
     }
   }
 
@@ -233,6 +235,39 @@ export async function verifyEmailAction(token: string): Promise<AuthState> {
     },
   )
   return { ok: true, message: "Your email has been verified." }
+}
+
+// Re-sends the verification email to the currently signed-in user. Used by the
+// "unverified" banner and account settings.
+export async function resendVerificationAction(): Promise<AuthState> {
+  const current = await getCurrentUser()
+  if (!current) return { ok: false, error: "Please sign in first." }
+  if (current.emailVerified) {
+    return { ok: true, message: "Your email is already verified." }
+  }
+
+  const col = await usersCollection()
+  const { raw, hashed } = generateToken()
+  await col.updateOne(
+    { _id: new ObjectId(current.id) },
+    {
+      $set: {
+        verificationToken: hashed,
+        verificationExpires: new Date(Date.now() + 1000 * 60 * 60 * 24), // 24h
+        updatedAt: new Date(),
+      },
+    },
+  )
+
+  const link = siteUrl(`/verify-email?token=${raw}`)
+  await sendAuthEmail({ kind: "verify", to: current.email, link })
+
+  return {
+    ok: true,
+    message: "Verification email sent. Please check your inbox.",
+    devLink:
+      process.env.NODE_ENV === "development" && !emailConfigured() ? link : undefined,
+  }
 }
 
 // Admin-only helper used later by the admin portal.

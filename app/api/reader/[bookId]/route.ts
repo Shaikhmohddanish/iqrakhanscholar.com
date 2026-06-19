@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getCurrentUser } from "@/lib/session"
+import { getCurrentUser, isUserVerified } from "@/lib/session"
 import { getPurchasedProductSlugs } from "@/lib/orders"
 import { getDb } from "@/lib/mongodb"
 import type { ProductDoc } from "@/lib/products"
@@ -34,8 +34,11 @@ export async function GET(
     return NextResponse.json({ error: "Book not found" }, { status: 404 })
   }
 
-  // 3. Purchase check (admins bypass)
+  // 3. Email verification + purchase check (admins bypass)
   if (user.role !== "admin") {
+    if (!user.emailVerified && !(await isUserVerified(user.id))) {
+      return NextResponse.json({ error: "Email verification required" }, { status: 403 })
+    }
     const purchasedSlugs = await getPurchasedProductSlugs(user.id)
     if (!purchasedSlugs.includes(product.slug)) {
       return NextResponse.json({ error: "Purchase required" }, { status: 403 })

@@ -44,6 +44,7 @@
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
+  --color-brand-ink: var(--brand-ink);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
@@ -79,8 +80,9 @@
   --card-foreground: #1f1b16;
   --popover: #ffffff;
   --popover-foreground: #1f1b16;
-  --primary: #8f7c6a;
+  --primary: #a89685;
   --primary-foreground: #ffffff;
+  --brand-ink: #6b5a47;
   --secondary: #f1ece6;
   --secondary-foreground: #5a4f44;
   --muted: #f6f4f1;
@@ -90,7 +92,7 @@
   --destructive: #c0392b;
   --border: #e6e2dc;
   --input: #e6e2dc;
-  --ring: #8f7c6a;
+  --ring: #8a7765;
 
   /* Semantic */
   --success: #4f7a52;
@@ -150,6 +152,7 @@
   /* Brand — light taupe pops on espresso; foreground inverted to dark */
   --primary: #c9b9a6;
   --primary-foreground: #211c17;
+  --brand-ink: #cdbda9;
   --secondary: #2b2520;
   --secondary-foreground: #e6ddd1;
 

@@ -1,17 +1,21 @@
 "use client"
 
-export function SocialLoginButtons({ action = "Sign in" }: { action?: string }) {
+export function SocialLoginButtons({
+  action = "Sign in",
+  next = "/account",
+}: {
+  action?: string
+  next?: string
+}) {
   return (
     <div className="flex flex-col gap-3">
-      <button
-        type="button"
-        disabled
-        title="Google sign-in coming soon"
-        className="flex h-11 w-full items-center justify-center gap-3 rounded-full border border-border bg-background text-sm font-medium text-foreground opacity-60 cursor-not-allowed transition-colors hover:bg-muted"
+      <a
+        href={`/api/auth/google?next=${encodeURIComponent(next)}`}
+        className="flex h-11 w-full items-center justify-center gap-3 rounded-full border border-border bg-background text-sm font-medium text-foreground transition-colors hover:bg-muted"
       >
         <GoogleIcon />
         {action} with Google
-      </button>
+      </a>
       <button
         type="button"
         disabled

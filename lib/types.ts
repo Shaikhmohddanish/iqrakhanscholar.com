@@ -18,8 +18,17 @@ export interface UserDoc {
   _id?: ObjectId
   name: string
   email: string
-  // bcrypt hash; never returned to the client
-  passwordHash: string
+  // bcrypt hash; never returned to the client. Optional for accounts created
+  // via an OAuth provider (e.g. Google), which have no password.
+  passwordHash?: string | null
+  // How the account can authenticate. "password" = email/password signup,
+  // "google" = created via Google sign-in. Either may have a Google identity
+  // linked once they sign in with Google.
+  authProvider?: "password" | "google"
+  // Google's stable user id (`sub`) when the account is linked to Google.
+  googleId?: string
+  // Profile picture URL from the OAuth provider, if any.
+  image?: string
   role: Role
   emailVerified: boolean
   // hashed token for email verification / password reset

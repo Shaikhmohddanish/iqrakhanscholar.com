@@ -59,7 +59,7 @@ export async function deleteAddressAction(addressId: string) {
 }
 
 export async function changePasswordAction(data: {
-  currentPassword: string
+  currentPassword?: string
   newPassword: string
 }) {
   const user = await requireUser()
@@ -68,8 +68,15 @@ export async function changePasswordAction(data: {
   const dbUser = await findUserById(user.id)
   if (!dbUser) return { error: "User not found." }
 
-  const valid = await verifyPassword(data.currentPassword, dbUser.passwordHash)
-  if (!valid) return { error: "Current password is incorrect." }
+  // Accounts created via Google have no password yet. Such users are setting a
+  // password for the first time (they're already authenticated via their
+  // session), so we skip the current-password check rather than running
+  // bcrypt.compare against a null hash.
+  if (dbUser.passwordHash) {
+    if (!data.currentPassword) return { error: "Current password is required." }
+    const valid = await verifyPassword(data.currentPassword, dbUser.passwordHash)
+    if (!valid) return { error: "Current password is incorrect." }
+  }
 
   if (data.newPassword.length < 8) return { error: "Password must be at least 8 characters." }
 

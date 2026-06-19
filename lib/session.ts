@@ -1,5 +1,6 @@
 import { cookies } from "next/headers"
 import { ACCESS_COOKIE, verifyAccessToken } from "./tokens"
+import { findUserById } from "./users"
 import type { PublicUser, Role } from "./types"
 import { hasRole } from "./types"
 
@@ -32,4 +33,13 @@ export async function requireRole(required: Role): Promise<PublicUser | null> {
   if (!user) return null
   if (!hasRole(user.role, required)) return null
   return user
+}
+
+// Authoritative email-verification check against the database. The access-token
+// claim can be up to 15 minutes stale (e.g. right after a user clicks the
+// verification link), so security-sensitive gates — checkout, downloads —
+// should confirm against the DB rather than trusting the cached claim.
+export async function isUserVerified(userId: string): Promise<boolean> {
+  const doc = await findUserById(userId)
+  return Boolean(doc?.emailVerified)
 }

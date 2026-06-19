@@ -5,7 +5,7 @@ import { changePasswordAction } from "@/app/actions/account"
 import { CheckCircle2, Eye, EyeOff, ShieldCheck } from "lucide-react"
 import { BarLoader } from "@/components/ui/bar-loader"
 
-export function SecuritySettings() {
+export function SecuritySettings({ hasPassword = true }: { hasPassword?: boolean }) {
   const [currentPassword, setCurrentPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -35,11 +35,16 @@ export function SecuritySettings() {
       return
     }
     startTransition(async () => {
-      const result = await changePasswordAction({ currentPassword, newPassword })
+      const result = await changePasswordAction(
+        hasPassword ? { currentPassword, newPassword } : { newPassword },
+      )
       if (result.error) {
         setMessage({ type: "error", text: result.error })
       } else {
-        setMessage({ type: "success", text: "Password changed successfully." })
+        setMessage({
+          type: "success",
+          text: hasPassword ? "Password changed successfully." : "Password set successfully.",
+        })
         setCurrentPassword("")
         setNewPassword("")
         setConfirmPassword("")
@@ -53,25 +58,32 @@ export function SecuritySettings() {
       <div>
         <h3 className="mb-4 flex items-center gap-2 font-heading text-base font-semibold text-foreground">
           <ShieldCheck className="size-4 text-primary" />
-          Change password
+          {hasPassword ? "Change password" : "Set a password"}
         </h3>
+        {!hasPassword && (
+          <p className="mb-4 max-w-md text-sm text-muted-foreground">
+            You currently sign in with Google. Set a password to also log in with your email and password.
+          </p>
+        )}
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-md">
-          <div className="flex flex-col gap-2">
-            <label htmlFor="current-pw" className="text-sm font-medium text-foreground">Current password</label>
-            <div className="relative">
-              <input
-                id="current-pw"
-                type={showCurrent ? "text" : "password"}
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                required
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 pr-10 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              />
-              <button type="button" onClick={() => setShowCurrent((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" aria-label="Toggle visibility">
-                {showCurrent ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-              </button>
+          {hasPassword && (
+            <div className="flex flex-col gap-2">
+              <label htmlFor="current-pw" className="text-sm font-medium text-foreground">Current password</label>
+              <div className="relative">
+                <input
+                  id="current-pw"
+                  type={showCurrent ? "text" : "password"}
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  required
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 pr-10 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                />
+                <button type="button" onClick={() => setShowCurrent((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" aria-label="Toggle visibility">
+                  {showCurrent ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                </button>
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="flex flex-col gap-2">
             <label htmlFor="new-pw" className="text-sm font-medium text-foreground">New password</label>
@@ -120,7 +132,7 @@ export function SecuritySettings() {
               className="flex h-9 items-center gap-2 rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground disabled:opacity-60"
             >
               {pending && <BarLoader size="sm" />}
-              Update password
+              {hasPassword ? "Update password" : "Set password"}
             </button>
             {message && (
               <span className={`flex items-center gap-1.5 text-sm ${message.type === "success" ? "text-green-600 dark:text-green-400" : "text-destructive"}`}>

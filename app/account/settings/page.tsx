@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { getCurrentUser } from "@/lib/session"
-import { getAddresses } from "@/lib/users"
+import { getAddresses, findUserById } from "@/lib/users"
 import { ProfileForm } from "@/components/account/profile-form"
 import { AddressManager } from "@/components/account/address-form"
 import { SecuritySettings } from "@/components/account/security-settings"
@@ -32,6 +32,10 @@ export default async function SettingsPage({
 
   const activeTab = params.tab ?? "profile"
   const addresses = activeTab === "addresses" ? await getAddresses(user.id) : []
+  // Whether the account has a password set (Google-only accounts don't), so the
+  // Security tab can show "Set a password" instead of "Change password".
+  const hasPassword =
+    activeTab === "security" ? Boolean((await findUserById(user.id))?.passwordHash) : true
 
   return (
     <div className="flex flex-col gap-6">
@@ -92,7 +96,7 @@ export default async function SettingsPage({
             <CardTitle className="font-heading text-lg">Security</CardTitle>
           </CardHeader>
           <CardContent>
-            <SecuritySettings />
+            <SecuritySettings hasPassword={hasPassword} />
           </CardContent>
         </Card>
       )}

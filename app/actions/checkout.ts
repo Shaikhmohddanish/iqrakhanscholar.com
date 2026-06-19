@@ -2,7 +2,7 @@
 
 import { z } from "zod"
 import { redirect } from "next/navigation"
-import { getCurrentUser } from "@/lib/session"
+import { getCurrentUser, isUserVerified } from "@/lib/session"
 import { readCart, clearCartCookie, cartShipping } from "@/lib/cart"
 import { getProductsByIds, decrementStock } from "@/lib/products"
 import { createOrder, type OrderItem, type ShippingAddress } from "@/lib/orders"
@@ -26,6 +26,15 @@ export async function placeOrderAction(
   const user = await getCurrentUser()
   if (!user) {
     redirect("/login?next=/checkout")
+  }
+
+  // Require a verified email before any purchase (checked against the DB so a
+  // just-verified user isn't blocked by a stale token claim).
+  if (!user.emailVerified && !(await isUserVerified(user.id))) {
+    return {
+      error:
+        "Please verify your email address before checking out. Check your inbox, or resend the verification link from your account settings.",
+    }
   }
 
   const cart = await readCart()

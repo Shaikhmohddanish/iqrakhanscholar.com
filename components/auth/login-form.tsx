@@ -11,10 +11,22 @@ import { SocialLoginButtons } from "./social-login-buttons"
 
 const initial: AuthState = {}
 
+function googleErrorMessage(code: string): string {
+  switch (code) {
+    case "google_denied":
+      return "Google sign-in was cancelled."
+    case "google_unavailable":
+      return "Google sign-in isn't available right now. Please use email instead."
+    default:
+      return "Google sign-in failed. Please try again or sign in with email."
+  }
+}
+
 export function LoginForm() {
   const router = useRouter()
   const params = useSearchParams()
   const next = params.get("next") || "/account"
+  const oauthError = params.get("error")
   const [state, action] = useActionState(loginAction, initial)
 
   useEffect(() => {
@@ -26,7 +38,9 @@ export function LoginForm() {
 
   return (
     <div className="flex flex-col gap-5">
-      <SocialLoginButtons action="Sign in" />
+      {oauthError ? <FormError message={googleErrorMessage(oauthError)} /> : null}
+
+      <SocialLoginButtons action="Sign in" next={next} />
 
       <div className="relative flex items-center gap-3">
         <div className="h-px flex-1 bg-border" />
