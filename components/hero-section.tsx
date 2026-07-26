@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Star, ArrowRight } from 'lucide-react'
 import { CountUp } from '@/components/count-up'
+import { HeroVideo } from '@/components/hero-video'
 
 interface HeroSectionProps {
   /** Optional path to a full-bleed background video (mp4 / webm) shown behind the hero. */
@@ -14,16 +15,7 @@ export function HeroSection({ videoSrc }: HeroSectionProps = {}) {
       {/* Full-bleed background video + readability overlay */}
       {videoSrc && (
         <>
-          <video
-            src={videoSrc}
-            autoPlay
-            muted
-            loop
-            playsInline
-            poster="/iqra-hero.png"
-            aria-hidden
-            className="pointer-events-none absolute inset-0 h-full w-full object-cover"
-          />
+          <HeroVideo src={videoSrc} poster="/video/poster.webp" />
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 bg-gradient-to-br from-background/90 via-background/75 to-background/60"
@@ -32,22 +24,22 @@ export function HeroSection({ videoSrc }: HeroSectionProps = {}) {
       )}
 
       {/* Decorative blobs + pattern - skipped when a video carries the visual interest
-          (they're barely visible over video and add costly per-frame compositing). */}
+          (they're barely visible over video and add costly per-frame compositing).
+          Static (no infinite animation) to keep non-video pages smooth too. */}
       {!videoSrc && (
         <>
-          {/* Drifting background blobs */}
+          {/* Soft background blobs */}
           <div
             aria-hidden
-            className="pointer-events-none absolute -top-32 -left-32 size-[500px] rounded-full bg-primary/8 blur-[100px] animate-float-slow"
+            className="pointer-events-none absolute -top-32 -left-32 size-[500px] rounded-full bg-primary/8 blur-[100px]"
           />
           <div
             aria-hidden
-            className="pointer-events-none absolute top-1/2 -right-24 size-[380px] rounded-full bg-accent/10 blur-[80px] animate-float-slow-2"
+            className="pointer-events-none absolute top-1/2 -right-24 size-[380px] rounded-full bg-accent/10 blur-[80px]"
           />
           <div
             aria-hidden
-            className="pointer-events-none absolute -bottom-20 left-1/3 size-[320px] rounded-full bg-primary/6 blur-[90px] animate-float-slow"
-            style={{ animationDelay: '4s' }}
+            className="pointer-events-none absolute -bottom-20 left-1/3 size-[320px] rounded-full bg-primary/6 blur-[90px]"
           />
 
           {/* Islamic geometric dot pattern (subtle) */}
@@ -65,7 +57,7 @@ export function HeroSection({ videoSrc }: HeroSectionProps = {}) {
           <span
             className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-secondary px-3.5 py-1.5 text-xs font-medium tracking-wide text-primary animate-fade-in-up animate-delay-100"
           >
-            <span className="size-1.5 rounded-full bg-accent animate-pulse" />
+            <span className="size-1.5 rounded-full bg-accent" />
             Bismillah · Welcome to a calmer path
           </span>
 
@@ -103,7 +95,7 @@ export function HeroSection({ videoSrc }: HeroSectionProps = {}) {
             </Link>
             <Link
               href="/consultation"
-              className="inline-flex h-12 items-center justify-center rounded-full border border-primary/25 bg-background px-7 text-sm font-medium text-primary transition-colors hover:bg-secondary"
+              className="inline-flex h-12 items-center justify-center rounded-full bg-primary px-7 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90 hover:scale-[1.02]"
             >
               Book Consultation
             </Link>
@@ -120,7 +112,7 @@ export function HeroSection({ videoSrc }: HeroSectionProps = {}) {
             className="mt-10 flex items-center gap-4 animate-fade-in-up animate-delay-500"
           >
             <div className="flex -space-x-3">
-              {['/avatar-1.png', '/avatar-2.png', '/avatar-3.png'].map((src) => (
+              {['/avatar-1.webp', '/avatar-2.webp', '/avatar-3.webp'].map((src) => (
                 <span
                   key={src}
                   className="relative size-10 overflow-hidden rounded-full border-2 border-background"
@@ -155,14 +147,14 @@ export function HeroSection({ videoSrc }: HeroSectionProps = {}) {
         {/* ── Visual ── */}
         <div className="relative animate-fade-in-up animate-delay-200">
           <div className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-[2rem] border border-border shadow-2xl shadow-primary/10 lg:max-w-lg">
-            {/* Portrait with slow Ken Burns zoom */}
+            {/* Portrait */}
             <Image
-              src="/iqra-hero.png"
+              src="/hero-portrait.webp"
               alt="Iqra Khan, Islamic scholar and educator"
               fill
               priority
-              className="object-cover animate-ken-burns"
-              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 448px, 512px"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-primary/30 via-transparent to-transparent" />
           </div>

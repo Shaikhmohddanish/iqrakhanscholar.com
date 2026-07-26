@@ -3,6 +3,10 @@ import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
+import { formatPrice } from '@/lib/product-types'
+import { resolveProductPrice } from '@/lib/currency'
+import { getActiveCurrency } from '@/lib/currency-server'
+import { SITE_URL } from '@/lib/site-config'
 import {
   Clock,
   MessageCircle,
@@ -20,27 +24,38 @@ export const metadata: Metadata = {
   title: 'Book a Consultation',
   description:
     'Schedule a private one-to-one Islamic consultation with Iqra Khan. Personalised guidance for your spiritual journey.',
+  alternates: { canonical: '/consultation' },
+  openGraph: {
+    title: 'Book a Consultation with Iqra Khan',
+    description:
+      'Schedule a private one-to-one Islamic consultation for personalised guidance on your spiritual journey.',
+    url: '/consultation',
+  },
 }
 
+// Marketing tiers. Priced in INR only (minor units) with no per-currency
+// overrides, matching SESSION_TYPES so every visitor sees the same ₹ amount.
 const tiers = [
   {
-    name: 'Single Session',
-    price: '£79',
-    duration: '60 min',
+    name: '30-Minute Session',
+    currency: 'INR',
+    price: 210000,
+    duration: '30 min',
     features: [
       'Private one-to-one session',
-      'Personalised guidance',
+      'Focused guidance on one question',
       'Session recording',
       'Follow-up notes via email',
     ],
     popular: false,
   },
   {
-    name: 'Deep Dive',
-    price: '£139',
-    duration: '90 min',
+    name: '60-Minute Session',
+    currency: 'INR',
+    price: 390000,
+    duration: '60 min',
     features: [
-      'Extended session time',
+      'Private one-to-one session',
       'In-depth topic exploration',
       'Session recording',
       'Written action plan',
@@ -49,11 +64,12 @@ const tiers = [
     popular: true,
   },
   {
-    name: 'Mentorship Pack',
-    price: '£349',
+    name: '3-Session Package',
+    currency: 'INR',
+    price: 1360000,
     duration: '3 × 60 min',
     features: [
-      '3 sessions over 6 weeks',
+      'Three 60-minute sessions',
       'Ongoing accountability',
       'All session recordings',
       'Written plans per session',
@@ -74,17 +90,17 @@ const testimonials = [
   {
     quote: 'Iqra\'s session gave me clarity I\'d been searching for years. She listens with genuine compassion and wisdom.',
     name: 'Aisha R.',
-    role: 'Single Session Client',
+    role: '60-Minute Session Client',
   },
   {
     quote: 'The mentorship pack transformed my relationship with salah. I finally feel connected in my prayers.',
     name: 'Fatima H.',
-    role: 'Mentorship Client',
+    role: '3-Session Package Client',
   },
   {
     quote: 'I was hesitant at first but it was the best investment I\'ve made for my spiritual growth.',
     name: 'Maryam S.',
-    role: 'Deep Dive Client',
+    role: '30-Minute Session Client',
   },
 ]
 
@@ -96,7 +112,8 @@ const faqs = [
   { q: 'What payment methods are accepted?', a: 'We accept credit/debit cards and UPI via Razorpay. All transactions are secure and encrypted.' },
 ]
 
-export default function ConsultationPage() {
+export default async function ConsultationPage() {
+  const activeCurrency = await getActiveCurrency()
   return (
     <>
       <SiteHeader />
@@ -143,7 +160,14 @@ export default function ConsultationPage() {
                   )}
                   <h3 className="font-heading text-xl font-semibold text-foreground">{tier.name}</h3>
                   <div className="mt-3 flex items-baseline gap-1">
-                    <span className="text-3xl font-bold text-foreground">{tier.price}</span>
+                    {(() => {
+                      const { amount, currency } = resolveProductPrice(tier, activeCurrency)
+                      return (
+                        <span className="text-3xl font-bold text-foreground">
+                          {formatPrice(amount, currency)}
+                        </span>
+                      )
+                    })()}
                     <span className="text-sm text-muted-foreground">/ {tier.duration}</span>
                   </div>
                   <ul className="mt-6 space-y-3">
@@ -257,7 +281,7 @@ export default function ConsultationPage() {
             name: 'Islamic Consultation',
             provider: { '@type': 'Person', name: 'Iqra Khan' },
             description: 'Private one-to-one Islamic consultation and mentorship.',
-            url: 'https://iqrakhan.com/consultation',
+            url: `${SITE_URL}/consultation`,
           }),
         }}
       />

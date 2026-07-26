@@ -42,17 +42,28 @@ export function TestimonialsSection() {
         {/* Carousel */}
         <div
           className="relative mt-12"
+          role="group"
+          aria-roledescription="carousel"
+          aria-label="Community testimonials"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
-          {/* Track */}
-          <div className="overflow-hidden">
+          {/* Track. aria-live announces the active slide to screen readers when
+              auto-rotation is paused; left silent while rotating to avoid spam. */}
+          <div className="overflow-hidden" aria-live={paused ? 'polite' : 'off'}>
             <div
               className="flex transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
               style={{ transform: `translateX(-${active * 100}%)` }}
             >
-              {testimonials.map((t) => (
-                <div key={t.name} className="w-full shrink-0 px-2 sm:px-4">
+              {testimonials.map((t, idx) => (
+                <div
+                  key={t.name}
+                  className="w-full shrink-0 px-2 sm:px-4"
+                  role="group"
+                  aria-roledescription="slide"
+                  aria-label={`${idx + 1} of ${testimonials.length}`}
+                  aria-hidden={idx !== active}
+                >
                   <figure className="mx-auto max-w-2xl rounded-2xl border border-border bg-background p-8 sm:p-10">
                     <Quote className="size-8 text-accent/40" />
                     <div className="mt-3 flex items-center gap-0.5 text-accent">

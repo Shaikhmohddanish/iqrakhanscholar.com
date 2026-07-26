@@ -11,9 +11,11 @@ export interface ProductDoc {
   title: string
   category: string
   type: ProductType
-  // price stored in integer cents to avoid floating point errors
+  // base price stored in integer minor units to avoid floating point errors
   price: number
   currency: string
+  // optional manually-entered per-currency amounts (currency code -> minor units)
+  prices?: Record<string, number>
   image: string
   images?: string[]
   badge?: string
@@ -43,6 +45,7 @@ export function toPublicProduct(doc: ProductDoc): PublicProduct {
     type: doc.type,
     price: doc.price,
     currency: doc.currency,
+    prices: doc.prices,
     image: doc.image,
     images: doc.images ?? (doc.image ? [doc.image] : []),
     badge: doc.badge,
@@ -183,7 +186,7 @@ const SEED_PRODUCTS: Omit<ProductDoc, "_id" | "createdAt" | "updatedAt">[] = [
     type: "digital",
     price: 1400,
     currency: "USD",
-    image: "/product-ebook-salah.png",
+    image: "/product-ebook-salah.webp",
     badge: "Bestseller",
     rating: 5,
     reviews: 218,
@@ -206,7 +209,7 @@ const SEED_PRODUCTS: Omit<ProductDoc, "_id" | "createdAt" | "updatedAt">[] = [
     type: "digital",
     price: 1900,
     currency: "USD",
-    image: "/product-ebook-quran.png",
+    image: "/product-ebook-quran.webp",
     rating: 5,
     reviews: 164,
     shortDescription: "A guided month of tadabbur to reconnect with the Book of Allah.",
@@ -228,7 +231,7 @@ const SEED_PRODUCTS: Omit<ProductDoc, "_id" | "createdAt" | "updatedAt">[] = [
     type: "digital",
     price: 900,
     currency: "USD",
-    image: "/product-ebook-dua.png",
+    image: "/product-ebook-dua.webp",
     badge: "New",
     rating: 5,
     reviews: 312,
@@ -251,7 +254,7 @@ const SEED_PRODUCTS: Omit<ProductDoc, "_id" | "createdAt" | "updatedAt">[] = [
     type: "physical",
     price: 2800,
     currency: "USD",
-    image: "/product-book.png",
+    image: "/product-book.webp",
     badge: "Signed Edition",
     rating: 5,
     reviews: 96,
@@ -274,7 +277,7 @@ const SEED_PRODUCTS: Omit<ProductDoc, "_id" | "createdAt" | "updatedAt">[] = [
     type: "physical",
     price: 3200,
     currency: "USD",
-    image: "/product-journal.png",
+    image: "/product-journal.webp",
     rating: 5,
     reviews: 141,
     shortDescription: "A linen-bound journal to anchor daily gratitude and remembrance.",
@@ -296,7 +299,7 @@ const SEED_PRODUCTS: Omit<ProductDoc, "_id" | "createdAt" | "updatedAt">[] = [
     type: "physical",
     price: 3600,
     currency: "USD",
-    image: "/product-planner.png",
+    image: "/product-planner.webp",
     badge: "Limited",
     rating: 5,
     reviews: 88,

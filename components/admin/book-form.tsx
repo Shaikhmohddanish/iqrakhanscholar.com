@@ -3,11 +3,13 @@
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import type { PublicBookAdmin } from "@/lib/books-admin"
+import { SUPPORTED_CURRENCIES, toMinorUnits, fromMinorUnits } from "@/lib/currency"
 import { CheckCircle2 } from "lucide-react"
 import { BarLoader } from "@/components/ui/bar-loader"
 import { createBookAction, updateBookAction } from "@/app/actions/admin/books"
 import { ImageUpload } from "./image-upload"
 import { PdfUpload } from "./pdf-upload"
+import { CurrencyPriceList, type CurrencyPriceRow } from "./currency-price-list"
 
 interface BookFormProps {
   book?: PublicBookAdmin
@@ -21,6 +23,13 @@ export function BookForm({ book }: BookFormProps) {
   const [pdfUploading, setPdfUploading] = useState(false)
   const [pdfPublicId, setPdfPublicId] = useState<string | undefined>(book?.pdfPublicId)
 
+  const baseCurrency = book?.currency ?? "USD"
+  const [extraPrices, setExtraPrices] = useState<CurrencyPriceRow[]>(() =>
+    Object.entries(book?.prices ?? {})
+      .filter(([code]) => code !== baseCurrency)
+      .map(([code, minor]) => ({ code, amount: String(fromMinorUnits(minor, code)) })),
+  )
+
   const [form, setForm] = useState({
     title: book?.title ?? "",
     slug: book?.slug ?? "",
@@ -28,8 +37,8 @@ export function BookForm({ book }: BookFormProps) {
     category: book?.category ?? "",
     description: book?.description ?? "",
     coverImage: book?.coverImage ?? "",
-    price: book ? String(book.price / 100) : "",
-    currency: book?.currency ?? "USD",
+    price: book ? String(fromMinorUnits(book.price, baseCurrency)) : "",
+    currency: baseCurrency,
     pageCount: book ? String(book.pageCount) : "",
     featured: book?.featured ?? false,
     status: book?.status ?? "draft",
@@ -49,6 +58,15 @@ export function BookForm({ book }: BookFormProps) {
     e.preventDefault()
     setError(null)
     startTransition(async () => {
+      const basePrice = toMinorUnits(parseFloat(form.price), form.currency)
+      const prices: Record<string, number> = { [form.currency]: basePrice }
+      for (const row of extraPrices) {
+        const amount = parseFloat(row.amount)
+        if (row.code && !Number.isNaN(amount)) {
+          prices[row.code] = toMinorUnits(amount, row.code)
+        }
+      }
+
       const data = {
         title: form.title,
         slug: form.slug,
@@ -56,8 +74,9 @@ export function BookForm({ book }: BookFormProps) {
         category: form.category,
         description: form.description,
         coverImage: form.coverImage,
-        price: Math.round(parseFloat(form.price) * 100),
+        price: basePrice,
         currency: form.currency,
+        prices,
         pageCount: parseInt(form.pageCount) || 0,
         featured: form.featured,
         status: form.status as "draft" | "published",
@@ -108,8 +127,33 @@ export function BookForm({ book }: BookFormProps) {
         {field("Slug", "slug", "text", true)}
         {field("Author", "author", "text", true)}
         {field("Category", "category", "text", true)}
-        {field("Price (USD)", "price", "number", true)}
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm font-medium text-foreground">
+            Base currency <span className="text-destructive">*</span>
+          </label>
+          <select
+            value={form.currency}
+            onChange={(e) => set("currency", e.target.value)}
+            className="rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            {SUPPORTED_CURRENCIES.map((c) => (
+              <option key={c.code} value={c.code}>
+                {c.code} — {c.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        {field("Base price", "price", "number", true)}
         {field("Page count", "pageCount", "number")}
+      </div>
+
+      {/* Per-currency pricing */}
+      <div className="rounded-xl border border-border bg-muted/30 p-5">
+        <CurrencyPriceList
+          rows={extraPrices}
+          onChange={setExtraPrices}
+          excludeCode={form.currency}
+        />
       </div>
 
       {/* Cover image */}

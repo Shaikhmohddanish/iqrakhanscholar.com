@@ -2,6 +2,8 @@
 
 import { SESSION_TYPES, type SessionType } from "@/lib/booking-types"
 import { formatPrice } from "@/lib/product-types"
+import { resolveProductPrice } from "@/lib/currency"
+import { useCurrency } from "@/components/currency/currency-provider"
 import { CheckCircle2, Clock } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -11,10 +13,12 @@ interface SessionTypeCardsProps {
 }
 
 export function SessionTypeCards({ selected, onSelect }: SessionTypeCardsProps) {
+  const { currency } = useCurrency()
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       {SESSION_TYPES.map((session) => {
         const isSelected = selected === session.id
+        const priced = resolveProductPrice(session, currency)
         return (
           <button
             key={session.id}
@@ -40,7 +44,7 @@ export function SessionTypeCards({ selected, onSelect }: SessionTypeCardsProps) 
                 {session.duration} min
               </span>
               <span className="font-semibold text-foreground">
-                {session.price === 0 ? "Free" : formatPrice(session.price, session.currency)}
+                {session.price === 0 ? "Free" : formatPrice(priced.amount, priced.currency)}
               </span>
             </div>
           </button>

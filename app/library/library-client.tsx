@@ -18,6 +18,7 @@ export interface LibraryItem {
   reviews: number
   price: number
   currency: string
+  prices?: Record<string, number>
   category: string
 }
 
@@ -103,6 +104,7 @@ export function LibraryClient({
                   reviews={book.reviews}
                   price={book.price}
                   currency={book.currency}
+                  prices={book.prices}
                   category={book.category}
                   className="w-full"
                 />
@@ -133,6 +135,7 @@ export function LibraryClient({
                 reviews={book.reviews}
                 price={book.price}
                 currency={book.currency}
+                prices={book.prices}
                 category={book.category}
                 className="w-44 shrink-0 sm:w-48"
               />
@@ -152,6 +155,7 @@ export function LibraryClient({
                 reviews={book.reviews}
                 price={book.price}
                 currency={book.currency}
+                prices={book.prices}
                 category={book.category}
                 className="w-44 shrink-0 sm:w-48"
               />
@@ -176,6 +180,7 @@ export function LibraryClient({
                     reviews={book.reviews}
                     price={book.price}
                     currency={book.currency}
+                    prices={book.prices}
                     category={book.category}
                     className="w-full"
                   />

@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { ShoppingBag, Check } from 'lucide-react'
-import { formatPrice, type PublicProduct } from '@/lib/product-types'
+import { type PublicProduct } from '@/lib/product-types'
 import { useCart } from '@/components/cart/cart-provider'
+import { ProductPrice } from '@/components/currency/product-price'
 import { cn } from '@/lib/utils'
 
 interface StickyPurchaseBarProps {
@@ -43,9 +44,7 @@ export function StickyPurchaseBar({ product }: StickyPurchaseBarProps) {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
         <div className="min-w-0">
           <p className="truncate text-sm font-medium text-foreground">{product.title}</p>
-          <p className="font-heading text-lg font-bold text-foreground">
-            {formatPrice(product.price, product.currency)}
-          </p>
+          <ProductPrice item={product} className="font-heading text-lg font-bold text-foreground" />
         </div>
         <button
           type="button"

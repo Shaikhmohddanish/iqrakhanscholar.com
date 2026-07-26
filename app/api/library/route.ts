@@ -27,6 +27,7 @@ export async function GET(req: NextRequest) {
     reviews: p.reviews,
     price: p.price,
     currency: p.currency,
+    prices: p.prices,
     category: p.category,
   }))
 

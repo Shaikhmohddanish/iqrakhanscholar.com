@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react"
 import type { PublicBooking } from "@/lib/booking-types"
-import { SESSION_TYPES } from "@/lib/booking-types"
+import { SESSION_TYPES, LEGACY_SESSION_TITLES } from "@/lib/booking-types"
 import { cancelBookingAction } from "@/app/actions/bookings"
 import { Calendar, Clock, CheckCircle2, XCircle, AlertCircle, RefreshCw } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -103,7 +103,7 @@ function BookingCard({
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="font-heading text-base font-semibold text-foreground">
-            {session?.title ?? booking.sessionType}
+            {session?.title ?? LEGACY_SESSION_TITLES[booking.sessionType] ?? booking.sessionType}
           </p>
           <p className="mt-0.5 text-sm text-muted-foreground">{booking.topic}</p>
         </div>

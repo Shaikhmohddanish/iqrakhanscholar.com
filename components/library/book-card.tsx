@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Star, BookOpen } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { ProductPrice } from '@/components/currency/product-price'
 
 interface BookCardProps {
   id: string
@@ -13,6 +14,7 @@ interface BookCardProps {
   reviews: number
   price: number
   currency?: string
+  prices?: Record<string, number>
   category: string
   owned?: boolean
   progress?: number // 0-100
@@ -28,17 +30,12 @@ export function BookCard({
   reviews,
   price,
   currency = 'USD',
+  prices,
   category,
   owned,
   progress,
   className,
 }: BookCardProps) {
-  const formattedPrice = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency,
-    minimumFractionDigits: price % 100 === 0 ? 0 : 2,
-  }).format(price / 100)
-
   return (
     <Link
       href={`/library/${slug}`}
@@ -103,7 +100,10 @@ export function BookCard({
               {progress ? `${progress}% complete` : 'Start reading'}
             </span>
           ) : (
-            <span className="font-heading text-sm font-bold text-foreground">{formattedPrice}</span>
+            <ProductPrice
+              item={{ price, currency, prices }}
+              className="font-heading text-sm font-bold text-foreground"
+            />
           )}
         </div>
       </div>

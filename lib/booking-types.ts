@@ -1,6 +1,6 @@
 // Client-safe booking types and constants (no DB/server-only imports)
 
-export type SessionType = "discovery" | "guidance" | "intensive" | "group"
+export type SessionType = "session-30" | "session-60" | "package-3x60"
 export type BookingStatus = "pending" | "confirmed" | "cancelled" | "completed" | "rescheduled"
 export type BookingPaymentStatus = "unpaid" | "paid" | "refunded"
 
@@ -9,44 +9,50 @@ export interface SessionTypeInfo {
   title: string
   description: string
   duration: number // minutes
-  price: number // cents
+  // base price in minor units of `currency`
+  price: number
   currency: string
+  // optional manually-entered per-currency amounts (currency code -> minor units)
+  prices?: Record<string, number>
 }
 
+// All tiers are priced in INR only (no per-currency overrides), so every
+// visitor sees and is charged the same ₹ amount regardless of the switcher.
 export const SESSION_TYPES: SessionTypeInfo[] = [
   {
-    id: "discovery",
-    title: "Discovery Call",
-    description: "A 30-minute introductory call to discuss your goals and how Iqra can help you.",
+    id: "session-30",
+    title: "30-Minute Session",
+    description: "A focused half-hour one-to-one session for a specific question or concern.",
     duration: 30,
-    price: 0,
-    currency: "USD",
+    price: 210000,
+    currency: "INR",
   },
   {
-    id: "guidance",
-    title: "One-to-One Guidance",
-    description: "A 60-minute private session for personalised Islamic guidance and advice.",
+    id: "session-60",
+    title: "60-Minute Session",
+    description: "A full-hour private session for personalised Islamic guidance and advice.",
     duration: 60,
-    price: 7500,
-    currency: "USD",
+    price: 390000,
+    currency: "INR",
   },
   {
-    id: "intensive",
-    title: "Intensive Study Session",
-    description: "A 90-minute deep-dive into a specific topic - Quran, Fiqh, or personal development.",
-    duration: 90,
-    price: 12000,
-    currency: "USD",
-  },
-  {
-    id: "group",
-    title: "Group Study Circle",
-    description: "A 60-minute virtual halaqa with up to 10 participants.",
+    id: "package-3x60",
+    title: "3-Session Package",
+    description:
+      "Three 60-minute sessions over consecutive weeks. Book your first session now; the remaining two are scheduled with Iqra.",
     duration: 60,
-    price: 2500,
-    currency: "USD",
+    price: 1360000,
+    currency: "INR",
   },
 ]
+
+// Titles for bookings created before the tier revamp, keyed by their old ids.
+export const LEGACY_SESSION_TITLES: Record<string, string> = {
+  discovery: "Discovery Call",
+  guidance: "One-to-One Guidance",
+  intensive: "Intensive Study Session",
+  group: "Group Study Circle",
+}
 
 export interface PublicAvailability {
   id: string

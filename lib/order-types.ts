@@ -2,6 +2,7 @@
 
 export type OrderStatus = "processing" | "fulfilled" | "cancelled"
 export type PaymentStatus = "paid" | "pending" | "failed"
+export type PaymentProviderName = "stripe" | "razorpay" | "simulated"
 
 export interface OrderItem {
   productId: string
@@ -35,6 +36,9 @@ export interface PublicOrder {
   currency: string
   status: OrderStatus
   paymentStatus: PaymentStatus
+  paymentProvider?: PaymentProviderName
+  // provider-side reference (Checkout session / payment link id)
+  providerRef?: string
   shippingAddress?: ShippingAddress | null
   hasDigital: boolean
   hasPhysical: boolean

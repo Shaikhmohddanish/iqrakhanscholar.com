@@ -65,7 +65,7 @@ export const libraryBooks: LibraryBook[] = [
     slug: 'the-art-of-khushu-in-salah',
     title: 'The Art of Khushu in Salah',
     author: 'Iqra Khan',
-    coverImage: '/product-ebook-salah.png',
+    coverImage: '/product-ebook-salah.webp',
     description:
       'Discover the lost art of khushuʿ - the deep stillness and presence that transforms salah from routine into a living conversation with Allah. Rooted in Quran and Sunnah, this book offers gentle, actionable practices to quiet the restless heart and pray with meaning.',
     category: 'Worship',
@@ -82,7 +82,7 @@ export const libraryBooks: LibraryBook[] = [
     slug: '30-day-quran-reflection-journey',
     title: '30 Day Quran Reflection Journey',
     author: 'Iqra Khan',
-    coverImage: '/product-ebook-quran.png',
+    coverImage: '/product-ebook-quran.webp',
     description:
       'A structured 30-day journey through selected passages of the Quran, with reflections, journaling prompts, and practical takeaways for each day.',
     category: 'Quran Studies',
@@ -99,7 +99,7 @@ export const libraryBooks: LibraryBook[] = [
     slug: 'daily-duas-for-the-modern-muslim-woman',
     title: 'Daily Duas for the Modern Muslim Woman',
     author: 'Iqra Khan',
-    coverImage: '/product-ebook-dua.png',
+    coverImage: '/product-ebook-dua.webp',
     description:
       'A beautifully formatted collection of authentic duʿas drawn from the Quran and Sunnah, organised around the rhythms of a modern woman\'s day.',
     category: 'Dua & Dhikr',
@@ -116,7 +116,7 @@ export const libraryBooks: LibraryBook[] = [
     slug: 'understanding-your-nafs',
     title: 'Understanding Your Nafs',
     author: 'Iqra Khan',
-    coverImage: '/product-ebook-salah.png',
+    coverImage: '/product-ebook-salah.webp',
     description:
       'An exploration of the Islamic concept of nafs (self/soul) and practical steps to purify your heart and align your inner world with your faith.',
     category: 'Spirituality',
@@ -133,7 +133,7 @@ export const libraryBooks: LibraryBook[] = [
     slug: 'raising-righteous-children',
     title: 'Raising Righteous Children',
     author: 'Iqra Khan',
-    coverImage: '/product-ebook-quran.png',
+    coverImage: '/product-ebook-quran.webp',
     description:
       'A comprehensive guide for Muslim parents on nurturing faith, character, and resilience in children. Based on prophetic parenting principles.',
     category: 'Parenting',
@@ -150,7 +150,7 @@ export const libraryBooks: LibraryBook[] = [
     slug: 'the-seerah-companion',
     title: 'The Seerah Companion',
     author: 'Iqra Khan',
-    coverImage: '/product-ebook-dua.png',
+    coverImage: '/product-ebook-dua.webp',
     description:
       'Walk alongside the Prophet ﷺ through the key moments of his life. A beautifully written companion guide with reflections and lessons for today.',
     category: 'Seerah',

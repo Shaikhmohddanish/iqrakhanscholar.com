@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Clock, X } from 'lucide-react'
 import { type PublicProduct } from '@/lib/product-types'
-import { formatPrice } from '@/lib/product-types'
+import { ProductPrice } from '@/components/currency/product-price'
 
 const STORAGE_KEY = 'ik-recently-viewed'
 const MAX_ITEMS = 8
@@ -58,9 +58,7 @@ export function RecentlyViewed({ currentProductId }: { currentProductId?: string
             </div>
             <div className="p-3">
               <p className="truncate text-sm font-medium text-foreground">{product.title}</p>
-              <p className="mt-1 text-sm font-semibold text-primary">
-                {formatPrice(product.price, product.currency)}
-              </p>
+              <ProductPrice item={product} className="mt-1 block text-sm font-semibold text-primary" />
             </div>
           </Link>
         ))}

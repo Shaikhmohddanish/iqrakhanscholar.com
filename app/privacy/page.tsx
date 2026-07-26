@@ -88,6 +88,7 @@ export default function PrivacyPage() {
               <li><strong>MongoDB Atlas</strong> - Database hosting (EU region)</li>
               <li><strong>Cloudinary</strong> - Image and media hosting</li>
               <li><strong>Vercel</strong> - Website hosting and analytics</li>
+              <li><strong>Google AdSense</strong> - Third-party advertising on our blog and content pages</li>
             </ul>
             <p>All processors are contractually bound to protect your data in accordance with GDPR.</p>
           </section>
@@ -95,6 +96,9 @@ export default function PrivacyPage() {
           <section id="cookies">
             <h2>Cookies</h2>
             <p>We use cookies for essential site functionality, analytics (with consent), and preference storage. You can manage cookie preferences at any time via the cookie banner or our <Link href="/cookie-policy">Cookie Policy</Link>.</p>
+            <h3>Advertising cookies (Google AdSense)</h3>
+            <p>Our blog and content pages display advertising served by Google AdSense. Third-party vendors, including Google, use cookies (such as the DoubleClick cookie) to serve ads based on a user&apos;s prior visits to this and other websites. Google&apos;s use of advertising cookies enables it and its partners to serve ads based on your visit to our site and/or other sites on the internet.</p>
+            <p>You may opt out of personalised advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer">Google Ads Settings</a>, or opt out of third-party vendor cookies at <a href="https://www.aboutads.info/choices" target="_blank" rel="noopener noreferrer">www.aboutads.info/choices</a>. For more information, see Google&apos;s <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer">Advertising policies</a>.</p>
           </section>
 
           <section id="your-rights">

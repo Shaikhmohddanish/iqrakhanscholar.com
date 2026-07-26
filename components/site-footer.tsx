@@ -1,13 +1,16 @@
 import Link from 'next/link'
-import { Camera, PlayCircle, Mail, Send } from 'lucide-react'
+import Image from 'next/image'
+import { Mail } from 'lucide-react'
+import { FacebookIcon, InstagramIcon, YoutubeIcon } from '@/components/icons/social-icons'
+import { socialLinks } from '@/lib/site-data'
 
 const columns = [
   {
     title: 'Explore',
     links: [
       { label: 'About Iqra', href: '/about' },
-      { label: 'Digital Library', href: '/library' },
-      { label: 'Physical Store', href: '/store' },
+      { label: 'E-books', href: '/library' },
+      { label: 'Abayas', href: '/store' },
       { label: 'Knowledge Hub', href: '/blog' },
     ],
   },
@@ -38,13 +41,14 @@ export function SiteFooter() {
         <div className="grid gap-12 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
           {/* Brand + newsletter */}
           <div className="max-w-sm">
-            <Link href="/" className="flex items-center gap-2.5">
-              <span className="flex size-9 items-center justify-center rounded-full bg-accent text-sm font-semibold text-accent-foreground">
-                IK
-              </span>
-              <span className="font-heading text-lg font-semibold">
-                Iqra Khan
-              </span>
+            <Link href="/" className="inline-flex items-center">
+              <Image
+                src="/logo-mark.png"
+                alt="Iqra Khan - Islamic Scholar"
+                width={69}
+                height={40}
+                className="h-10 w-auto"
+              />
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-primary-foreground/70">
               Authentic Islamic knowledge for the modern Muslim woman. Learn,
@@ -78,15 +82,18 @@ export function SiteFooter() {
 
             <div className="mt-6 flex items-center gap-3">
               {[
-                { icon: Camera, label: 'Instagram', href: '#' },
-                { icon: PlayCircle, label: 'YouTube', href: '#' },
-                { icon: Send, label: 'Telegram', href: '#' },
+                { icon: InstagramIcon, label: 'Instagram', href: socialLinks.instagram },
+                { icon: YoutubeIcon, label: 'YouTube', href: socialLinks.youtube },
+                { icon: FacebookIcon, label: 'Facebook', href: socialLinks.facebook },
                 { icon: Mail, label: 'Email', href: 'mailto:hello@iqrakhan.com' },
               ].map((s) => (
                 <a
                   key={s.label}
                   href={s.href}
                   aria-label={s.label}
+                  {...(s.href.startsWith('http')
+                    ? { target: '_blank', rel: 'noopener noreferrer' }
+                    : {})}
                   className="flex size-10 items-center justify-center rounded-full border border-primary-foreground/20 text-primary-foreground/80 transition-colors hover:border-accent hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none"
                 >
                   <s.icon className="size-4" />
@@ -120,8 +127,8 @@ export function SiteFooter() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-primary-foreground/15 pt-8 text-center sm:flex-row sm:text-left">
           <p className="text-xs text-primary-foreground/60">
-            © {new Date().getFullYear()} Iqra Khan. All rights reserved. Made with
-            ihsan.
+            © {new Date().getFullYear()} Iqra Khan. All rights reserved. Made by
+            Danish.
           </p>
           <p className="text-xs text-primary-foreground/60">
             &ldquo;The best of you are those who learn the Quran and teach it.&rdquo;

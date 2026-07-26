@@ -82,7 +82,7 @@ function GeneralSettings() {
         <input defaultValue="Iqra Khan" className="rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
       </SettingRow>
       <SettingRow label="Site URL">
-        <input defaultValue="https://iqrakhan.com" className="rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
+        <input defaultValue="https://iqrakhanscholar.com" className="rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
       </SettingRow>
       <SettingRow label="Contact email">
         <input defaultValue="hello@iqrakhan.com" type="email" className="rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring" />

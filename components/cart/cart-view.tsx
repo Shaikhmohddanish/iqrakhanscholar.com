@@ -5,9 +5,10 @@ import Link from "next/link"
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react"
 import { useCart } from "./cart-provider"
 import { formatPrice } from "@/lib/product-types"
+import { cartLineAmount } from "@/lib/currency"
 
 export function CartView() {
-  const { items, subtotal, shipping, total, setQuantity, removeItem } = useCart()
+  const { items, currency, subtotal, shipping, total, setQuantity, removeItem } = useCart()
 
   if (items.length === 0) {
     return (
@@ -56,7 +57,7 @@ export function CartView() {
                     </p>
                   </div>
                   <span className="font-heading text-base font-semibold text-foreground">
-                    {formatPrice(item.price * item.quantity, "USD")}
+                    {formatPrice(cartLineAmount(item, currency) * item.quantity, currency)}
                   </span>
                 </div>
 
@@ -107,17 +108,17 @@ export function CartView() {
         <dl className="mt-5 space-y-3 text-sm">
           <div className="flex items-center justify-between">
             <dt className="text-muted-foreground">Subtotal</dt>
-            <dd className="font-medium text-foreground">{formatPrice(subtotal, "USD")}</dd>
+            <dd className="font-medium text-foreground">{formatPrice(subtotal, currency)}</dd>
           </div>
           <div className="flex items-center justify-between">
             <dt className="text-muted-foreground">Shipping</dt>
             <dd className="font-medium text-foreground">
-              {shipping === 0 ? "Free" : formatPrice(shipping, "USD")}
+              {shipping === 0 ? "Free" : formatPrice(shipping, currency)}
             </dd>
           </div>
           <div className="flex items-center justify-between border-t border-border pt-3">
             <dt className="font-heading text-base font-semibold text-foreground">Total</dt>
-            <dd className="font-heading text-base font-semibold text-foreground">{formatPrice(total, "USD")}</dd>
+            <dd className="font-heading text-base font-semibold text-foreground">{formatPrice(total, currency)}</dd>
           </div>
         </dl>
         <Link

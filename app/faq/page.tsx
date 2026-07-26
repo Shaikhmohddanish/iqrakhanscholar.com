@@ -9,6 +9,13 @@ import { ChevronDown, Search } from 'lucide-react'
 export const metadata: Metadata = {
   title: 'Frequently Asked Questions',
   description: 'Find answers to common questions about Iqra Khan\'s digital products, consultations, shipping, and more.',
+  alternates: { canonical: '/faq' },
+  openGraph: {
+    title: 'Frequently Asked Questions | Iqra Khan',
+    description:
+      'Answers to common questions about digital products, consultations, shipping, and more.',
+    url: '/faq',
+  },
 }
 
 const categories = [

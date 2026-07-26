@@ -393,9 +393,9 @@ Shared layout with sidebar table of contents
 
 ---
 
-## Phase 4 - Digital Library & Book Detail
+## Phase 4 - E-books & Book Detail
 
-### Digital Library (Netflix-Style)
+### E-books (Netflix-Style)
 
 #### [NEW] `app/library/page.tsx`
 - Featured book hero spotlight

@@ -163,3 +163,66 @@ export async function sendAuthEmail(opts: {
     console.error(`[email:${opts.kind}] failed to send to ${opts.to}:`, err)
   }
 }
+
+// Where contact-form messages are delivered. Falls back to the sending address
+// (EMAIL_FROM / SMTP_USER) when CONTACT_TO isn't set.
+function contactRecipient(): string {
+  return process.env.CONTACT_TO || process.env.EMAIL_FROM || process.env.SMTP_USER || fromAddress()
+}
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+}
+
+export interface ContactMessage {
+  name: string
+  email: string
+  subject: string
+  message: string
+}
+
+// Delivers a contact-form submission to the site owner. Throws when SMTP is
+// configured but the send fails, so the calling action can surface an error to
+// the user. When SMTP isn't configured (local dev), it logs and resolves so the
+// flow stays testable.
+export async function sendContactEmail(msg: ContactMessage): Promise<void> {
+  const transporter = getTransporter()
+
+  if (!transporter) {
+    // eslint-disable-next-line no-console
+    console.log(
+      `[email:contact] from ${msg.name} <${msg.email}> — ${msg.subject}\n${msg.message}`,
+    )
+    return
+  }
+
+  const safeMessage = escapeHtml(msg.message).replace(/\n/g, "<br>")
+  const html = `<!doctype html>
+<html lang="en">
+  <body style="margin:0;padding:24px;background:${BRAND.bg};font-family:Arial,Helvetica,sans-serif;color:${BRAND.ink};">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:12px;border:1px solid ${BRAND.cream};">
+      <tr><td style="padding:24px 28px;">
+        <h1 style="margin:0 0 16px;font-family:Georgia,serif;font-size:20px;color:${BRAND.ink};">New contact message</h1>
+        <p style="margin:0 0 6px;font-size:14px;color:${BRAND.muted};"><strong>Name:</strong> ${escapeHtml(msg.name)}</p>
+        <p style="margin:0 0 6px;font-size:14px;color:${BRAND.muted};"><strong>Email:</strong> ${escapeHtml(msg.email)}</p>
+        <p style="margin:0 0 16px;font-size:14px;color:${BRAND.muted};"><strong>Subject:</strong> ${escapeHtml(msg.subject)}</p>
+        <div style="padding:16px;background:${BRAND.bg};border-radius:8px;font-size:15px;line-height:1.6;color:${BRAND.ink};">${safeMessage}</div>
+      </td></tr>
+    </table>
+  </body>
+</html>`
+  const text = `New contact message\n\nName: ${msg.name}\nEmail: ${msg.email}\nSubject: ${msg.subject}\n\n${msg.message}`
+
+  await transporter.sendMail({
+    from: fromAddress(),
+    to: contactRecipient(),
+    replyTo: `${msg.name} <${msg.email}>`,
+    subject: `[Contact] ${msg.subject}`,
+    text,
+    html,
+  })
+}

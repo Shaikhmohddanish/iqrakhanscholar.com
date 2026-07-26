@@ -5,8 +5,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Star, Eye, ShoppingBag, Check } from 'lucide-react'
 import { BarLoader } from '@/components/ui/bar-loader'
-import { formatPrice, type PublicProduct } from '@/lib/product-types'
+import { type PublicProduct } from '@/lib/product-types'
 import { useCart } from '@/components/cart/cart-provider'
+import { ProductPrice } from '@/components/currency/product-price'
 import { WishlistButton } from './wishlist-button'
 
 interface ProductCardProps {
@@ -100,9 +101,7 @@ export function ProductCard({
         )}
 
         <div className="mt-auto flex items-center justify-between pt-5">
-          <span className="font-heading text-xl font-bold text-foreground">
-            {formatPrice(product.price, product.currency)}
-          </span>
+          <ProductPrice item={product} className="font-heading text-xl font-bold text-foreground" />
           <button
             type="button"
             onClick={handleAdd}

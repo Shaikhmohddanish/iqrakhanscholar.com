@@ -1,6 +1,7 @@
 import "server-only"
 import { ObjectId, type WithId } from "mongodb"
 import { getDb } from "./mongodb"
+import type { BlogPostItem } from "./blog-list"
 
 export type ArticleStatus = "draft" | "published"
 
@@ -31,6 +32,19 @@ function toPublic(doc: WithId<ArticleDoc>): PublicArticle {
   return { id: _id.toString(), ...rest }
 }
 
+// Maps a full article to the lightweight shape the blog list/grid UI consumes.
+export function toBlogListItem(a: PublicArticle): BlogPostItem {
+  return {
+    id: a.id,
+    slug: a.slug,
+    title: a.title,
+    category: a.category,
+    readTime: `${a.readingTime} min read`,
+    excerpt: a.excerpt,
+    image: a.coverImage || "/placeholder.svg",
+  }
+}
+
 async function articlesCol() {
   const db = await getDb()
   const col = db.collection<ArticleDoc>("articles")
@@ -43,11 +57,16 @@ export async function getPublishedArticles(options: {
   category?: string
   limit?: number
   page?: number
+  q?: string
 } = {}): Promise<{ articles: PublicArticle[]; total: number }> {
   const col = await articlesCol()
-  const { category, limit = 12, page = 1 } = options
+  const { category, limit = 12, page = 1, q } = options
   const filter: Record<string, unknown> = { status: "published" }
-  if (category) filter.category = category
+  if (category && category !== "All") filter.category = category
+  if (q) {
+    const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i")
+    filter.$or = [{ title: re }, { excerpt: re }, { tags: re }]
+  }
   const [docs, total] = await Promise.all([
     col.find(filter).sort({ publishedAt: -1 }).skip((page - 1) * limit).limit(limit).toArray(),
     col.countDocuments(filter),

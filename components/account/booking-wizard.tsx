@@ -27,7 +27,6 @@ export function BookingWizard() {
   const [date, setDate] = useState<string | null>(null)
   const [slot, setSlot] = useState<string | null>(null)
   const [topic, setTopic] = useState("")
-  const [notes, setNotes] = useState("")
   const [bookingId, setBookingId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [pending, startTransition] = useTransition()
@@ -38,7 +37,6 @@ export function BookingWizard() {
     setDate(null)
     setSlot(null)
     setTopic("")
-    setNotes("")
     setBookingId(null)
     setError(null)
   }
@@ -55,7 +53,7 @@ export function BookingWizard() {
     if (!sessionType || !date || !slot) return
     setError(null)
     startTransition(async () => {
-      const result = await bookSessionAction({ sessionType, date, slot, topic, notes })
+      const result = await bookSessionAction({ sessionType, date, slot, topic })
       if (result.error) {
         setError(result.error)
       } else if (result.booking) {
@@ -140,14 +138,9 @@ export function BookingWizard() {
         <div className="flex flex-col gap-5">
           <div>
             <h2 className="font-heading text-xl font-semibold text-foreground">Session details</h2>
-            <p className="mt-1 text-sm text-muted-foreground">Tell Iqra what you would like to focus on.</p>
+            <p className="mt-1 text-sm text-muted-foreground">Share the questions you would like Iqra to cover.</p>
           </div>
-          <BookingDetailsForm
-            topic={topic}
-            notes={notes}
-            onTopicChange={setTopic}
-            onNotesChange={setNotes}
-          />
+          <BookingDetailsForm topic={topic} onTopicChange={setTopic} />
         </div>
       )}
 

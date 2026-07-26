@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
@@ -29,6 +30,7 @@ import { logoutAction } from '@/app/actions/auth'
 import type { PublicUser } from '@/lib/types'
 import { hasRole } from '@/lib/types'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { CurrencySwitcher } from '@/components/currency/currency-switcher'
 
 interface SmartHeaderProps {
   user?: PublicUser | null
@@ -57,6 +59,7 @@ export function SmartHeader({ user }: SmartHeaderProps) {
   const router = useRouter()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const [avatarOpen, setAvatarOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [pending, startTransition] = useTransition()
@@ -127,6 +130,22 @@ export function SmartHeader({ user }: SmartHeaderProps) {
     })
   }, [router])
 
+  const closeSearch = useCallback(() => {
+    setSearchOpen(false)
+    setSearchQuery('')
+  }, [])
+
+  const submitSearch = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault()
+      const q = searchQuery.trim()
+      if (!q) return
+      router.push(`/search?q=${encodeURIComponent(q)}`)
+      closeSearch()
+    },
+    [searchQuery, router, closeSearch],
+  )
+
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/'
     return pathname.startsWith(href)
@@ -141,10 +160,13 @@ export function SmartHeader({ user }: SmartHeaderProps) {
 
       <header
         className={cn(
-          'sticky top-0 z-50 w-full border-b transition-all duration-300',
+          'sticky top-0 z-50 w-full border-b transition-colors duration-300',
+          // Opaque background in both states (no backdrop-blur): a blurred sticky
+          // header sitting over the animated hero forces the blur to recompute every
+          // frame, which was the main source of scroll/idle jank.
           scrolled
             ? 'border-border bg-background shadow-[var(--shadow-sm)]'
-            : 'border-transparent bg-background/40 backdrop-blur-sm',
+            : 'border-transparent bg-background/95',
         )}
       >
         <nav
@@ -174,18 +196,14 @@ export function SmartHeader({ user }: SmartHeaderProps) {
             </button>
 
             {/* Logo - desktop only (left-aligned on desktop) */}
-            <Link href="/" className="hidden items-center gap-2.5 lg:flex">
-              <span className="flex size-9 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
-                IK
-              </span>
-              <span className="flex flex-col leading-none">
-                <span className="font-heading text-lg font-semibold text-foreground">
-                  Iqra Khan
-                </span>
-                <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                  Islamic Scholar
-                </span>
-              </span>
+            <Link href="/" className="hidden items-center lg:flex">
+              <Image
+                src="/logo-mark.png"
+                alt="Iqra Khan - Islamic Scholar"
+                width={69}
+                height={40}
+                className="h-10 w-auto"
+              />
             </Link>
           </div>
 
@@ -195,19 +213,15 @@ export function SmartHeader({ user }: SmartHeaderProps) {
           <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center lg:hidden">
             <Link
               href="/"
-              className="pointer-events-auto flex items-center gap-2"
+              className="pointer-events-auto flex items-center"
             >
-              <span className="flex size-9 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
-                IK
-              </span>
-              <span className="flex flex-col leading-none">
-                <span className="font-heading text-base font-semibold text-foreground">
-                  Iqra Khan
-                </span>
-                <span className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
-                  Islamic Scholar
-                </span>
-              </span>
+              <Image
+                src="/logo-mark.png"
+                alt="Iqra Khan - Islamic Scholar"
+                width={62}
+                height={36}
+                className="h-9 w-auto"
+              />
             </Link>
           </div>
 
@@ -257,6 +271,9 @@ export function SmartHeader({ user }: SmartHeaderProps) {
 
                 {/* Cart */}
                 <CartButton />
+
+                {/* Currency switcher - desktop */}
+                <CurrencySwitcher className="hidden lg:flex" />
 
                 {/* Theme toggle - desktop */}
                 <ThemeToggle className="hidden lg:inline-flex" />
@@ -372,6 +389,9 @@ export function SmartHeader({ user }: SmartHeaderProps) {
                 {/* Cart */}
                 <CartButton />
 
+                {/* Currency switcher - desktop */}
+                <CurrencySwitcher className="hidden lg:flex" />
+
                 {/* Theme toggle - desktop */}
                 <ThemeToggle className="hidden lg:inline-flex" />
 
@@ -405,26 +425,29 @@ export function SmartHeader({ user }: SmartHeaderProps) {
         {/* ── Search overlay ── */}
         {searchOpen && (
           <div className="search-overlay">
-            <div className="search-overlay-inner">
+            <form className="search-overlay-inner" role="search" onSubmit={submitSearch}>
               <Search className="size-4 shrink-0 text-muted-foreground" />
               <input
                 ref={searchInputRef}
                 type="search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search books, products, articles..."
                 className="search-overlay-input"
+                aria-label="Search"
                 onKeyDown={(e) => {
-                  if (e.key === 'Escape') setSearchOpen(false)
+                  if (e.key === 'Escape') closeSearch()
                 }}
               />
               <button
                 type="button"
-                onClick={() => setSearchOpen(false)}
+                onClick={closeSearch}
                 className="inline-flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground"
                 aria-label="Close search"
               >
                 <X className="size-4" />
               </button>
-            </div>
+            </form>
           </div>
         )}
       </header>
@@ -444,12 +467,13 @@ export function SmartHeader({ user }: SmartHeaderProps) {
                 className="flex items-center gap-2"
                 onClick={() => setDrawerOpen(false)}
               >
-                <span className="flex size-8 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
-                  IK
-                </span>
-                <span className="font-heading text-base font-semibold text-foreground">
-                  Iqra Khan
-                </span>
+                <Image
+                  src="/logo-mark.png"
+                  alt="Iqra Khan - Islamic Scholar"
+                  width={55}
+                  height={32}
+                  className="h-8 w-auto"
+                />
               </Link>
               <button
                 type="button"
@@ -519,6 +543,9 @@ export function SmartHeader({ user }: SmartHeaderProps) {
             )}
 
             <div className="mobile-drawer-footer">
+              {/* Currency switcher - always visible in drawer */}
+              <CurrencySwitcher variant="labeled" />
+
               {/* Theme toggle - always visible in drawer */}
               <ThemeToggle variant="labeled" />
 

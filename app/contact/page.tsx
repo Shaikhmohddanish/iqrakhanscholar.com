@@ -3,12 +3,22 @@ import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { ContactForm } from './contact-form'
-import { Mail, MapPin, Clock, Phone, Camera, PlayCircle, Send as TelegramIcon } from 'lucide-react'
+import { Mail, MapPin, Clock } from 'lucide-react'
+import { FacebookIcon, InstagramIcon, YoutubeIcon } from '@/components/icons/social-icons'
+import { socialLinks } from '@/lib/site-data'
+import { SITE_URL } from '@/lib/site-config'
 
 export const metadata: Metadata = {
   title: 'Contact Us',
   description:
     'Get in touch with Iqra Khan. Send a message, ask a question, or inquire about collaborations and speaking engagements.',
+  alternates: { canonical: '/contact' },
+  openGraph: {
+    title: 'Contact Iqra Khan',
+    description:
+      'Get in touch with Iqra Khan - questions, collaborations, and speaking engagements.',
+    url: '/contact',
+  },
 }
 
 const contactInfo = [
@@ -31,9 +41,9 @@ const contactInfo = [
 ]
 
 const socials = [
-  { icon: Camera, label: 'Instagram', href: '#' },
-  { icon: PlayCircle, label: 'YouTube', href: '#' },
-  { icon: TelegramIcon, label: 'Telegram', href: '#' },
+  { icon: InstagramIcon, label: 'Instagram', href: socialLinks.instagram },
+  { icon: YoutubeIcon, label: 'YouTube', href: socialLinks.youtube },
+  { icon: FacebookIcon, label: 'Facebook', href: socialLinks.facebook },
 ]
 
 export default function ContactPage() {
@@ -92,6 +102,8 @@ export default function ContactPage() {
                       key={s.label}
                       href={s.href}
                       aria-label={s.label}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="flex size-10 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:border-primary hover:bg-primary/10 hover:text-primary"
                     >
                       <s.icon className="size-5" />
@@ -112,7 +124,7 @@ export default function ContactPage() {
             '@context': 'https://schema.org',
             '@type': 'ContactPage',
             name: 'Contact Iqra Khan',
-            url: 'https://iqrakhan.com/contact',
+            url: `${SITE_URL}/contact`,
           }),
         }}
       />

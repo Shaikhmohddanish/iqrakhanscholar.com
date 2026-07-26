@@ -8,6 +8,7 @@ import { Lock, ShieldCheck } from "lucide-react"
 import { BarLoader } from "@/components/ui/bar-loader"
 import { useCart } from "@/components/cart/cart-provider"
 import { formatPrice } from "@/lib/product-types"
+import { cartLineAmount } from "@/lib/currency"
 import { placeOrderAction, type CheckoutState } from "@/app/actions/checkout"
 
 function FieldError({ msg }: { msg?: string }) {
@@ -15,7 +16,7 @@ function FieldError({ msg }: { msg?: string }) {
   return <p className="mt-1 text-xs text-destructive">{msg}</p>
 }
 
-function PayButton({ total }: { total: number }) {
+function PayButton({ total, currency }: { total: number; currency: string }) {
   const { pending } = useFormStatus()
   return (
     <button
@@ -28,7 +29,7 @@ function PayButton({ total }: { total: number }) {
       ) : (
         <>
           <Lock className="size-4" />
-          Pay {formatPrice(total, "USD")}
+          Pay {formatPrice(total, currency)}
         </>
       )}
     </button>
@@ -36,7 +37,7 @@ function PayButton({ total }: { total: number }) {
 }
 
 export function CheckoutForm({ userEmail }: { userEmail: string }) {
-  const { items, subtotal, shipping, total } = useCart()
+  const { items, currency, subtotal, shipping, total } = useCart()
   const hasPhysical = items.some((i) => i.type === "physical")
   const [state, formAction] = useActionState<CheckoutState, FormData>(placeOrderAction, {})
 
@@ -130,8 +131,8 @@ export function CheckoutForm({ userEmail }: { userEmail: string }) {
           <div className="mt-3 flex items-start gap-3 rounded-xl border border-dashed border-primary/40 bg-secondary/50 px-4 py-3">
             <ShieldCheck className="mt-0.5 size-5 shrink-0 text-primary" />
             <p className="text-sm text-muted-foreground">
-              This is a secure simulated checkout for demonstration. No real card is charged. Connect
-              Stripe or Razorpay to accept live payments.
+              Payments are processed securely. You may be redirected to our payment provider to
+              complete your purchase, then returned here to your order confirmation.
             </p>
           </div>
         </section>
@@ -150,7 +151,7 @@ export function CheckoutForm({ userEmail }: { userEmail: string }) {
                 <p className="text-xs text-muted-foreground">Qty {item.quantity}</p>
               </div>
               <span className="text-sm font-medium text-foreground">
-                {formatPrice(item.price * item.quantity, "USD")}
+                {formatPrice(cartLineAmount(item, currency) * item.quantity, currency)}
               </span>
             </li>
           ))}
@@ -159,23 +160,26 @@ export function CheckoutForm({ userEmail }: { userEmail: string }) {
         <dl className="mt-5 space-y-3 border-t border-border pt-5 text-sm">
           <div className="flex items-center justify-between">
             <dt className="text-muted-foreground">Subtotal</dt>
-            <dd className="font-medium text-foreground">{formatPrice(subtotal, "USD")}</dd>
+            <dd className="font-medium text-foreground">{formatPrice(subtotal, currency)}</dd>
           </div>
           <div className="flex items-center justify-between">
             <dt className="text-muted-foreground">Shipping</dt>
-            <dd className="font-medium text-foreground">{shipping === 0 ? "Free" : formatPrice(shipping, "USD")}</dd>
+            <dd className="font-medium text-foreground">{shipping === 0 ? "Free" : formatPrice(shipping, currency)}</dd>
           </div>
           <div className="flex items-center justify-between border-t border-border pt-3">
             <dt className="font-heading text-base font-semibold text-foreground">Total</dt>
-            <dd className="font-heading text-base font-semibold text-foreground">{formatPrice(total, "USD")}</dd>
+            <dd className="font-heading text-base font-semibold text-foreground">{formatPrice(total, currency)}</dd>
           </div>
         </dl>
+
+        {/* Currency the order is placed in; the server re-derives and verifies this. */}
+        <input type="hidden" name="currency" value={currency} />
 
         {state.error && (
           <p className="mt-4 rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">{state.error}</p>
         )}
 
-        <PayButton total={total} />
+        <PayButton total={total} currency={currency} />
         <p className="mt-3 text-center text-xs text-muted-foreground">
           By placing this order you agree to our Terms &amp; Refund Policy.
         </p>

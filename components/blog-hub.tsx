@@ -1,10 +1,12 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight, Clock } from 'lucide-react'
-import { blogPosts } from '@/lib/site-data'
+import type { BlogPostItem } from '@/lib/blog-list'
 import { Reveal } from '@/components/reveal'
 
-export function BlogHub() {
+export function BlogHub({ posts }: { posts: BlogPostItem[] }) {
+  if (posts.length === 0) return null
+
   return (
     <section id="blog" className="scroll-mt-20">
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
@@ -31,12 +33,12 @@ export function BlogHub() {
         </Reveal>
 
         <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {blogPosts.map((post, i) => (
-            <Reveal key={post.title} delay={i * 80}>
+          {posts.map((post, i) => (
+            <Reveal key={post.slug} delay={i * 80}>
             <article
               className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
             >
-              <Link href="/blog" className="relative aspect-[16/10] overflow-hidden">
+              <Link href={`/blog/${post.slug}`} className="relative aspect-[16/10] overflow-hidden">
                 <Image
                   src={post.image || '/placeholder.svg'}
                   alt={post.title}
@@ -50,7 +52,7 @@ export function BlogHub() {
               </Link>
               <div className="flex flex-1 flex-col p-6">
                 <h3 className="font-heading text-lg font-semibold leading-snug text-foreground">
-                  <Link href="/blog" className="hover:text-primary">
+                  <Link href={`/blog/${post.slug}`} className="hover:text-primary">
                     {post.title}
                   </Link>
                 </h3>
@@ -63,7 +65,7 @@ export function BlogHub() {
                     {post.readTime}
                   </span>
                   <Link
-                    href="/blog"
+                    href={`/blog/${post.slug}`}
                     className="inline-flex items-center gap-1 text-sm font-medium text-primary"
                   >
                     Read

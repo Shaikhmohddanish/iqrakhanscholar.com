@@ -5,14 +5,22 @@ import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { LibraryHero } from '@/components/library/library-hero'
 import { LibraryClient, type LibraryItem } from './library-client'
 import { queryProducts, getProductFacets } from '@/lib/products'
+import { SITE_URL } from '@/lib/site-config'
 
 export const metadata: Metadata = {
-  title: 'Digital Library - Islamic Books & Guides',
+  title: 'E-books - Islamic Books & Guides',
   description:
     'Explore our curated digital library of Islamic books, study guides, and resources. Read in-browser with our immersive PDF reader.',
+  alternates: { canonical: '/library' },
+  openGraph: {
+    title: 'E-books - Islamic Books & Guides | Iqra Khan',
+    description:
+      'A curated digital library of Islamic books, study guides, and resources, read in-browser.',
+    url: '/library',
+  },
 }
 
-function toLibraryItem(p: { id: string; slug: string; title: string; author?: string; image: string; rating: number; reviews: number; price: number; currency: string; category: string; featured: boolean; }): LibraryItem {
+function toLibraryItem(p: { id: string; slug: string; title: string; author?: string; image: string; rating: number; reviews: number; price: number; currency: string; prices?: Record<string, number>; category: string; featured: boolean; }): LibraryItem {
   return {
     id: p.id,
     slug: p.slug,
@@ -23,6 +31,7 @@ function toLibraryItem(p: { id: string; slug: string; title: string; author?: st
     reviews: p.reviews,
     price: p.price,
     currency: p.currency,
+    prices: p.prices,
     category: p.category,
   }
 }
@@ -45,7 +54,7 @@ export default async function LibraryPage() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Iqra Khan Digital Library',
+    name: 'Iqra Khan E-books',
     description: 'Islamic books and study guides for in-browser reading.',
     numberOfItems: allBooks.length,
     itemListElement: allBooks.map((b, i) => ({
@@ -55,7 +64,7 @@ export default async function LibraryPage() {
         '@type': 'Book',
         name: b.title,
         author: { '@type': 'Person', name: b.author ?? '' },
-        url: `https://iqrakhan.com/library/${b.slug}`,
+        url: `${SITE_URL}/library/${b.slug}`,
       },
     })),
   }
@@ -74,7 +83,7 @@ export default async function LibraryPage() {
 
           <div className="mt-6">
             <h1 className="font-heading text-3xl font-bold text-foreground sm:text-4xl">
-              Digital Library
+              E-books
             </h1>
             <p className="mt-2 text-lg text-muted-foreground">
               Islamic books &amp; guides - read in-browser, anytime, anywhere.

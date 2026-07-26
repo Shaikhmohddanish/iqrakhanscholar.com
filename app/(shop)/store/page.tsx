@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_URL } from '@/lib/site-config'
 import { queryProducts, getProductFacets } from '@/lib/products'
 import { getCurrentUser } from '@/lib/session'
 import { getWishlist } from '@/lib/wishlist'
@@ -6,10 +7,16 @@ import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { StoreClient } from '@/components/store/store-client'
 
 export const metadata: Metadata = {
-  title: 'Store - Books, Journals & Digital Resources',
+  title: 'Abayas - Modest Wear, Books & Digital Resources',
   description:
-    'Shop signed hardcover books, premium Islamic journals and planners, plus instant-download ebooks, study guides and resource packs by Iqra Khan.',
+    'Shop elegant abayas and modest wear, signed hardcover books, premium Islamic journals and planners, plus instant-download ebooks, study guides and resource packs by Iqra Khan.',
   alternates: { canonical: '/store' },
+  openGraph: {
+    title: 'Abayas - Modest Wear, Books & Digital Resources | Iqra Khan',
+    description:
+      'Signed hardcover books, premium Islamic journals and planners, plus instant-download ebooks and guides.',
+    url: '/store',
+  },
 }
 
 export default async function StorePage() {
@@ -23,8 +30,8 @@ export default async function StorePage() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Iqra Khan Store',
-    description: 'Islamic books, journals, and digital resources by Iqra Khan.',
+    name: 'Iqra Khan Abayas & Store',
+    description: 'Abayas, Islamic books, journals, and digital resources by Iqra Khan.',
     numberOfItems: initial.total,
     itemListElement: initial.items.map((p, i) => ({
       '@type': 'ListItem',
@@ -32,7 +39,7 @@ export default async function StorePage() {
       item: {
         '@type': 'Product',
         name: p.title,
-        url: `https://iqrakhan.com/store/${p.slug}`,
+        url: `${SITE_URL}/store/${p.slug}`,
         image: p.image,
       },
     })),
@@ -45,10 +52,10 @@ export default async function StorePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <Breadcrumb items={[{ label: 'Store' }]} />
+      <Breadcrumb items={[{ label: 'Abayas' }]} />
 
       <header className="mt-6 max-w-2xl">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">The Store</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">The Abaya Collection</p>
         <h1 className="mt-3 text-balance font-heading text-4xl font-semibold text-foreground sm:text-5xl">
           Knowledge you can hold &amp; download
         </h1>

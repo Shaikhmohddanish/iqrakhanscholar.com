@@ -27,7 +27,7 @@ export function AboutSection() {
           <Reveal className="relative order-2 lg:order-1">
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2rem] border border-border shadow-xl">
               <Image
-                src="/iqra-about.png"
+                src="/iqra-about.webp"
                 alt="Iqra Khan studying the Quran in her home study"
                 fill
                 className="object-cover"

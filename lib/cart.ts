@@ -1,6 +1,7 @@
 import "server-only"
 import { cookies } from "next/headers"
 import type { ProductType } from "./product-types"
+import { DEFAULT_CURRENCY, shippingForCurrency } from "./currency"
 
 export const CART_COOKIE = "ik_cart"
 
@@ -9,8 +10,12 @@ export interface CartItem {
   slug: string
   title: string
   image: string
-  // unit price in integer cents
+  // base unit price in integer minor units of `currency`
   price: number
+  // base currency code for `price` (the fallback)
+  currency: string
+  // optional manually-entered per-currency amounts (currency code -> minor units)
+  prices?: Record<string, number>
   type: ProductType
   quantity: number
 }
@@ -29,14 +34,17 @@ export async function readCart(): Promise<Cart> {
   try {
     const parsed = JSON.parse(raw) as Cart
     if (!parsed || !Array.isArray(parsed.items)) return { items: [] }
-    // basic shape validation
-    const items = parsed.items.filter(
-      (i) =>
-        typeof i.productId === "string" &&
-        typeof i.price === "number" &&
-        typeof i.quantity === "number" &&
-        i.quantity > 0,
-    )
+    // basic shape validation; default currency for carts saved before
+    // multi-currency support so resolution helpers always have a base.
+    const items = parsed.items
+      .filter(
+        (i) =>
+          typeof i.productId === "string" &&
+          typeof i.price === "number" &&
+          typeof i.quantity === "number" &&
+          i.quantity > 0,
+      )
+      .map((i) => ({ ...i, currency: i.currency ?? DEFAULT_CURRENCY }))
     return { items }
   } catch {
     return { items: [] }
@@ -66,14 +74,14 @@ export function cartSubtotal(cart: Cart): number {
   return cart.items.reduce((sum, i) => sum + i.price * i.quantity, 0)
 }
 
-// Flat-rate shipping if the cart contains any physical item.
-export function cartShipping(cart: Cart): number {
+// Flat-rate shipping (in the given currency) if the cart contains a physical item.
+export function cartShipping(cart: Cart, currency: string = DEFAULT_CURRENCY): number {
   const hasPhysical = cart.items.some((i) => i.type === "physical")
-  return hasPhysical ? 599 : 0
+  return hasPhysical ? shippingForCurrency(currency) : 0
 }
 
-export function cartTotal(cart: Cart): number {
-  return cartSubtotal(cart) + cartShipping(cart)
+export function cartTotal(cart: Cart, currency: string = DEFAULT_CURRENCY): number {
+  return cartSubtotal(cart) + cartShipping(cart, currency)
 }
 
 export { EMPTY as EMPTY_CART }

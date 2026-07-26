@@ -77,6 +77,7 @@ export function RegisterForm() {
           <label className="flex items-start gap-3 text-sm">
             <input
               type="checkbox"
+              name="acceptTerms"
               checked={termsAccepted}
               onChange={(e) => setTermsAccepted(e.target.checked)}
               required
@@ -89,9 +90,11 @@ export function RegisterForm() {
               <Link href="/privacy" className="font-medium text-primary hover:underline">Privacy Policy</Link>
             </span>
           </label>
+          <FieldError message={state.fieldErrors?.acceptTerms} />
           <label className="flex items-start gap-3 text-sm">
             <input
               type="checkbox"
+              name="marketingConsent"
               checked={gdprConsent}
               onChange={(e) => setGdprConsent(e.target.checked)}
               className="mt-0.5 rounded border-border"

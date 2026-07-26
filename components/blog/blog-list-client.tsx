@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Clock, ArrowRight, Search, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { type BlogPostItem } from '@/lib/blog-list'
@@ -102,7 +103,17 @@ export function BlogListClient({ categories, initialItems, initialHasMore }: Blo
                 href={`/blog/${post.slug}`}
                 className="group overflow-hidden rounded-xl border border-border bg-card transition-shadow hover:shadow-[var(--shadow-md)]"
               >
-                <div className="aspect-[16/10] bg-muted" />
+                <div className="relative aspect-[16/10] bg-muted">
+                  {post.image && (
+                    <Image
+                      src={post.image}
+                      alt={post.title}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                  )}
+                </div>
                 <div className="p-5">
                   <div className="flex items-center gap-2 text-xs">
                     <span className="rounded-full bg-primary/10 px-2.5 py-0.5 font-medium text-primary">

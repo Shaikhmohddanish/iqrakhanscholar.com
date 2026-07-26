@@ -53,6 +53,19 @@ export async function registerAction(
     return { ok: false, fieldErrors: zodFieldErrors(parsed.error) }
   }
 
+  // Consent is required server-side too — the client `required` attribute and
+  // disabled submit button are convenience, not the source of truth.
+  const acceptedTerms = formData.get("acceptTerms") === "on"
+  if (!acceptedTerms) {
+    return {
+      ok: false,
+      fieldErrors: {
+        acceptTerms: "Please accept the Terms of Service and Privacy Policy to continue.",
+      },
+    }
+  }
+  const marketingConsent = formData.get("marketingConsent") === "on"
+
   const { name, email, password } = parsed.data
   const existing = await findUserByEmail(email)
   if (existing) {
@@ -76,6 +89,8 @@ export async function registerAction(
     verificationToken: hashed,
     verificationExpires: new Date(now.getTime() + 1000 * 60 * 60 * 24), // 24h
     refreshTokens: [],
+    termsAcceptedAt: now,
+    marketingConsent,
     createdAt: now,
     updatedAt: now,
   }

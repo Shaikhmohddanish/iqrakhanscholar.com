@@ -3,9 +3,13 @@ import type { Metadata } from 'next'
 import { Jost, Playfair_Display, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import { readCart } from '@/lib/cart'
+import { getActiveCurrency } from '@/lib/currency-server'
 import { CartProvider } from '@/components/cart/cart-provider'
+import { CurrencyProvider } from '@/components/currency/currency-provider'
 import { CookieConsent } from '@/components/cookie-consent'
 import { ThemeProvider } from '@/components/theme-provider'
+import { AdsenseLoader } from '@/components/ads/adsense-loader'
+import { SITE_URL as siteUrl } from '@/lib/site-config'
 
 const jost = Jost({
   variable: '--font-jost',
@@ -24,8 +28,6 @@ const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
 })
-
-const siteUrl = 'https://iqrakhan.com'
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -65,6 +67,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: siteUrl,
   },
+  verification: process.env.NEXT_PUBLIC_GSC_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION }
+    : undefined,
   generator: 'v0.app',
 }
 
@@ -74,6 +79,7 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   const cart = await readCart()
+  const currency = await getActiveCurrency()
   return (
     <html
       lang="en"
@@ -88,11 +94,14 @@ export default async function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <CartProvider initialItems={cart.items}>
-            {children}
-            <CookieConsent />
-          </CartProvider>
+          <CurrencyProvider initialCurrency={currency}>
+            <CartProvider initialItems={cart.items}>
+              {children}
+              <CookieConsent />
+            </CartProvider>
+          </CurrencyProvider>
         </ThemeProvider>
+        <AdsenseLoader />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

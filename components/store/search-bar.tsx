@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Search, X, Clock, ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { type PublicProduct } from '@/lib/product-types'
+import Image from 'next/image'
 import Link from 'next/link'
 
 interface StoreSearchBarProps {
@@ -80,6 +81,10 @@ export function StoreSearchBar({ products, className }: StoreSearchBarProps) {
           placeholder="Search products..."
           className="h-10 w-full rounded-lg border border-border bg-card pl-9 pr-9 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
           aria-label="Search products"
+          role="combobox"
+          aria-expanded={open && results.length > 0}
+          aria-controls="store-search-results"
+          aria-autocomplete="list"
         />
         {query && (
           <button
@@ -123,17 +128,25 @@ export function StoreSearchBar({ products, className }: StoreSearchBarProps) {
           )}
 
           {results.length > 0 && (
-            <div className="max-h-80 overflow-y-auto scrollbar-thin">
+            <div id="store-search-results" role="listbox" aria-label="Search results" className="max-h-80 overflow-y-auto scrollbar-thin">
               {results.map((product) => (
                 <Link
                   key={product.id}
                   href={`/store/${product.slug}`}
+                  role="option"
+                  aria-selected={false}
                   onClick={() => handleSelect(product)}
                   className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-muted"
                 >
                   <div className="size-10 shrink-0 overflow-hidden rounded-lg bg-muted">
                     {product.image && (
-                      <img src={product.image} alt="" className="size-full object-cover" />
+                      <Image
+                        src={product.image}
+                        alt=""
+                        width={40}
+                        height={40}
+                        className="size-full object-cover"
+                      />
                     )}
                   </div>
                   <div className="min-w-0 flex-1">

@@ -1,8 +1,9 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Star } from "lucide-react"
-import { formatPrice, type PublicProduct } from "@/lib/products"
+import { type PublicProduct } from "@/lib/products"
 import { AddToCartButton } from "@/components/cart/add-to-cart-button"
+import { ProductPrice } from "@/components/currency/product-price"
 
 export function StoreProductCard({ product }: { product: PublicProduct }) {
   return (
@@ -46,9 +47,7 @@ export function StoreProductCard({ product }: { product: PublicProduct }) {
           {product.shortDescription}
         </p>
         <div className="mt-auto flex items-center justify-between pt-5">
-          <span className="font-heading text-xl font-bold text-foreground">
-            {formatPrice(product.price, product.currency)}
-          </span>
+          <ProductPrice item={product} className="font-heading text-xl font-bold text-foreground" />
           <AddToCartButton product={product} />
         </div>
       </div>

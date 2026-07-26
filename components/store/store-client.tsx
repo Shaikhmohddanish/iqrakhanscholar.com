@@ -5,7 +5,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Star, Eye, ShoppingBag, SlidersHorizontal, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { formatPrice, type PublicProduct } from '@/lib/product-types'
+import { type PublicProduct } from '@/lib/product-types'
+import { ProductPrice } from '@/components/currency/product-price'
 import { useCart } from '@/components/cart/cart-provider'
 import { StoreSearchBar } from './search-bar'
 import { StoreSidebar } from './store-sidebar'
@@ -286,9 +287,7 @@ function ProductListItem({
         </p>
 
         <div className="mt-auto flex items-center justify-between gap-3 pt-3">
-          <span className="font-heading text-lg font-bold text-foreground">
-            {formatPrice(product.price, product.currency)}
-          </span>
+          <ProductPrice item={product} className="font-heading text-lg font-bold text-foreground" />
           <div className="flex items-center gap-2">
             <button
               type="button"

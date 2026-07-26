@@ -4,7 +4,7 @@ import Link from "next/link"
 import { getCurrentUser } from "@/lib/session"
 import { getWishlist } from "@/lib/wishlist"
 import { getProductsByIds } from "@/lib/products"
-import { formatPrice } from "@/lib/product-types"
+import { ProductPrice } from "@/components/currency/product-price"
 import { PageHeading } from "@/components/account/coming-soon"
 import { WishlistRemoveButton } from "./wishlist-remove-button"
 import { AddToCartButton } from "@/components/cart/add-to-cart-button"
@@ -69,9 +69,7 @@ export default async function WishlistPage() {
                       {product.title}
                     </h3>
                   </Link>
-                  <p className="mt-1 text-sm font-semibold text-foreground">
-                    {formatPrice(product.price, product.currency)}
-                  </p>
+                  <ProductPrice item={product} className="mt-1 block text-sm font-semibold text-foreground" />
                 </div>
 
                 <div className="mt-auto flex gap-2">

@@ -3,11 +3,13 @@
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import type { PublicProduct } from "@/lib/product-types"
+import { SUPPORTED_CURRENCIES, toMinorUnits, fromMinorUnits } from "@/lib/currency"
 import { createProductAction, updateProductAction } from "@/app/actions/admin/products"
 import { CheckCircle2 } from "lucide-react"
 import { BarLoader } from "@/components/ui/bar-loader"
 import { ImageUpload } from "./image-upload"
 import { PdfUpload } from "./pdf-upload"
+import { CurrencyPriceList, type CurrencyPriceRow } from "./currency-price-list"
 
 interface ProductFormProps {
   product?: PublicProduct
@@ -24,13 +26,22 @@ export function ProductForm({ product }: ProductFormProps) {
     product?.images ?? (product?.image ? [product.image] : []),
   )
 
+  const baseCurrency = product?.currency ?? "USD"
+
+  // Per-currency prices other than the base currency (which is edited above).
+  const [extraPrices, setExtraPrices] = useState<CurrencyPriceRow[]>(() =>
+    Object.entries(product?.prices ?? {})
+      .filter(([code]) => code !== baseCurrency)
+      .map(([code, minor]) => ({ code, amount: String(fromMinorUnits(minor, code)) })),
+  )
+
   const [form, setForm] = useState({
     title: product?.title ?? "",
     slug: product?.slug ?? "",
     category: product?.category ?? "",
     type: product?.type ?? "digital",
-    price: product ? String(product.price / 100) : "",
-    currency: product?.currency ?? "USD",
+    price: product ? String(fromMinorUnits(product.price, baseCurrency)) : "",
+    currency: baseCurrency,
     badge: product?.badge ?? "",
     shortDescription: product?.shortDescription ?? "",
     description: product?.description ?? "",
@@ -54,13 +65,24 @@ export function ProductForm({ product }: ProductFormProps) {
     e.preventDefault()
     setError(null)
     startTransition(async () => {
+      const basePrice = toMinorUnits(parseFloat(form.price), form.currency)
+      // Build the per-currency map: base price + each additional currency.
+      const prices: Record<string, number> = { [form.currency]: basePrice }
+      for (const row of extraPrices) {
+        const amount = parseFloat(row.amount)
+        if (row.code && !Number.isNaN(amount)) {
+          prices[row.code] = toMinorUnits(amount, row.code)
+        }
+      }
+
       const data: Record<string, unknown> = {
         title: form.title,
         slug: form.slug,
         category: form.category,
         type: form.type as "digital" | "physical",
-        price: Math.round(parseFloat(form.price) * 100),
+        price: basePrice,
         currency: form.currency,
+        prices,
         image: images[0] ?? "",
         images,
         badge: form.badge || undefined,
@@ -126,9 +148,34 @@ export function ProductForm({ product }: ProductFormProps) {
             <option value="physical">Physical</option>
           </select>
         </div>
-        {field("Price (USD)", "price", "number", true)}
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm font-medium text-foreground">
+            Base currency <span className="text-destructive">*</span>
+          </label>
+          <select
+            value={form.currency}
+            onChange={(e) => set("currency", e.target.value)}
+            className="rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            {SUPPORTED_CURRENCIES.map((c) => (
+              <option key={c.code} value={c.code}>
+                {c.code} — {c.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        {field("Base price", "price", "number", true)}
         {form.type === "physical" && field("Stock quantity", "stock", "number")}
         {field("Badge (optional)", "badge", "text")}
+      </div>
+
+      {/* Per-currency pricing - the client enters each currency's amount manually */}
+      <div className="rounded-xl border border-border bg-muted/30 p-5">
+        <CurrencyPriceList
+          rows={extraPrices}
+          onChange={setExtraPrices}
+          excludeCode={form.currency}
+        />
       </div>
 
       {/* Product images */}

@@ -14,12 +14,17 @@ import { FaqSection } from '@/components/faq-section'
 import { SiteFooter } from '@/components/site-footer'
 import { StructuredData } from '@/components/structured-data'
 import { getProductsByType } from '@/lib/products'
+import { getPublishedArticles, toBlogListItem } from '@/lib/blog'
+
+export const revalidate = 3600
 
 export default async function HomePage() {
-  const [digital, physical] = await Promise.all([
+  const [digital, physical, { articles }] = await Promise.all([
     getProductsByType('digital'),
     getProductsByType('physical'),
+    getPublishedArticles({ page: 1, limit: 3 }),
   ])
+  const blogPosts = articles.map(toBlogListItem)
 
   return (
     <>
@@ -32,7 +37,7 @@ export default async function HomePage() {
         <AboutSection />
         <ProductShowcase
           id="digital"
-          eyebrow="Digital Library"
+          eyebrow="E-books"
           title="Featured digital products"
           description="Instantly downloadable ebooks, study guides, and resource packs to learn at your own pace."
           products={digital.slice(0, 3)}
@@ -41,7 +46,7 @@ export default async function HomePage() {
         />
         <ProductShowcase
           id="store"
-          eyebrow="Physical Store"
+          eyebrow="Abayas & More"
           title="Featured books & journals"
           description="Lovingly crafted books, journals, and planners to bring your practice into everyday life."
           products={physical.slice(0, 3)}
@@ -53,7 +58,7 @@ export default async function HomePage() {
         <VideoGallery />
         <DailyReflection />
         <TestimonialsSection />
-        <BlogHub />
+        <BlogHub posts={blogPosts} />
         <EmailCapture />
         <FaqSection />
       </main>

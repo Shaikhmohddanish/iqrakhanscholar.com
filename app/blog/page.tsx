@@ -1,27 +1,41 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { Clock } from 'lucide-react'
-import { queryBlogPosts, getBlogCategories } from '@/lib/blog-list'
+import { getPublishedArticles, getArticleCategories, toBlogListItem } from '@/lib/blog'
 import { BlogListClient } from '@/components/blog/blog-list-client'
-import { blogPosts } from '@/lib/site-data'
+
+// Refresh published content hourly (ISR) without a redeploy.
+export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'Blog - Knowledge Hub',
   description:
     'Explore Islamic articles, guides, and reflections on worship, parenting, faith, and more by Iqra Khan.',
+  alternates: { canonical: '/blog' },
+  openGraph: {
+    type: 'website',
+    title: 'Blog - Knowledge Hub | Iqra Khan',
+    description:
+      'Islamic articles, guides, and reflections on worship, parenting, and faith by Iqra Khan.',
+    url: '/blog',
+    images: [{ url: '/blog-women.webp' }],
+  },
 }
 
-function toSlug(title: string): string {
-  return title.toLowerCase().replace(/[^a-z0-9]+/g, '-')
-}
+export default async function BlogPage() {
+  const [{ articles, total }, cats] = await Promise.all([
+    getPublishedArticles({ page: 1, limit: 9 }),
+    getArticleCategories(),
+  ])
 
-export default function BlogPage() {
-  const categories = getBlogCategories()
-  const initial = queryBlogPosts({ page: 1, limit: 9 })
-  const featured = blogPosts[0]
+  const categories = ['All', ...cats]
+  const items = articles.map(toBlogListItem)
+  const featured = items[0]
+  const initialHasMore = items.length < total
 
   return (
     <>
@@ -42,11 +56,22 @@ export default function BlogPage() {
           {/* Featured article - server-rendered */}
           {featured && (
             <Link
-              href={`/blog/${toSlug(featured.title)}`}
+              href={`/blog/${featured.slug}`}
               className="group mt-10 block overflow-hidden rounded-2xl border border-border bg-card transition-shadow hover:shadow-[var(--shadow-md)]"
             >
               <div className="grid gap-0 lg:grid-cols-2">
-                <div className="aspect-[16/9] bg-arabesque lg:aspect-auto" />
+                <div className="relative aspect-[16/9] bg-arabesque lg:aspect-auto">
+                  {featured.image && (
+                    <Image
+                      src={featured.image}
+                      alt={featured.title}
+                      fill
+                      priority
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                    />
+                  )}
+                </div>
                 <div className="flex flex-col justify-center p-8">
                   <span className="inline-flex w-fit rounded-full bg-primary/10 px-3 py-0.5 text-xs font-semibold text-primary">
                     Featured
@@ -72,8 +97,8 @@ export default function BlogPage() {
           {/* Client-side infinite grid with filters */}
           <BlogListClient
             categories={categories}
-            initialItems={initial.items}
-            initialHasMore={initial.hasMore}
+            initialItems={items}
+            initialHasMore={initialHasMore}
           />
         </div>
       </main>

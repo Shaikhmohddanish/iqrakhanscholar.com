@@ -4,7 +4,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { X, Star, ShoppingBag, Check } from 'lucide-react'
 import { BarLoader } from '@/components/ui/bar-loader'
-import { formatPrice, type PublicProduct } from '@/lib/product-types'
+import { type PublicProduct } from '@/lib/product-types'
+import { ProductPrice } from '@/components/currency/product-price'
 import { useCart } from '@/components/cart/cart-provider'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
@@ -95,9 +96,7 @@ export function QuickViewModal({ product, open, onClose }: QuickViewModalProps) 
 
             <div className="mt-auto pt-4">
               <div className="flex items-baseline gap-2">
-                <span className="font-heading text-2xl font-bold text-foreground">
-                  {formatPrice(product.price, product.currency)}
-                </span>
+                <ProductPrice item={product} className="font-heading text-2xl font-bold text-foreground" />
                 <span className="text-xs text-muted-foreground">
                   {isDigital ? 'Digital' : 'Physical'}
                 </span>

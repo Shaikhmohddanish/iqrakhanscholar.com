@@ -4,7 +4,8 @@ import { useState } from "react"
 import { Minus, Plus, Check, ShoppingBag, Truck, Download } from "lucide-react"
 import { BarLoader } from "@/components/ui/bar-loader"
 import { useCart } from "@/components/cart/cart-provider"
-import { formatPrice, type PublicProduct } from "@/lib/product-types"
+import { type PublicProduct } from "@/lib/product-types"
+import { ProductPrice } from "@/components/currency/product-price"
 
 export function ProductBuyPanel({ product }: { product: PublicProduct }) {
   const { addItem, isPending } = useCart()
@@ -25,9 +26,7 @@ export function ProductBuyPanel({ product }: { product: PublicProduct }) {
   return (
     <div className="rounded-2xl border border-border bg-card p-6">
       <div className="flex items-baseline gap-3">
-        <span className="font-heading text-3xl font-bold text-foreground">
-          {formatPrice(product.price, product.currency)}
-        </span>
+        <ProductPrice item={product} className="font-heading text-3xl font-bold text-foreground" />
         <span className="text-sm text-muted-foreground">
           {isDigital ? "Instant digital download" : "Physical item · ships worldwide"}
         </span>

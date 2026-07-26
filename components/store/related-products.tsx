@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Star } from 'lucide-react'
-import { formatPrice, type PublicProduct } from '@/lib/product-types'
+import { type PublicProduct } from '@/lib/product-types'
+import { ProductPrice } from '@/components/currency/product-price'
 
 interface RelatedProductsProps {
   products: PublicProduct[]
@@ -47,9 +48,7 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
                 </div>
                 <span className="text-xs text-muted-foreground">({product.reviews})</span>
               </div>
-              <p className="mt-2 font-heading text-lg font-bold text-foreground">
-                {formatPrice(product.price, product.currency)}
-              </p>
+              <ProductPrice item={product} className="mt-2 block font-heading text-lg font-bold text-foreground" />
             </div>
           </Link>
         ))}

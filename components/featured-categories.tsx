@@ -5,16 +5,16 @@ import { Reveal } from '@/components/reveal'
 const categories = [
   {
     icon: BookOpen,
-    title: 'Digital Library',
+    title: 'E-books',
     desc: 'Ebooks, study guides & Islamic resources delivered instantly to your inbox.',
     items: ['Ebooks', 'Study Guides', 'Resource Packs'],
     href: '#digital',
   },
   {
     icon: Package,
-    title: 'Physical Store',
-    desc: 'Beautifully crafted books, journals & planners for your daily practice.',
-    items: ['Books', 'Journals', 'Planners'],
+    title: 'Abayas',
+    desc: 'Elegant abayas, books, journals & planners for your daily practice.',
+    items: ['Abayas', 'Books', 'Journals'],
     href: '#store',
   },
   {

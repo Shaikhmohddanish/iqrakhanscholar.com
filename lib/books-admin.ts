@@ -11,8 +11,11 @@ export interface BookDoc {
   coverImage: string
   category: string
   tags: string[]
+  // base price in minor units of `currency`
   price: number
   currency: string
+  // optional manually-entered per-currency amounts (currency code -> minor units)
+  prices?: Record<string, number>
   pageCount: number
   rating: number
   reviews: number

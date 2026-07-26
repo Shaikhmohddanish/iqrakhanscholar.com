@@ -5,7 +5,7 @@ import { LegalPageLayout } from '@/components/legal/legal-page-layout'
 
 export const metadata: Metadata = {
   title: 'Cookie Policy',
-  description: 'How iqrakhan.com uses cookies and similar technologies.',
+  description: 'How iqrakhanscholar.com uses cookies and similar technologies.',
 }
 
 const sections = [

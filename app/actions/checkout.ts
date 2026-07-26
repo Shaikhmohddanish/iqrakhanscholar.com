@@ -2,10 +2,15 @@
 
 import { z } from "zod"
 import { redirect } from "next/navigation"
+import { headers } from "next/headers"
 import { getCurrentUser, isUserVerified } from "@/lib/session"
 import { readCart, clearCartCookie, cartShipping } from "@/lib/cart"
-import { getProductsByIds, decrementStock } from "@/lib/products"
-import { createOrder, type OrderItem, type ShippingAddress } from "@/lib/orders"
+import { getActiveCurrency } from "@/lib/currency-server"
+import { resolveCartCurrency, cartLineAmount } from "@/lib/currency"
+import { getProductsByIds } from "@/lib/products"
+import { createOrder, setOrderProvider, type OrderItem, type ShippingAddress } from "@/lib/orders"
+import { selectProvider } from "@/lib/payments"
+import { confirmOrderPaid } from "@/lib/payments/fulfillment"
 
 const shippingSchema = z.object({
   fullName: z.string().min(2, "Please enter your full name"),
@@ -46,6 +51,14 @@ export async function placeOrderAction(
   const products = await getProductsByIds(cart.items.map((i) => i.productId))
   const byId = new Map(products.map((p) => [p.id, p]))
 
+  // Derive one currency for the whole order from the visitor's active currency
+  // and the products actually in the cart (authoritative, ignores client input).
+  const activeCurrency = await getActiveCurrency()
+  const cartProducts = cart.items
+    .map((i) => byId.get(i.productId))
+    .filter((p): p is NonNullable<typeof p> => p != null)
+  const currency = resolveCartCurrency(cartProducts, activeCurrency)
+
   const items: OrderItem[] = []
   for (const item of cart.items) {
     const p = byId.get(item.productId)
@@ -60,7 +73,7 @@ export async function placeOrderAction(
       slug: p.slug,
       title: p.title,
       image: p.image,
-      price: p.price,
+      price: cartLineAmount(p, currency),
       type: p.type,
       quantity,
     })
@@ -93,14 +106,13 @@ export async function placeOrderAction(
   }
 
   const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0)
-  const shipping = cartShipping(cart)
+  const shipping = cartShipping(cart, currency)
   const total = subtotal + shipping
 
   // --- Payment ---
-  // Simulated payment authorization. Replace this block with a real provider
-  // (Stripe / Razorpay): create a PaymentIntent/Order, confirm it, and only
-  // mark paymentStatus "paid" on a verified success webhook/redirect.
-  const paymentStatus = "paid" as const
+  // Create the order as "pending", hand off to the selected gateway, and only
+  // mark it "paid" on a verified webhook (or directly for the simulated path).
+  const provider = selectProvider(currency)
 
   const order = await createOrder({
     userId: user.id,
@@ -109,20 +121,47 @@ export async function placeOrderAction(
     subtotal,
     shipping,
     total,
-    currency: "USD",
+    currency,
     status: "processing",
-    paymentStatus,
+    paymentStatus: "pending",
+    paymentProvider: provider.name,
     shippingAddress,
     hasDigital,
     hasPhysical,
   })
 
-  // Decrement stock for physical items after a successful order.
-  await Promise.all(
-    items.filter((i) => i.type === "physical").map((i) => decrementStock(i.productId, i.quantity)),
-  )
+  const hdrs = await headers()
+  const host = hdrs.get("x-forwarded-host") ?? hdrs.get("host")
+  const proto = hdrs.get("x-forwarded-proto") ?? "https"
+  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? `${proto}://${host}`
+  const successUrl = `${origin}/order/${order.id}?placed=1`
+  const cancelUrl = `${origin}/order/${order.id}?cancelled=1`
 
+  // No real gateway configured: confirm immediately and land on the order page.
+  if (provider.name === "simulated") {
+    await confirmOrderPaid(order.reference)
+    await clearCartCookie()
+    redirect(`/order/${order.id}?placed=1`)
+  }
+
+  let payment
+  try {
+    payment = await provider.createPayment({
+      orderId: order.id,
+      reference: order.reference,
+      amount: total,
+      currency,
+      email: user.email,
+      description: `Iqra Khan order ${order.reference}`,
+      successUrl,
+      cancelUrl,
+    })
+  } catch (err) {
+    console.error("Payment initialization failed", err)
+    return { error: "We couldn't start the payment. Please try again." }
+  }
+
+  await setOrderProvider(order.reference, provider.name, payment.providerRef)
   await clearCartCookie()
-
-  redirect(`/order/${order.id}?placed=1`)
+  redirect(payment.redirectUrl)
 }

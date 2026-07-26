@@ -38,6 +38,11 @@ export interface UserDoc {
   resetExpires?: Date | null
   // hashed refresh tokens currently valid for this user (supports multiple devices)
   refreshTokens?: string[]
+  // Consent captured at signup. termsAcceptedAt records when the user accepted
+  // the Terms of Service / Privacy Policy; marketingConsent is the opt-in for
+  // marketing emails (GDPR). Absent on accounts created before consent capture.
+  termsAcceptedAt?: Date | null
+  marketingConsent?: boolean
   createdAt: Date
   updatedAt: Date
 }

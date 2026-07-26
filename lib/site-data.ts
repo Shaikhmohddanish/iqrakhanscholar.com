@@ -1,17 +1,23 @@
 export const navLinks = [
   { label: 'About', href: '/about' },
   { label: 'Library', href: '/library' },
-  { label: 'Store', href: '/store' },
+  { label: 'Abayas', href: '/store' },
   { label: 'Consultation', href: '/consultation' },
   { label: 'Blog', href: '/blog' },
 ]
 
 export const stats = [
-  { value: '480K+', label: 'Instagram Community', numeric: 480, suffix: 'K+' },
-  { value: '12,000+', label: 'Students Impacted', numeric: 12000, suffix: '+' },
-  { value: '3,500+', label: 'Sessions Conducted', numeric: 3500, suffix: '+' },
-  { value: '60,000+', label: 'Books & Guides Sold', numeric: 60000, suffix: '+' },
+  { value: '480K+', label: 'Followers on Instagram', numeric: 480, suffix: 'K+' },
+  { value: '12,000+', label: 'Subscribers on YouTube', numeric: 12000, suffix: '+' },
+  { value: '12,000+', label: 'Followers on Facebook', numeric: 12000, suffix: '+' },
+  { value: '60,000+', label: 'Followers on TikTok', numeric: 60000, suffix: '+' },
 ]
+
+export const socialLinks = {
+  instagram: 'https://www.instagram.com/iqrakhanscholar',
+  youtube: 'https://youtube.com/@iqrakhanscholar',
+  facebook: 'https://www.facebook.com/people/Iqrakhanscholar/61577575244442/',
+}
 
 export type Product = {
   title: string
@@ -30,7 +36,7 @@ export const digitalProducts: Product[] = [
     price: '$14',
     rating: 5,
     reviews: 218,
-    image: '/product-ebook-salah.png',
+    image: '/product-ebook-salah.webp',
     badge: 'Bestseller',
   },
   {
@@ -39,7 +45,7 @@ export const digitalProducts: Product[] = [
     price: '$19',
     rating: 5,
     reviews: 164,
-    image: '/product-ebook-quran.png',
+    image: '/product-ebook-quran.webp',
   },
   {
     title: 'Daily Duas for the Modern Muslim Woman',
@@ -47,7 +53,7 @@ export const digitalProducts: Product[] = [
     price: '$9',
     rating: 5,
     reviews: 312,
-    image: '/product-ebook-dua.png',
+    image: '/product-ebook-dua.webp',
     badge: 'New',
   },
 ]
@@ -59,7 +65,7 @@ export const physicalProducts: Product[] = [
     price: '$28',
     rating: 5,
     reviews: 96,
-    image: '/product-book.png',
+    image: '/product-book.webp',
     badge: 'Signed Edition',
   },
   {
@@ -68,7 +74,7 @@ export const physicalProducts: Product[] = [
     price: '$32',
     rating: 5,
     reviews: 141,
-    image: '/product-journal.png',
+    image: '/product-journal.webp',
   },
   {
     title: 'Salah & Intentions Planner',
@@ -76,7 +82,7 @@ export const physicalProducts: Product[] = [
     price: '$36',
     rating: 5,
     reviews: 88,
-    image: '/product-planner.png',
+    image: '/product-planner.webp',
     badge: 'Limited',
   },
 ]
@@ -85,17 +91,17 @@ export const videos = [
   {
     title: 'Finding Stillness in a Restless World',
     meta: 'Lecture · 18 min',
-    image: '/video-lecture.png',
+    image: '/video-lecture.webp',
   },
   {
     title: 'A Reminder for the Heart',
     meta: 'Reel · 60 sec',
-    image: '/video-reel.png',
+    image: '/video-reel.webp',
   },
   {
     title: 'Faith, Purpose & Identity',
     meta: 'Talk · 24 min',
-    image: '/video-talk.png',
+    image: '/video-talk.webp',
   },
 ]
 
@@ -105,21 +111,21 @@ export const testimonials = [
       'Iqra’s mentorship completely transformed how I connect with my prayers. For the first time, salah feels like a conversation, not a checklist.',
     name: 'Aisha R.',
     role: 'Consultation Student',
-    avatar: '/avatar-1.png',
+    avatar: '/avatar-1.webp',
   },
   {
     quote:
       'The Quran Reflection Journey is the most beautiful, accessible study guide I have ever used. I recommend it to every sister I know.',
     name: 'Maryam S.',
-    role: 'Digital Library Reader',
-    avatar: '/avatar-2.png',
+    role: 'E-books Reader',
+    avatar: '/avatar-2.webp',
   },
   {
     quote:
       'I came feeling lost in my faith and left with clarity and a real plan. Iqra listens with so much compassion and wisdom.',
     name: 'Fatima H.',
     role: 'One-to-One Mentee',
-    avatar: '/avatar-3.png',
+    avatar: '/avatar-3.webp',
   },
 ]
 
@@ -130,7 +136,7 @@ export const blogPosts = [
     readTime: '8 min read',
     excerpt:
       'Practical, Sunnah-rooted steps to anchor your five daily prayers - even in your busiest seasons.',
-    image: '/blog-salah.png',
+    image: '/blog-salah.webp',
   },
   {
     title: 'Raising Faithful Children in a Distracted World',
@@ -138,7 +144,7 @@ export const blogPosts = [
     readTime: '11 min read',
     excerpt:
       'Gentle, prophetic parenting principles to nurture love of Allah in your home from an early age.',
-    image: '/blog-parenting.png',
+    image: '/blog-parenting.webp',
   },
   {
     title: 'A Woman’s Worth: Honour & Rights in Islam',
@@ -146,7 +152,7 @@ export const blogPosts = [
     readTime: '9 min read',
     excerpt:
       'Revisiting the dignity, autonomy, and spiritual station Islam grants to women - straight from the sources.',
-    image: '/blog-women.png',
+    image: '/blog-women.webp',
   },
 ]
 

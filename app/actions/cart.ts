@@ -28,6 +28,8 @@ async function reconcile(cart: Cart): Promise<Cart> {
         title: p.title,
         image: p.image,
         price: p.price,
+        currency: p.currency,
+        prices: p.prices,
         type: p.type,
         quantity,
       }
@@ -49,6 +51,7 @@ export async function addToCartAction(productId: string, quantity = 1) {
       title: "",
       image: "",
       price: 0,
+      currency: "USD",
       type: "physical",
       quantity,
     })

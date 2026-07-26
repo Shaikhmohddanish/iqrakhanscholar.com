@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react"
 import type { PublicBooking, BookingStatus, PublicAvailability } from "@/lib/booking-types"
-import { SESSION_TYPES } from "@/lib/booking-types"
+import { SESSION_TYPES, LEGACY_SESSION_TITLES } from "@/lib/booking-types"
 import { adminUpdateBookingStatusAction, setAvailabilityAction } from "@/app/actions/admin/bookings"
 import { Calendar, CheckCircle2, XCircle, Clock, Plus, Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -95,7 +95,7 @@ export function AdminBookingsClient({
                         <p className="font-medium text-foreground">{booking.userName}</p>
                         <p className="text-xs text-muted-foreground">{booking.userEmail}</p>
                       </td>
-                      <td className="hidden px-4 py-3 text-muted-foreground sm:table-cell">{session?.title ?? booking.sessionType}</td>
+                      <td className="hidden px-4 py-3 text-muted-foreground sm:table-cell">{session?.title ?? LEGACY_SESSION_TITLES[booking.sessionType] ?? booking.sessionType}</td>
                       <td className="px-4 py-3">
                         <p className="text-foreground">{booking.date}</p>
                         <p className="text-xs text-muted-foreground">{formatSlot(booking.slot)}</p>

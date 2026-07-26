@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { SITE_URL } from '@/lib/site-config'
 import { Star, Check, Shield, Truck, Download, RotateCcw } from 'lucide-react'
 import { getProductBySlug, getAllProducts } from '@/lib/products'
 import { formatPrice } from '@/lib/product-types'
@@ -71,6 +72,21 @@ export default async function ProductPage({ params }: { params: Params }) {
           ? 'https://schema.org/InStock'
           : 'https://schema.org/OutOfStock',
     },
+  }
+
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Abayas', item: `${SITE_URL}/store` },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: product.title,
+        item: `${SITE_URL}/store/${product.slug}`,
+      },
+    ],
   }
 
   const tabs = [
@@ -152,11 +168,12 @@ export default async function ProductPage({ params }: { params: Params }) {
   return (
     <article className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       <ProductViewTracker product={product} />
 
       <Breadcrumb
         items={[
-          { label: 'Store', href: '/store' },
+          { label: 'Abayas', href: '/store' },
           { label: product.title },
         ]}
       />

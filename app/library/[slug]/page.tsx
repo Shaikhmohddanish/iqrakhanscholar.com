@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { SITE_URL } from '@/lib/site-config'
 import {
   Star,
   BookOpen,
@@ -22,6 +23,9 @@ import { BookCard } from '@/components/library/book-card'
 import { BookSection } from '@/components/library/book-section'
 import { ReviewSection } from '@/components/store/review-section'
 import { getProductBySlug, queryProducts } from '@/lib/products'
+import { formatPrice } from '@/lib/product-types'
+import { resolveProductPrice } from '@/lib/currency'
+import { getActiveCurrency } from '@/lib/currency-server'
 import { getCurrentUser } from '@/lib/session'
 import { getPurchasedProductIds } from '@/lib/orders'
 import { AddToCartButton } from '@/components/cart/add-to-cart-button'
@@ -33,7 +37,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const product = await getProductBySlug(slug)
   if (!product || product.type !== 'digital') return { title: 'Book not found' }
   return {
-    title: `${product.title} - Digital Library`,
+    title: `${product.title} - E-books`,
     description: product.description,
     alternates: { canonical: `/library/${product.slug}` },
   }
@@ -59,11 +63,10 @@ export default async function BookDetailPage({ params }: { params: Params }) {
     owns = purchasedIds.includes(product.id)
   }
 
-  const formattedPrice = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: product.currency,
-    minimumFractionDigits: product.price % 100 === 0 ? 0 : 2,
-  }).format(product.price / 100)
+  // Display the price in the visitor's active currency (falls back to base).
+  const activeCurrency = await getActiveCurrency()
+  const { amount, currency: displayCurrency } = resolveProductPrice(product, activeCurrency)
+  const formattedPrice = formatPrice(amount, displayCurrency)
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -86,6 +89,21 @@ export default async function BookDetailPage({ params }: { params: Params }) {
     },
   }
 
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Library', item: `${SITE_URL}/library` },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: product.title,
+        item: `${SITE_URL}/library/${product.slug}`,
+      },
+    ],
+  }
+
   return (
     <>
       <SiteHeader />
@@ -94,6 +112,10 @@ export default async function BookDetailPage({ params }: { params: Params }) {
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          />
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
           />
 
           <Breadcrumb
@@ -262,6 +284,7 @@ export default async function BookDetailPage({ params }: { params: Params }) {
                     reviews={b.reviews}
                     price={b.price}
                     currency={b.currency}
+                    prices={b.prices}
                     category={b.category}
                     className="w-44 shrink-0 sm:w-48"
                   />

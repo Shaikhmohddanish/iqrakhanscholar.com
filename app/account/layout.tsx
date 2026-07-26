@@ -1,9 +1,15 @@
 import type { ReactNode } from "react"
+import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 import { getCurrentUser } from "@/lib/session"
 import { SmartHeader } from "@/components/smart-header"
 import { AccountNav } from "@/components/account/account-nav"
 import { countUnread } from "@/lib/notifications"
+
+// Private area - keep all account pages out of search indexes.
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+}
 
 export default async function AccountLayout({ children }: { children: ReactNode }) {
   const user = await getCurrentUser()

@@ -1,48 +1,21 @@
 'use client'
 
-import { useState } from 'react'
+import { useActionState, useEffect, useState } from 'react'
 import { Send, CheckCircle } from 'lucide-react'
 import { BarLoader } from '@/components/ui/bar-loader'
+import { sendContactMessage, type ContactState } from '@/app/actions/contact'
 
-type FormState = 'idle' | 'submitting' | 'success' | 'error'
+const initial: ContactState = {}
 
 export function ContactForm() {
-  const [state, setState] = useState<FormState>('idle')
-  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [state, action, isPending] = useActionState(sendContactMessage, initial)
+  const [sent, setSent] = useState(false)
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const form = e.currentTarget
-    const data = new FormData(form)
-    const name = data.get('name') as string
-    const email = data.get('email') as string
-    const subject = data.get('subject') as string
-    const message = data.get('message') as string
+  useEffect(() => {
+    if (state.ok) setSent(true)
+  }, [state.ok])
 
-    // Client-side validation
-    const newErrors: Record<string, string> = {}
-    if (!name.trim()) newErrors.name = 'Name is required'
-    if (!email.trim()) newErrors.email = 'Email is required'
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.email = 'Invalid email address'
-    if (!subject.trim()) newErrors.subject = 'Subject is required'
-    if (!message.trim()) newErrors.message = 'Message is required'
-    else if (message.length < 10) newErrors.message = 'Message must be at least 10 characters'
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      return
-    }
-
-    setErrors({})
-    setState('submitting')
-
-    // Mock API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    setState('success')
-    form.reset()
-  }
-
-  if (state === 'success') {
+  if (sent) {
     return (
       <div className="flex flex-col items-center rounded-2xl border border-success/20 bg-success/5 px-6 py-16 text-center">
         <div className="flex size-16 items-center justify-center rounded-full bg-success/10">
@@ -54,7 +27,7 @@ export function ContactForm() {
         </p>
         <button
           type="button"
-          onClick={() => setState('idle')}
+          onClick={() => setSent(false)}
           className="mt-6 inline-flex h-10 items-center rounded-lg border border-border px-4 text-sm font-medium text-foreground transition-colors hover:bg-muted"
         >
           Send Another Message
@@ -64,7 +37,12 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+    <form action={action} className="space-y-5">
+      {state.error && (
+        <p className="rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+          {state.error}
+        </p>
+      )}
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <label htmlFor="contact-name" className="mb-1.5 block text-sm font-medium text-foreground">
@@ -75,10 +53,11 @@ export function ContactForm() {
             name="name"
             type="text"
             required
-            className={`input-base ${errors.name ? 'border-destructive' : ''}`}
+            minLength={2}
+            className={`input-base ${state.fieldErrors?.name ? 'border-destructive' : ''}`}
             placeholder="Your name"
           />
-          {errors.name && <p className="mt-1 text-xs text-destructive">{errors.name}</p>}
+          {state.fieldErrors?.name && <p className="mt-1 text-xs text-destructive">{state.fieldErrors.name}</p>}
         </div>
         <div>
           <label htmlFor="contact-email" className="mb-1.5 block text-sm font-medium text-foreground">
@@ -89,10 +68,10 @@ export function ContactForm() {
             name="email"
             type="email"
             required
-            className={`input-base ${errors.email ? 'border-destructive' : ''}`}
+            className={`input-base ${state.fieldErrors?.email ? 'border-destructive' : ''}`}
             placeholder="you@example.com"
           />
-          {errors.email && <p className="mt-1 text-xs text-destructive">{errors.email}</p>}
+          {state.fieldErrors?.email && <p className="mt-1 text-xs text-destructive">{state.fieldErrors.email}</p>}
         </div>
       </div>
 
@@ -105,10 +84,11 @@ export function ContactForm() {
           name="subject"
           type="text"
           required
-          className={`input-base ${errors.subject ? 'border-destructive' : ''}`}
+          minLength={2}
+          className={`input-base ${state.fieldErrors?.subject ? 'border-destructive' : ''}`}
           placeholder="What is this regarding?"
         />
-        {errors.subject && <p className="mt-1 text-xs text-destructive">{errors.subject}</p>}
+        {state.fieldErrors?.subject && <p className="mt-1 text-xs text-destructive">{state.fieldErrors.subject}</p>}
       </div>
 
       <div>
@@ -119,19 +99,20 @@ export function ContactForm() {
           id="contact-message"
           name="message"
           required
+          minLength={10}
           rows={6}
-          className={`input-base resize-y ${errors.message ? 'border-destructive' : ''}`}
+          className={`input-base resize-y ${state.fieldErrors?.message ? 'border-destructive' : ''}`}
           placeholder="Your message..."
         />
-        {errors.message && <p className="mt-1 text-xs text-destructive">{errors.message}</p>}
+        {state.fieldErrors?.message && <p className="mt-1 text-xs text-destructive">{state.fieldErrors.message}</p>}
       </div>
 
       <button
         type="submit"
-        disabled={state === 'submitting'}
+        disabled={isPending}
         className="inline-flex h-12 items-center gap-2 rounded-lg bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
       >
-        {state === 'submitting' ? (
+        {isPending ? (
           <>
             <BarLoader size="md" />
             Sending...

@@ -8,6 +8,8 @@ import {
   SESSION_TYPES,
   type SessionType,
 } from "@/lib/bookings"
+import { getActiveCurrency } from "@/lib/currency-server"
+import { resolveProductPrice } from "@/lib/currency"
 import { createNotification } from "@/lib/notifications"
 import { revalidatePath } from "next/cache"
 
@@ -16,13 +18,19 @@ export async function bookSessionAction(data: {
   date: string
   slot: string
   topic: string
-  notes: string
 }) {
   const user = await requireUser()
   if (!user) return { error: "Please sign in to book a session." }
 
   const sessionInfo = SESSION_TYPES.find((s) => s.id === data.sessionType)
   if (!sessionInfo) return { error: "Invalid session type." }
+
+  const topic = data.topic?.trim().slice(0, 2000)
+  if (!topic) return { error: "Please share the questions you'd like to discuss." }
+
+  // Record the price in the visitor's active currency (falls back to base).
+  const activeCurrency = await getActiveCurrency()
+  const priced = resolveProductPrice(sessionInfo, activeCurrency)
 
   const booking = await createBooking({
     userId: user.id,
@@ -33,10 +41,10 @@ export async function bookSessionAction(data: {
     slot: data.slot,
     status: "pending",
     paymentStatus: sessionInfo.price === 0 ? "paid" : "unpaid",
-    notes: data.notes,
-    topic: data.topic,
-    price: sessionInfo.price,
-    currency: sessionInfo.currency,
+    notes: "",
+    topic,
+    price: priced.amount,
+    currency: priced.currency,
   })
 
   await createNotification({

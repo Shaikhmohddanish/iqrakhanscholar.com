@@ -3,7 +3,8 @@ import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
-import { stats } from '@/lib/site-data'
+import { stats, socialLinks } from '@/lib/site-data'
+import { SITE_URL } from '@/lib/site-config'
 import {
   BookOpen,
   Heart,
@@ -18,10 +19,13 @@ export const metadata: Metadata = {
   title: 'About Iqra Khan',
   description:
     'Learn about Iqra Khan - an Islamic scholar, educator, and mentor dedicated to empowering Muslim women through authentic Quran & Sunnah knowledge.',
+  alternates: { canonical: '/about' },
   openGraph: {
     title: 'About Iqra Khan - Islamic Scholar & Educator',
     description:
       'Discover the journey, mission, and qualifications of Iqra Khan.',
+    url: '/about',
+    images: [{ url: '/iqra-about.webp' }],
   },
 }
 
@@ -240,10 +244,10 @@ export default function AboutPage() {
             '@context': 'https://schema.org',
             '@type': 'Person',
             name: 'Iqra Khan',
-            url: 'https://iqrakhan.com',
+            url: SITE_URL,
             jobTitle: 'Islamic Scholar & Educator',
             description: 'Islamic scholar, educator, and mentor dedicated to empowering Muslim women.',
-            sameAs: [],
+            sameAs: Object.values(socialLinks),
           }),
         }}
       />

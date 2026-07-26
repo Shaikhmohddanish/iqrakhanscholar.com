@@ -3,6 +3,8 @@
 import { useState, useTransition } from "react"
 import { SESSION_TYPES, type SessionType } from "@/lib/booking-types"
 import { formatPrice } from "@/lib/product-types"
+import { resolveProductPrice } from "@/lib/currency"
+import { useCurrency } from "@/components/currency/currency-provider"
 import { confirmPaymentAction } from "@/app/actions/bookings"
 import { CreditCard, Lock, CheckCircle2 } from "lucide-react"
 
@@ -30,8 +32,10 @@ export function BookingPaymentStep({
 }: BookingPaymentStepProps) {
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const { currency } = useCurrency()
 
   const session = SESSION_TYPES.find((s) => s.id === sessionType)!
+  const priced = resolveProductPrice(session, currency)
 
   function handlePay() {
     setError(null)
@@ -56,7 +60,7 @@ export function BookingPaymentStep({
           </div>
           <div className="mt-3 border-t border-border pt-3 flex items-center justify-between">
             <span className="font-medium text-foreground">Total</span>
-            <span className="font-heading text-lg font-bold text-foreground">£0.00</span>
+            <span className="font-heading text-lg font-bold text-foreground">{formatPrice(0, priced.currency)}</span>
           </div>
         </div>
         <button
@@ -80,7 +84,7 @@ export function BookingPaymentStep({
         <div className="mt-4 space-y-3 text-sm">
           <div className="flex items-center justify-between">
             <span className="text-muted-foreground">{session.title}</span>
-            <span className="font-medium">{formatPrice(session.price, session.currency)}</span>
+            <span className="font-medium">{formatPrice(priced.amount, priced.currency)}</span>
           </div>
           <div className="flex items-center justify-between text-muted-foreground">
             <span>Date</span>
@@ -90,7 +94,7 @@ export function BookingPaymentStep({
         <div className="mt-4 border-t border-border pt-4 flex items-center justify-between">
           <span className="font-medium text-foreground">Total</span>
           <span className="font-heading text-xl font-bold text-foreground">
-            {formatPrice(session.price, session.currency)}
+            {formatPrice(priced.amount, priced.currency)}
           </span>
         </div>
       </div>
@@ -131,7 +135,7 @@ export function BookingPaymentStep({
         className="flex h-11 w-full items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
       >
         <Lock className="size-4" />
-        {pending ? "Processing…" : `Pay ${formatPrice(session.price, session.currency)}`}
+        {pending ? "Processing…" : `Pay ${formatPrice(priced.amount, priced.currency)}`}
       </button>
       {error && <p className="text-sm text-destructive">{error}</p>}
     </div>

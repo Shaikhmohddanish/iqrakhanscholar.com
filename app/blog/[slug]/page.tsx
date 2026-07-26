@@ -1,38 +1,142 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { ShareButtons } from '@/components/blog/share-buttons'
 import { TableOfContents } from '@/components/blog/table-of-contents'
 import { BlogSidebar } from '@/components/blog/blog-sidebar'
-import { blogPosts } from '@/lib/site-data'
+import { getArticleBySlug, getPublishedArticles } from '@/lib/blog'
+import { processArticleContent } from '@/lib/article-content'
 import { Clock, ArrowLeft } from 'lucide-react'
+import { SITE_URL } from '@/lib/site-config'
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+// Refresh published content hourly (ISR).
+export const revalidate = 3600
+
+// Make an absolute URL for JSON-LD/OG (cover images may be local paths or
+// already-absolute Cloudinary URLs).
+function absUrl(path: string): string {
+  if (!path) return ''
+  return /^https?:\/\//i.test(path) ? path : `${SITE_URL}${path}`
+}
+
+function formatDate(d?: Date | string | null): string {
+  if (!d) return ''
+  return new Date(d).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+}
+
+export async function generateStaticParams() {
+  const { articles } = await getPublishedArticles({ limit: 1000 })
+  return articles.map((a) => ({ slug: a.slug }))
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
   const { slug } = await params
-  const post = blogPosts.find(
-    (p) => p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') === slug,
-  )
-  const title = post?.title ?? slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+  const post = await getArticleBySlug(slug)
+  if (!post) return { title: 'Article not found' }
+
+  const canonical = `/blog/${post.slug}`
+  const images = post.coverImage ? [{ url: post.coverImage }] : undefined
   return {
-    title: `${title} - Iqra Khan Blog`,
-    description: post?.excerpt ?? `Read "${title}" on the Iqra Khan Knowledge Hub.`,
+    title: post.title,
+    description: post.excerpt,
+    keywords: post.tags,
+    alternates: { canonical },
+    openGraph: {
+      type: 'article',
+      title: post.title,
+      description: post.excerpt,
+      url: canonical,
+      images,
+      publishedTime: post.publishedAt ? new Date(post.publishedAt).toISOString() : undefined,
+      modifiedTime: post.updatedAt ? new Date(post.updatedAt).toISOString() : undefined,
+      authors: [post.author],
+      tags: post.tags,
+      section: post.category,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.excerpt,
+      images: post.coverImage ? [post.coverImage] : undefined,
+    },
   }
 }
 
-const tocHeadings = [
-  { id: 'foundation', text: 'Understanding the Foundation', level: 2 as const },
-  { id: 'practical-steps', text: 'Practical Steps', level: 2 as const },
-  { id: 'community', text: 'The Role of Community', level: 2 as const },
-  { id: 'final-thoughts', text: 'Final Thoughts', level: 2 as const },
-]
-
-export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function BlogDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
   const { slug } = await params
-  const post =
-    blogPosts.find((p) => p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') === slug) ??
-    blogPosts[0]
+  const post = await getArticleBySlug(slug)
+  if (!post) notFound()
+
+  const { html, headings, wordCount } = processArticleContent(post.content)
+
+  // Related (same category) + recent (any) articles, excluding the current one.
+  const [{ articles: relatedAll }, { articles: recentAll }] = await Promise.all([
+    getPublishedArticles({ category: post.category, limit: 4 }),
+    getPublishedArticles({ limit: 4 }),
+  ])
+  const related = relatedAll.filter((p) => p.slug !== post.slug).slice(0, 2)
+  const recent = recentAll
+    .filter((p) => p.slug !== post.slug)
+    .slice(0, 3)
+    .map((p) => ({
+      slug: p.slug,
+      title: p.title,
+      category: p.category,
+      readTime: `${p.readingTime} min read`,
+    }))
+
+  const url = `${SITE_URL}/blog/${post.slug}`
+  const published = post.publishedAt
+    ? new Date(post.publishedAt).toISOString()
+    : new Date(post.createdAt).toISOString()
+  const modified = post.updatedAt ? new Date(post.updatedAt).toISOString() : published
+
+  const blogPostingLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.excerpt,
+    image: post.coverImage ? [absUrl(post.coverImage)] : undefined,
+    datePublished: published,
+    dateModified: modified,
+    author: { '@type': 'Person', name: post.author, url: `${SITE_URL}/about` },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Iqra Khan',
+      url: SITE_URL,
+      logo: { '@type': 'ImageObject', url: `${SITE_URL}/icon-512.png` },
+    },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+    articleSection: post.category,
+    keywords: post.tags.join(', '),
+    wordCount,
+  }
+
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${SITE_URL}/blog` },
+      { '@type': 'ListItem', position: 3, name: post.title, item: url },
+    ],
+  }
 
   return (
     <>
@@ -58,14 +162,22 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
               </Link>
 
               {/* Meta */}
-              <div className="mt-6 flex items-center gap-3 text-sm">
+              <div className="mt-6 flex flex-wrap items-center gap-3 text-sm">
                 <span className="rounded-full bg-primary/10 px-3 py-0.5 font-medium text-primary">
                   {post.category}
                 </span>
                 <span className="flex items-center gap-1 text-muted-foreground">
                   <Clock className="size-3.5" />
-                  {post.readTime}
+                  {post.readingTime} min read
                 </span>
+                {post.publishedAt && (
+                  <time
+                    dateTime={published}
+                    className="text-muted-foreground"
+                  >
+                    {formatDate(post.publishedAt)}
+                  </time>
+                )}
               </div>
 
               <h1 className="mt-4 font-heading text-3xl font-bold text-foreground sm:text-4xl">
@@ -79,79 +191,61 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
                   IK
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-foreground">Iqra Khan</p>
+                  <p className="text-sm font-medium text-foreground">{post.author}</p>
                   <p className="text-xs text-muted-foreground">Islamic Scholar & Educator</p>
                 </div>
               </div>
 
               {/* Banner image */}
-              <div className="mb-8 mt-8 aspect-[2/1] overflow-hidden rounded-2xl bg-muted" />
+              {post.coverImage && (
+                <div className="relative mb-8 mt-8 aspect-[2/1] overflow-hidden rounded-2xl bg-muted">
+                  <Image
+                    src={post.coverImage}
+                    alt={post.title}
+                    fill
+                    priority
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 66vw"
+                  />
+                </div>
+              )}
 
-              {/* Content */}
-              <div className="prose max-w-none">
-                <p>
-                  In the name of Allah, the Most Gracious, the Most Merciful. This article explores
-                  the topic of <strong>{post.title.toLowerCase()}</strong> from a perspective rooted
-                  in the Quran and authentic Sunnah.
-                </p>
+              {/* Content (sanitized admin HTML) */}
+              <div
+                className="prose max-w-none"
+                dangerouslySetInnerHTML={{ __html: html }}
+              />
 
-                <h2 id="foundation">Understanding the Foundation</h2>
-                <p>
-                  Before we delve into practical advice, it&apos;s important to understand the
-                  spiritual foundation that underpins this topic. The Prophet Muhammad ﷺ said,
-                  &ldquo;The most beloved deeds to Allah are those done consistently, even if
-                  small.&rdquo; This hadith teaches us that consistency in our practice is more
-                  valuable than occasional bursts of effort.
-                </p>
-
-                <h2 id="practical-steps">Practical Steps</h2>
-                <p>
-                  Here are some practical, Sunnah-rooted steps you can implement in your daily life:
-                </p>
-                <ol>
-                  <li>Begin with sincere intention (niyyah) - purify your heart before every action.</li>
-                  <li>Start small and build gradually - the Sunnah emphasises consistency over quantity.</li>
-                  <li>Create a supportive environment - surround yourself with reminders of Allah.</li>
-                  <li>Seek knowledge actively - understanding deepens practice.</li>
-                  <li>Make dua regularly - ask Allah for steadfastness and guidance.</li>
-                </ol>
-
-                <h2 id="community">The Role of Community</h2>
-                <p>
-                  Islam places tremendous importance on community (ummah). The Prophet ﷺ said,
-                  &ldquo;The believer to the believer is like a building, each part supporting the
-                  other.&rdquo; Finding a community of like-minded sisters can make a profound
-                  difference in your journey.
-                </p>
-
-                <blockquote>
-                  &ldquo;Verily, in the remembrance of Allah do hearts find rest.&rdquo; - Quran 13:28
-                </blockquote>
-
-                <h2 id="final-thoughts">Final Thoughts</h2>
-                <p>
-                  Remember that your journey is unique and Allah sees every effort you make. Be
-                  patient with yourself, trust in His plan, and know that every small step counts.
-                  May Allah make your path easy and fill your heart with contentment.
-                </p>
-              </div>
+              {/* Tags */}
+              {post.tags.length > 0 && (
+                <div className="mt-8 flex flex-wrap gap-2">
+                  {post.tags.map((t) => (
+                    <span
+                      key={t}
+                      className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground"
+                    >
+                      #{t}
+                    </span>
+                  ))}
+                </div>
+              )}
 
               {/* Share */}
               <div className="mt-10 border-t border-border pt-6">
-                <ShareButtons title={post.title} />
+                <ShareButtons title={post.title} url={url} />
               </div>
 
               {/* Related articles */}
-              <div className="mt-12">
-                <h2 className="font-heading text-xl font-bold text-foreground">Related Articles</h2>
-                <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                  {blogPosts
-                    .filter((p) => p.title !== post.title)
-                    .slice(0, 2)
-                    .map((p) => (
+              {related.length > 0 && (
+                <div className="mt-12">
+                  <h2 className="font-heading text-xl font-bold text-foreground">
+                    Related Articles
+                  </h2>
+                  <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                    {related.map((p) => (
                       <Link
-                        key={p.title}
-                        href={`/blog/${p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+                        key={p.slug}
+                        href={`/blog/${p.slug}`}
                         className="group rounded-xl border border-border bg-card p-4 transition-shadow hover:shadow-[var(--shadow-sm)]"
                       >
                         <span className="text-xs font-medium text-primary">{p.category}</span>
@@ -160,18 +254,19 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
                         </h3>
                         <span className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
                           <Clock className="size-3" />
-                          {p.readTime}
+                          {p.readingTime} min read
                         </span>
                       </Link>
                     ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </article>
 
             {/* Sidebar - 1/3 */}
             <div className="space-y-6">
-              <TableOfContents headings={tocHeadings} />
-              <BlogSidebar currentSlug={slug} />
+              <TableOfContents headings={headings} />
+              <BlogSidebar currentSlug={slug} recentPosts={recent} />
             </div>
           </div>
         </div>
@@ -180,22 +275,11 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
 
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'Article',
-            headline: post.title,
-            description: post.excerpt,
-            author: { '@type': 'Person', name: 'Iqra Khan', url: 'https://iqrakhan.com/about' },
-            publisher: {
-              '@type': 'Organization',
-              name: 'Iqra Khan',
-              url: 'https://iqrakhan.com',
-            },
-            datePublished: new Date().toISOString(),
-            articleSection: post.category,
-          }),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
     </>
   )

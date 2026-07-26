@@ -30,7 +30,7 @@ export default function TermsPage() {
         <LegalPageLayout title="Terms of Service" lastUpdated="15 June 2026" sections={sections}>
           <section id="acceptance">
             <h2>Acceptance of Terms</h2>
-            <p>By accessing and using iqrakhan.com (&ldquo;the Platform&rdquo;), you agree to be bound by these Terms of Service. If you do not agree, please do not use the Platform.</p>
+            <p>By accessing and using iqrakhanscholar.com (&ldquo;the Platform&rdquo;), you agree to be bound by these Terms of Service. If you do not agree, please do not use the Platform.</p>
           </section>
 
           <section id="accounts">

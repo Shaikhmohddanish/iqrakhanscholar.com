@@ -2,8 +2,8 @@ import Link from 'next/link'
 import { Home, Search, BookOpen, ShoppingBag, MessageCircle } from 'lucide-react'
 
 const popularLinks = [
-  { label: 'Digital Library', href: '/library', icon: BookOpen },
-  { label: 'Store', href: '/store', icon: ShoppingBag },
+  { label: 'E-books', href: '/library', icon: BookOpen },
+  { label: 'Abayas', href: '/store', icon: ShoppingBag },
   { label: 'Consultations', href: '/consultation', icon: MessageCircle },
 ]
 

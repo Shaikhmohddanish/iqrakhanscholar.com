@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { ACCESS_COOKIE, REFRESH_COOKIE, verifyAccessToken } from "@/lib/tokens"
 import { hasRole } from "@/lib/types"
+import { CURRENCY_COOKIE, currencyForCountry } from "@/lib/currency"
 
 // Routes that require an authenticated session.
 const PROTECTED = ["/account", "/library", "/read", "/reader"]
@@ -11,14 +12,33 @@ const ROLE_GATES: { prefix: string; role: "editor" | "admin" }[] = [
 // Auth pages an authenticated user should be redirected away from.
 const AUTH_PAGES = ["/login", "/register", "/forgot-password"]
 
+// Attach a currency cookie derived from the visitor's IP geo (Vercel edge
+// header) on first visit, so server-rendered prices have a sensible default
+// before the visitor makes any manual choice. Never overrides an existing cookie.
+function withCurrency(req: NextRequest, res: NextResponse): NextResponse {
+  if (!req.cookies.get(CURRENCY_COOKIE)) {
+    const country = req.headers.get("x-vercel-ip-country")
+    res.cookies.set(CURRENCY_COOKIE, currencyForCountry(country), {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 365,
+      sameSite: "lax",
+    })
+  }
+  return res
+}
+
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl
-  const access = req.cookies.get(ACCESS_COOKIE)?.value
-  const refresh = req.cookies.get(REFRESH_COOKIE)?.value
-  const claims = access ? await verifyAccessToken(access) : null
 
   const roleGate = ROLE_GATES.find((g) => pathname.startsWith(g.prefix))
   const isProtected = PROTECTED.some((p) => pathname.startsWith(p)) || Boolean(roleGate)
+  const isAuthPage = AUTH_PAGES.some((p) => pathname.startsWith(p))
+
+  // Only verify the session when the route actually depends on it - the matcher
+  // now runs on all storefront pages too, purely for currency detection.
+  const access = isProtected || isAuthPage ? req.cookies.get(ACCESS_COOKIE)?.value : undefined
+  const refresh = req.cookies.get(REFRESH_COOKIE)?.value
+  const claims = access ? await verifyAccessToken(access) : null
 
   if (isProtected) {
     if (claims) {
@@ -26,7 +46,7 @@ export async function proxy(req: NextRequest) {
         // Authenticated but lacking privileges.
         return NextResponse.redirect(new URL("/account?denied=1", req.url))
       }
-      return NextResponse.next()
+      return withCurrency(req, NextResponse.next())
     }
     // No valid access token. Try to refresh if a refresh cookie exists.
     if (refresh) {
@@ -40,22 +60,18 @@ export async function proxy(req: NextRequest) {
   }
 
   // Keep authenticated users out of auth pages.
-  if (claims && AUTH_PAGES.some((p) => pathname.startsWith(p))) {
+  if (claims && isAuthPage) {
     return NextResponse.redirect(new URL("/account", req.url))
   }
 
-  return NextResponse.next()
+  return withCurrency(req, NextResponse.next())
 }
 
 export const config = {
   matcher: [
-    "/account/:path*",
-    "/library/:path*",
-    "/read/:path*",
-    "/reader/:path*",
-    "/admin/:path*",
-    "/login",
-    "/register",
-    "/forgot-password",
+    // Run on all pages except API routes, Next internals and static files (any
+    // path with a file extension). This lets the currency cookie be set on a
+    // first storefront visit while preserving the auth/role gates above.
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.[\\w]+$).*)",
   ],
 }

@@ -52,7 +52,10 @@ export async function GET(req: NextRequest) {
     res.cookies.set(REFRESH_COOKIE, session.refreshToken, cookieOptions.refresh)
     res.cookies.delete(OAUTH_STATE_COOKIE)
     return res
-  } catch {
+  } catch (err) {
+    // Log the underlying cause so production OAuth failures are diagnosable;
+    // the user still gets the generic, safe error redirect.
+    console.error("Google OAuth callback failed:", err)
     return fail("google_failed")
   }
 }
