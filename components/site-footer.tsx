@@ -1,14 +1,19 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Mail } from 'lucide-react'
-import { FacebookIcon, InstagramIcon, YoutubeIcon } from '@/components/icons/social-icons'
-import { socialLinks } from '@/lib/site-data'
+import {
+  FacebookIcon,
+  InstagramIcon,
+  TiktokIcon,
+  YoutubeIcon,
+} from '@/components/icons/social-icons'
+import { contactEmail, socialLinks } from '@/lib/site-data'
 
 const columns = [
   {
     title: 'Explore',
     links: [
-      { label: 'About Iqra', href: '/about' },
+      { label: 'About Iqra Khan Scholar', href: '/about' },
       { label: 'E-books', href: '/library' },
       { label: 'Abayas', href: '/store' },
       { label: 'Knowledge Hub', href: '/blog' },
@@ -51,8 +56,7 @@ export function SiteFooter() {
               />
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-primary-foreground/70">
-              Authentic Islamic knowledge for the modern Muslim woman. Learn,
-              grow, and transform your life through Quran &amp; Sunnah.
+              From e-books to one-to-one mentorship with Iqra Khan Scholar — authentic Islamic knowledge, rooted in Quran & Sunnah, guiding you every step of the way!
             </p>
 
             {/* Newsletter signup */}
@@ -85,7 +89,8 @@ export function SiteFooter() {
                 { icon: InstagramIcon, label: 'Instagram', href: socialLinks.instagram },
                 { icon: YoutubeIcon, label: 'YouTube', href: socialLinks.youtube },
                 { icon: FacebookIcon, label: 'Facebook', href: socialLinks.facebook },
-                { icon: Mail, label: 'Email', href: 'mailto:hello@iqrakhan.com' },
+                { icon: TiktokIcon, label: 'TikTok', href: socialLinks.tiktok },
+                { icon: Mail, label: 'Email', href: `mailto:${contactEmail}` },
               ].map((s) => (
                 <a
                   key={s.label}

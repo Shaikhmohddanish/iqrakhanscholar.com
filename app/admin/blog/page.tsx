@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { getAllArticles, seedArticles } from "@/lib/blog"
+import { getAllArticles } from "@/lib/blog"
 import { Plus, Pencil, Eye } from "lucide-react"
 
 export const metadata: Metadata = {
@@ -9,7 +9,6 @@ export const metadata: Metadata = {
 }
 
 export default async function AdminBlogPage() {
-  await seedArticles()
   const { articles, total } = await getAllArticles()
 
   return (

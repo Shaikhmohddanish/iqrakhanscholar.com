@@ -1,6 +1,6 @@
 // Client-safe booking types and constants (no DB/server-only imports)
 
-export type SessionType = "session-30" | "session-60" | "package-3x60"
+export type SessionType = "session-30" | "session-group" | "package-3x60"
 export type BookingStatus = "pending" | "confirmed" | "cancelled" | "completed" | "rescheduled"
 export type BookingPaymentStatus = "unpaid" | "paid" | "refunded"
 
@@ -28,11 +28,12 @@ export const SESSION_TYPES: SessionTypeInfo[] = [
     currency: "INR",
   },
   {
-    id: "session-60",
-    title: "60-Minute Session",
-    description: "A full-hour private session for personalised Islamic guidance and advice.",
+    id: "session-group",
+    title: "Group Islamic Guidance Session",
+    description:
+      "Interactive group sessions designed for couples, families, and sisters seeking Islamic guidance on marriage, relationships, family challenges, and personal development. These sessions provide Islamic guidance and support through the teachings of the Qur'an and Sunnah.",
     duration: 60,
-    price: 390000,
+    price: 410000,
     currency: "INR",
   },
   {
@@ -48,6 +49,7 @@ export const SESSION_TYPES: SessionTypeInfo[] = [
 
 // Titles for bookings created before the tier revamp, keyed by their old ids.
 export const LEGACY_SESSION_TITLES: Record<string, string> = {
+  "session-60": "60-Minute Session",
   discovery: "Discovery Call",
   guidance: "One-to-One Guidance",
   intensive: "Intensive Study Session",

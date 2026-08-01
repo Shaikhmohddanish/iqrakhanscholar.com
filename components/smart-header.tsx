@@ -29,7 +29,6 @@ import { CartButton } from '@/components/cart/cart-button'
 import { logoutAction } from '@/app/actions/auth'
 import type { PublicUser } from '@/lib/types'
 import { hasRole } from '@/lib/types'
-import { ThemeToggle } from '@/components/theme-toggle'
 import { CurrencySwitcher } from '@/components/currency/currency-switcher'
 
 interface SmartHeaderProps {
@@ -275,9 +274,6 @@ export function SmartHeader({ user }: SmartHeaderProps) {
                 {/* Currency switcher - desktop */}
                 <CurrencySwitcher className="hidden lg:flex" />
 
-                {/* Theme toggle - desktop */}
-                <ThemeToggle className="hidden lg:inline-flex" />
-
                 {/* Avatar dropdown - desktop */}
                 <div className="relative hidden lg:block" ref={avatarRef}>
                   <button
@@ -392,9 +388,6 @@ export function SmartHeader({ user }: SmartHeaderProps) {
                 {/* Currency switcher - desktop */}
                 <CurrencySwitcher className="hidden lg:flex" />
 
-                {/* Theme toggle - desktop */}
-                <ThemeToggle className="hidden lg:inline-flex" />
-
                 {/* Desktop: Sign In + CTA */}
                 <Link
                   href="/login"
@@ -487,10 +480,6 @@ export function SmartHeader({ user }: SmartHeaderProps) {
 
             {/* Main site nav */}
             <nav className="mobile-drawer-nav" aria-label="Main navigation">
-              <Link href="/" onClick={() => setDrawerOpen(false)}>
-                Home
-                <ArrowRight />
-              </Link>
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
@@ -545,9 +534,6 @@ export function SmartHeader({ user }: SmartHeaderProps) {
             <div className="mobile-drawer-footer">
               {/* Currency switcher - always visible in drawer */}
               <CurrencySwitcher variant="labeled" />
-
-              {/* Theme toggle - always visible in drawer */}
-              <ThemeToggle variant="labeled" />
 
               {user ? (
                 <>

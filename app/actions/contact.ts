@@ -9,14 +9,19 @@ export interface ContactState {
   fieldErrors?: Record<string, string>
 }
 
+// The public form collects name / email / phone / comment. Email is the only
+// required contact detail; `subject` is no longer asked for, so it's fixed here
+// (it only ever fed the notification email's subject line).
+const CONTACT_SUBJECT = "Website enquiry"
+
 const contactSchema = z.object({
   name: z.string().trim().min(2, "Please enter your name").max(80),
   email: z.string().trim().email("Enter a valid email address"),
-  subject: z.string().trim().min(2, "Please enter a subject").max(150),
+  phone: z.string().trim().max(40).optional(),
   message: z
     .string()
     .trim()
-    .min(10, "Message must be at least 10 characters")
+    .min(1, "Please enter a message")
     .max(5000, "Message is too long"),
 })
 
@@ -36,7 +41,7 @@ export async function sendContactMessage(
   const parsed = contactSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
-    subject: formData.get("subject"),
+    phone: formData.get("phone") || undefined,
     message: formData.get("message"),
   })
   if (!parsed.success) {
@@ -44,7 +49,7 @@ export async function sendContactMessage(
   }
 
   try {
-    await sendContactEmail(parsed.data)
+    await sendContactEmail({ ...parsed.data, subject: CONTACT_SUBJECT })
     return { ok: true }
   } catch (err) {
     console.error("Contact form delivery failed:", err)

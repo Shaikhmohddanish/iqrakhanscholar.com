@@ -2,7 +2,6 @@ import Link from "next/link"
 import type { PublicUser } from "@/lib/types"
 import { Bell, LogOut } from "lucide-react"
 import { logoutAction } from "@/app/actions/auth"
-import { ThemeToggle } from "@/components/theme-toggle"
 
 interface AdminHeaderProps {
   user: PublicUser
@@ -16,7 +15,6 @@ export function AdminHeader({ user, title }: AdminHeaderProps) {
         {title && <h1 className="font-heading text-lg font-semibold text-foreground">{title}</h1>}
       </div>
       <div className="flex items-center gap-3">
-        <ThemeToggle />
         <Link
           href="/account/notifications"
           className="flex size-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground"

@@ -43,12 +43,12 @@ export default function RefundPolicyPage() {
           <section id="consultations">
             <h2>Consultations</h2>
             <ul>
-              <li><strong>Cancellation 48+ hours before:</strong> Full refund</li>
-              <li><strong>Cancellation 24–48 hours before:</strong> 50% refund or reschedule</li>
-              <li><strong>Cancellation within 24 hours:</strong> Non-refundable (reschedule available)</li>
+              <li><strong>Cancellation within 2 hours of booking:</strong> Full refund</li>
+              <li><strong>Cancellation after 2 hours:</strong> Non-refundable</li>
+              <li><strong>Rescheduling:</strong> Available within 2 hours of booking</li>
               <li><strong>No-show:</strong> Non-refundable</li>
             </ul>
-            <p>Mentorship packs: individual sessions follow the same policy. Unused sessions remain valid for 6 months from purchase.</p>
+            <p>Session packages: individual sessions follow the same policy. Unused sessions remain valid for 6 months from purchase.</p>
           </section>
 
           <section id="how-to">
@@ -56,7 +56,7 @@ export default function RefundPolicyPage() {
             <p>To request a refund, you can:</p>
             <ul>
               <li>Submit a refund request through your <Link href="/account/orders">Orders</Link> page</li>
-              <li>Email us at <a href="mailto:support@iqrakhan.com">support@iqrakhan.com</a> with your order number</li>
+              <li>Email us at <a href="mailto:iqrakspromo@gmail.com">iqrakspromo@gmail.com</a> with your order number</li>
             </ul>
           </section>
 

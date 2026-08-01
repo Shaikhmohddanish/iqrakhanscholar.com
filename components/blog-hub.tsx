@@ -12,7 +12,7 @@ export function BlogHub({ posts }: { posts: BlogPostItem[] }) {
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <Reveal className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
           <div className="max-w-2xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent-ink">
               Knowledge Hub
             </p>
             <h2 className="mt-3 text-balance font-heading text-3xl font-semibold text-foreground sm:text-4xl">

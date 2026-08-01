@@ -57,7 +57,7 @@ export default function TermsPage() {
 
           <section id="consultations">
             <h2>Consultations</h2>
-            <p>Consultation sessions are personal guidance sessions and do not constitute professional counselling, therapy, or legal advice. Sessions can be rescheduled up to 24 hours in advance. No-shows are non-refundable.</p>
+            <p>Consultation sessions are personal guidance sessions and do not constitute professional counselling, therapy, or legal advice. Sessions can be rescheduled within 2 hours of booking. Cancellations made within 2 hours are refundable; after that they are non-refundable, as are no-shows.</p>
           </section>
 
           <section id="intellectual-property">

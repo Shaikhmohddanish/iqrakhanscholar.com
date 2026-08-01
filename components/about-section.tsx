@@ -35,15 +35,15 @@ export function AboutSection() {
               />
             </div>
             <div className="absolute -right-4 -bottom-6 hidden rounded-2xl border border-border bg-accent px-5 py-4 text-accent-foreground shadow-lg sm:block">
-              <p className="font-heading text-2xl font-bold">10+ yrs</p>
-              <p className="text-xs font-medium">of teaching &amp; study</p>
+              <p className="font-heading text-2xl font-bold">7 yrs</p>
+              <p className="text-xs font-medium">of Islamic study</p>
             </div>
           </Reveal>
 
           {/* Text column */}
           <div className="order-1 lg:order-2">
             <Reveal>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent-ink">
                 Assalamu Alaikum, I&apos;m Iqra
               </p>
               <h2 className="mt-3 text-balance font-heading text-3xl font-semibold text-foreground sm:text-4xl">

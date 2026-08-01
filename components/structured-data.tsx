@@ -39,7 +39,7 @@ export function StructuredData() {
     url: SITE_URL,
     logo: `${SITE_URL}/icon-512.png`,
     description:
-      'Authentic Islamic knowledge, digital books, courses, and one-to-one mentorship for the modern Muslim woman.',
+      'From e-books to one-to-one mentorship with Iqra Khan Scholar — authentic Islamic knowledge, rooted in Quran & Sunnah, guiding you every step of the way!',
     sameAs: Object.values(socialLinks),
   }
 

@@ -120,9 +120,10 @@ export default async function ProductPage({ params }: { params: Params }) {
               <div className="flex items-start gap-3">
                 <Download className="mt-0.5 size-5 text-primary" />
                 <div>
-                  <p className="font-medium text-foreground">Instant Digital Delivery</p>
+                  <p className="font-medium text-foreground">Instant Digital Access</p>
                   <p className="text-sm text-muted-foreground">
-                    Your purchase will be available immediately in your account library and via email.
+                    Your purchase unlocks immediately in your account library, ready to read
+                    in our in-browser reader on any device.
                   </p>
                 </div>
               </div>

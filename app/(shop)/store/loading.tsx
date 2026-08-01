@@ -4,10 +4,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 export default function StoreLoading() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      {/* Header */}
-      <Skeleton className="mb-2 h-4 w-24" />
-      <Skeleton className="mb-2 h-10 w-64" />
-      <Skeleton className="mb-10 h-5 w-96" />
+      {/* Breadcrumb */}
+      <Skeleton className="mb-6 h-4 w-24" />
 
       {/* Toolbar */}
       <div className="mb-6 flex flex-wrap items-center gap-3">

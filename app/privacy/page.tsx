@@ -30,7 +30,7 @@ export default function PrivacyPage() {
           <section id="controller">
             <h2>Data Controller</h2>
             <p>The data controller responsible for your personal data is:</p>
-            <p><strong>Iqra Khan</strong><br />Email: privacy@iqrakhan.com<br />Website: https://iqrakhan.com</p>
+            <p><strong>Iqra Khan</strong><br />Email: iqrakspromo@gmail.com<br />Website: https://iqrakhanscholar.com</p>
           </section>
 
           <section id="data-collected">
@@ -113,13 +113,13 @@ export default function PrivacyPage() {
               <li><strong>Restriction:</strong> Request limited processing in certain circumstances</li>
               <li><strong>Withdraw consent:</strong> Withdraw consent at any time for consent-based processing</li>
             </ul>
-            <p>To exercise any of these rights, use the Settings page in your account or email privacy@iqrakhan.com.</p>
+            <p>To exercise any of these rights, use the Settings page in your account or email iqrakspromo@gmail.com.</p>
           </section>
 
           <section id="contact">
             <h2>Contact Us</h2>
             <p>For any data protection enquiries, please contact:</p>
-            <p>Email: <a href="mailto:privacy@iqrakhan.com">privacy@iqrakhan.com</a></p>
+            <p>Email: <a href="mailto:iqrakspromo@gmail.com">iqrakspromo@gmail.com</a></p>
             <p>You also have the right to lodge a complaint with your local data protection authority.</p>
           </section>
         </LegalPageLayout>

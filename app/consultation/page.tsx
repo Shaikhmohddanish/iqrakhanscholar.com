@@ -38,6 +38,7 @@ export const metadata: Metadata = {
 const tiers = [
   {
     name: '30-Minute Session',
+    note: 'For women only',
     currency: 'INR',
     price: 210000,
     duration: '30 min',
@@ -50,21 +51,23 @@ const tiers = [
     popular: false,
   },
   {
-    name: '60-Minute Session',
+    name: 'Group Islamic Guidance Session',
+    note: 'For couples & family members',
     currency: 'INR',
-    price: 390000,
+    price: 410000,
     duration: '60 min',
     features: [
-      'Private one-to-one session',
-      'In-depth topic exploration',
+      'Guidance on marriage & relationships',
+      'Support with family challenges',
+      'Personal development for the whole family',
+      'Rooted in the Qur’an & Sunnah',
       'Session recording',
-      'Written action plan',
-      '1 follow-up email',
     ],
     popular: true,
   },
   {
     name: '3-Session Package',
+    note: 'For women, couples & family only',
     currency: 'INR',
     price: 1360000,
     duration: '3 × 60 min',
@@ -90,7 +93,7 @@ const testimonials = [
   {
     quote: 'Iqra\'s session gave me clarity I\'d been searching for years. She listens with genuine compassion and wisdom.',
     name: 'Aisha R.',
-    role: '60-Minute Session Client',
+    role: 'Group Session Client',
   },
   {
     quote: 'The mentorship pack transformed my relationship with salah. I finally feel connected in my prayers.',
@@ -105,10 +108,10 @@ const testimonials = [
 ]
 
 const faqs = [
-  { q: 'Who are the consultations for?', a: 'Any Muslim woman seeking guidance on faith, personal development, family life, or spiritual growth. Sessions are accessible regardless of your current level of practice.' },
-  { q: 'How do sessions take place?', a: 'All sessions are conducted via secure video call (Zoom or Google Meet). You can join from anywhere in the world.' },
-  { q: 'Is everything confidential?', a: 'Absolutely. Every session is strictly private. Recordings are shared only with you and are never published or shared.' },
-  { q: 'Can I reschedule or cancel?', a: 'Yes, you can reschedule up to 24 hours before your session. Cancellations within 24 hours are non-refundable.' },
+  { q: 'Who are the consultations for?', a: 'Anyone seeking guidance on faith, personal development, family life, or spiritual growth. Sessions are accessible regardless of your current level of practice.' },
+  { q: 'How do sessions take place?', a: 'All sessions are conducted via secure audio call on Google Meet. You can join from anywhere in the world.' },
+  { q: 'Is everything confidential?', a: 'Absolutely. Every session is strictly private.' },
+  { q: 'Can I reschedule or cancel?', a: 'Yes, you can reschedule within 2 hours. Cancellations within 2 hours are refundable, after 2 hours not.' },
   { q: 'What payment methods are accepted?', a: 'We accept credit/debit cards and UPI via Razorpay. All transactions are secure and encrypted.' },
 ]
 
@@ -159,6 +162,9 @@ export default async function ConsultationPage() {
                     </span>
                   )}
                   <h3 className="font-heading text-xl font-semibold text-foreground">{tier.name}</h3>
+                  {tier.note && (
+                    <p className="mt-1 text-xs font-medium text-muted-foreground">({tier.note})</p>
+                  )}
                   <div className="mt-3 flex items-baseline gap-1">
                     {(() => {
                       const { amount, currency } = resolveProductPrice(tier, activeCurrency)

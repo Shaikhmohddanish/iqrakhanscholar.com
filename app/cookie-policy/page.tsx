@@ -51,7 +51,7 @@ export default function CookiePolicyPage() {
 
           <section id="contact">
             <h2>Contact Us</h2>
-            <p>For questions about our cookie practices, email <a href="mailto:privacy@iqrakhan.com">privacy@iqrakhan.com</a>.</p>
+            <p>For questions about our cookie practices, email <a href="mailto:iqrakspromo@gmail.com">iqrakspromo@gmail.com</a>.</p>
           </section>
         </LegalPageLayout>
       </main>

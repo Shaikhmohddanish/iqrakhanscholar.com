@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
@@ -7,56 +8,56 @@ import { stats, socialLinks } from '@/lib/site-data'
 import { SITE_URL } from '@/lib/site-config'
 import {
   BookOpen,
-  Heart,
   GraduationCap,
-  Users,
-  Star,
+  MessageCircleHeart,
+  Shirt,
   ArrowRight,
   Quote,
 } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'About Iqra Khan',
+  title: 'About Iqra Khan Scholar',
   description:
-    'Learn about Iqra Khan - an Islamic scholar, educator, and mentor dedicated to empowering Muslim women through authentic Quran & Sunnah knowledge.',
+    'Learn about Iqra Khan - an Islamic scholar sharing authentic knowledge rooted in the Qur’an and Sunnah, helping Muslim women and families strengthen their connection with Allah.',
   alternates: { canonical: '/about' },
   openGraph: {
-    title: 'About Iqra Khan - Islamic Scholar & Educator',
+    title: 'About Iqra Khan Scholar',
     description:
-      'Discover the journey, mission, and qualifications of Iqra Khan.',
+      'Discover the journey, Islamic education, and mission of Iqra Khan.',
     url: '/about',
     images: [{ url: '/iqra-about.webp' }],
   },
 }
 
 const qualifications = [
-  { year: '2015', title: 'Bachelor of Islamic Studies', institution: 'International Islamic University' },
-  { year: '2017', title: 'Ijazah in Quran Recitation', institution: 'Under Sheikh Al-Hussaini' },
-  { year: '2019', title: 'Masters in Islamic Jurisprudence', institution: 'Al-Azhar University' },
-  { year: '2021', title: 'Certificate in Islamic Counselling', institution: 'Islamic Psychology Institute' },
-  { year: '2023', title: 'Launched Iqra Khan Platform', institution: 'Self-founded educational brand' },
+  { year: '2017', title: 'Islamic Studies Foundation', institution: 'First Year' },
+  { year: '2019', title: 'Islamic Studies Foundation', institution: 'Last Year' },
+  { year: '2020', title: 'Master’s in Islamic Scholarship', institution: 'First Year' },
+  { year: '2024', title: 'Master’s in Islamic Scholarship', institution: 'Last Year' },
+  { year: '2026', title: 'Launched Iqra Khan Scholarship Website', institution: 'Self-founded educational brand' },
 ]
 
+// "What I Offer" - the four things provided through this website.
 const values = [
   {
-    icon: BookOpen,
-    title: 'Authentic Knowledge',
-    description: 'Every teaching is rooted firmly in the Quran and authentic Sunnah, verified through classical scholarship.',
+    icon: MessageCircleHeart,
+    title: 'Islamic Consultation',
+    description: 'Private one-to-one guidance for the questions and challenges you are facing right now.',
   },
   {
-    icon: Heart,
-    title: 'Compassionate Guidance',
-    description: 'We approach every question and struggle with mercy, understanding, and genuine care.',
+    icon: BookOpen,
+    title: 'Educational Resources',
+    description: 'Islamic e-books and study resources you can read anytime in your account library.',
   },
   {
     icon: GraduationCap,
-    title: 'Accessible Education',
-    description: 'Making Islamic scholarship approachable for the modern Muslim woman, regardless of background.',
+    title: 'Beneficial Content',
+    description: 'Articles and reminders grounded in the Qur’an and authentic Sunnah.',
   },
   {
-    icon: Users,
-    title: 'Community First',
-    description: 'Building a global sisterhood united by faith, growth, and mutual support.',
+    icon: Shirt,
+    title: 'Modest Clothing',
+    description: 'Abayas and modest Islamic clothing that reflect dignity and faith.',
   },
 ]
 
@@ -79,14 +80,16 @@ export default function AboutPage() {
                   About the Scholar
                 </span>
                 <h1 className="mt-6 font-heading text-4xl font-bold leading-tight text-foreground sm:text-5xl">
-                  Guiding hearts back to
-                  <span className="text-primary"> Allah&apos;s light</span>
+                  About <span className="text-primary">Iqra Khan Scholar</span>
                 </h1>
-                <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-                  Iqra Khan is an Islamic scholar, educator, and mentor dedicated to
-                  empowering Muslim women with authentic knowledge rooted in the Quran
-                  and Sunnah. Through books, courses, and personal mentorship, she has
-                  impacted thousands of lives across the globe.
+                <p className="mt-6 font-heading text-lg text-foreground">
+                  Assalamualaikum wa rehmatullahi wa barakatuhu
+                </p>
+                <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
+                  I am Iqra Khan, an Islamic scholar dedicated to sharing authentic
+                  Islamic knowledge rooted in the Qur&apos;an and Sunnah. My aim is to help
+                  Muslim women and families strengthen their connection with Allah
+                  through beneficial knowledge, guidance, and practical resources.
                 </p>
                 <div className="mt-8 flex flex-wrap gap-4">
                   <Link
@@ -105,33 +108,64 @@ export default function AboutPage() {
                 </div>
               </div>
 
-              {/* Image placeholder - geometric pattern */}
+              {/* Portrait - bg-arabesque shows through as the letterbox colour */}
               <div className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-3xl bg-arabesque">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="mx-auto flex size-24 items-center justify-center rounded-full bg-accent/20">
-                      <Star className="size-12 text-accent" />
-                    </div>
-                    <p className="mt-4 font-heading text-2xl font-semibold text-primary-foreground">
-                      Iqra Khan
-                    </p>
-                    <p className="text-sm text-primary-foreground/70">
-                      Islamic Scholar & Educator
-                    </p>
-                  </div>
-                </div>
+                <Image
+                  src="/hero-portrait.webp"
+                  alt="Iqra Khan, Islamic scholar and educator"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 448px"
+                />
               </div>
             </div>
           </div>
         </section>
 
-        {/* Mission & Vision */}
+        {/* My Islamic Education & Mission */}
+        <section className="pb-20">
+          <div className="mx-auto grid max-w-5xl gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8">
+            <div>
+              <h2 className="font-heading text-2xl font-bold text-foreground">
+                My Islamic Education
+              </h2>
+              <p className="mt-4 leading-relaxed text-muted-foreground">
+                I have studied classical Islamic sciences through Maulwiyat and Aalimiyat,
+                including Qur&apos;an studies, Tafsir, Hadith, Fiqh, Aqeedah, Arabic language,
+                Seerah, Islamic history, and principles of Islamic scholarship.
+              </p>
+              <p className="mt-4 leading-relaxed text-muted-foreground">
+                I completed my Islamic studies over a period of 7 years, focusing on
+                traditional Islamic sciences and developing a deeper understanding of the
+                Qur&apos;an, Sunnah, and classical Islamic scholarship.
+              </p>
+            </div>
+            <div>
+              <h2 className="font-heading text-2xl font-bold text-foreground">My Mission</h2>
+              <p className="mt-4 leading-relaxed text-muted-foreground">
+                My mission is to make authentic Islamic guidance accessible for today&apos;s
+                Muslims — helping them understand their faith, overcome personal challenges,
+                and live their lives according to the teachings of Islam.
+              </p>
+              <h2 className="mt-10 font-heading text-2xl font-bold text-foreground">
+                My Approach
+              </h2>
+              <p className="mt-4 leading-relaxed text-muted-foreground">
+                Every guidance and resource is created with a focus on authenticity, wisdom,
+                and compassion — while maintaining respect for individual circumstances and
+                privacy.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* What I Offer */}
         <section className="bg-muted py-20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-12 text-center">
-              <h2 className="font-heading text-3xl font-bold text-foreground">Our Values</h2>
+              <h2 className="font-heading text-3xl font-bold text-foreground">What I Offer</h2>
               <p className="mt-3 text-muted-foreground">
-                The principles that guide everything we do
+                Through this website, I provide
               </p>
             </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -214,9 +248,9 @@ export default function AboutPage() {
           <div className="mx-auto max-w-2xl px-4">
             <Quote className="mx-auto size-10 text-accent/60" />
             <blockquote className="mt-6 font-heading text-2xl font-semibold leading-relaxed text-primary-foreground sm:text-3xl">
-              &ldquo;The best of you are those who learn the Quran and teach it.&rdquo;
+              May Allah accept this effort and make it a means of spreading beneficial
+              knowledge.
             </blockquote>
-            <p className="mt-4 text-sm text-primary-foreground/70">- Prophet Muhammad ﷺ</p>
             <div className="mt-10 flex flex-wrap justify-center gap-4">
               <Link
                 href="/consultation"
@@ -228,7 +262,7 @@ export default function AboutPage() {
                 href="/store"
                 className="inline-flex h-12 items-center rounded-full border border-primary-foreground/30 px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-foreground/10"
               >
-                Visit the Store
+                Browse Abayas
               </Link>
             </div>
           </div>
@@ -246,7 +280,8 @@ export default function AboutPage() {
             name: 'Iqra Khan',
             url: SITE_URL,
             jobTitle: 'Islamic Scholar & Educator',
-            description: 'Islamic scholar, educator, and mentor dedicated to empowering Muslim women.',
+            description:
+              'Islamic scholar sharing authentic knowledge rooted in the Qur’an and Sunnah, helping Muslim women and families strengthen their connection with Allah.',
             sameAs: Object.values(socialLinks),
           }),
         }}

@@ -18,20 +18,11 @@ export const metadata: Metadata = {
   },
 }
 
-const categories = [
-  {
-    title: 'General',
-    faqs: faqs.slice(0, 2),
-  },
-  {
-    title: 'Products & Delivery',
-    faqs: faqs.slice(2, 4),
-  },
-  {
-    title: 'Consultations',
-    faqs: faqs.slice(4),
-  },
-]
+// Grouped by each FAQ's own `category` field, so adding or reordering entries in
+// site-data.ts can never misfile them.
+const categories = (['General', 'Products & Delivery', 'Consultations'] as const)
+  .map((title) => ({ title, faqs: faqs.filter((f) => f.category === title) }))
+  .filter((c) => c.faqs.length > 0)
 
 export default function FaqPage() {
   return (

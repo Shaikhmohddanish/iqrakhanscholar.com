@@ -129,7 +129,7 @@ export function CartView() {
           <ArrowRight className="size-4" />
         </Link>
         <p className="mt-3 text-center text-xs text-muted-foreground">
-          Secure checkout · Digital items delivered instantly
+          Secure checkout · Digital items unlock instantly in your library
         </p>
       </aside>
     </div>

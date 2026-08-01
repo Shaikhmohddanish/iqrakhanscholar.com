@@ -37,6 +37,8 @@ interface StoreClientProps {
   initialItems: PublicProduct[]
   initialHasMore: boolean
   initialTotal: number
+  /** Categories pre-selected from the URL (e.g. /store?category=Accessories). */
+  initialCategories?: string[]
   facets: ProductFacets
   wishlistIds?: Set<string>
 }
@@ -45,11 +47,12 @@ export function StoreClient({
   initialItems,
   initialHasMore,
   initialTotal,
+  initialCategories = [],
   facets,
   wishlistIds = new Set(),
 }: StoreClientProps) {
   const [typeFilter, setTypeFilter] = useState('')
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(initialCategories)
   const [priceRange, setPriceRange] = useState<[number, number]>([facets.minPrice, facets.maxPrice])
   const [sortBy, setSortBy] = useState('featured')
   const [view, setView] = useState<'grid' | 'list'>('grid')

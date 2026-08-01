@@ -85,7 +85,7 @@ function GeneralSettings() {
         <input defaultValue="https://iqrakhanscholar.com" className="rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
       </SettingRow>
       <SettingRow label="Contact email">
-        <input defaultValue="hello@iqrakhan.com" type="email" className="rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
+        <input defaultValue="iqrakspromo@gmail.com" type="email" className="rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
       </SettingRow>
       <button className="h-9 w-fit rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground hover:bg-primary/90">Save changes</button>
     </div>
@@ -120,7 +120,7 @@ function EmailSettings() {
         <EnvNote varName="RESEND_API_KEY" />
       </SettingRow>
       <SettingRow label="From address">
-        <input defaultValue="hello@iqrakhan.com" className="rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
+        <input defaultValue="iqrakspromo@gmail.com" className="rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
         <EnvNote varName="EMAIL_FROM" />
       </SettingRow>
     </div>

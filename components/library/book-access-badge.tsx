@@ -15,7 +15,7 @@ const statusConfig = {
   preview: {
     icon: Eye,
     label: 'Preview Only',
-    className: 'bg-accent/10 text-accent border-accent/20',
+    className: 'bg-accent/10 text-accent-ink border-accent/30',
   },
   locked: {
     icon: Lock,

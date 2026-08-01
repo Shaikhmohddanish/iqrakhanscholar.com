@@ -65,7 +65,7 @@ export function ConsultationCta() {
 
             <div className="mt-8 flex flex-wrap gap-6 text-sm text-primary-foreground/80">
               <span className="inline-flex items-center gap-2">
-                <Video className="size-4 text-accent" /> Online via Zoom
+                <Video className="size-4 text-accent" /> Online via Google Meet
               </span>
               <span className="inline-flex items-center gap-2">
                 <Clock className="size-4 text-accent" /> Flexible time zones

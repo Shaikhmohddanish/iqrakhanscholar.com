@@ -28,7 +28,7 @@ export function ProductBuyPanel({ product }: { product: PublicProduct }) {
       <div className="flex items-baseline gap-3">
         <ProductPrice item={product} className="font-heading text-3xl font-bold text-foreground" />
         <span className="text-sm text-muted-foreground">
-          {isDigital ? "Instant digital download" : "Physical item · ships worldwide"}
+          {isDigital ? "Instant access in your library" : "Physical item · ships worldwide"}
         </span>
       </div>
 
@@ -88,7 +88,7 @@ export function ProductBuyPanel({ product }: { product: PublicProduct }) {
         {isDigital ? <Download className="size-4 text-primary" /> : <Truck className="size-4 text-primary" />}
         <span>
           {isDigital
-            ? "Delivered to your account & inbox immediately after purchase."
+            ? "Unlocked in your account library immediately after purchase."
             : "Free returns within 14 days. Tracked worldwide shipping."}
         </span>
       </div>

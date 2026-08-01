@@ -46,7 +46,7 @@ export function ContactForm() {
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <label htmlFor="contact-name" className="mb-1.5 block text-sm font-medium text-foreground">
-            Full Name
+            Name
           </label>
           <input
             id="contact-name"
@@ -61,7 +61,7 @@ export function ContactForm() {
         </div>
         <div>
           <label htmlFor="contact-email" className="mb-1.5 block text-sm font-medium text-foreground">
-            Email
+            Email <span className="text-destructive">*</span>
           </label>
           <input
             id="contact-email"
@@ -76,33 +76,30 @@ export function ContactForm() {
       </div>
 
       <div>
-        <label htmlFor="contact-subject" className="mb-1.5 block text-sm font-medium text-foreground">
-          Subject
+        <label htmlFor="contact-phone" className="mb-1.5 block text-sm font-medium text-foreground">
+          Phone number
         </label>
         <input
-          id="contact-subject"
-          name="subject"
-          type="text"
-          required
-          minLength={2}
-          className={`input-base ${state.fieldErrors?.subject ? 'border-destructive' : ''}`}
-          placeholder="What is this regarding?"
+          id="contact-phone"
+          name="phone"
+          type="tel"
+          className={`input-base ${state.fieldErrors?.phone ? 'border-destructive' : ''}`}
+          placeholder="Optional"
         />
-        {state.fieldErrors?.subject && <p className="mt-1 text-xs text-destructive">{state.fieldErrors.subject}</p>}
+        {state.fieldErrors?.phone && <p className="mt-1 text-xs text-destructive">{state.fieldErrors.phone}</p>}
       </div>
 
       <div>
         <label htmlFor="contact-message" className="mb-1.5 block text-sm font-medium text-foreground">
-          Message
+          Comment
         </label>
         <textarea
           id="contact-message"
           name="message"
           required
-          minLength={10}
           rows={6}
           className={`input-base resize-y ${state.fieldErrors?.message ? 'border-destructive' : ''}`}
-          placeholder="Your message..."
+          placeholder="How can we help?"
         />
         {state.fieldErrors?.message && <p className="mt-1 text-xs text-destructive">{state.fieldErrors.message}</p>}
       </div>
@@ -110,7 +107,7 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="inline-flex h-12 items-center gap-2 rounded-lg bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
+        className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60 sm:w-auto"
       >
         {isPending ? (
           <>
@@ -120,7 +117,7 @@ export function ContactForm() {
         ) : (
           <>
             <Send className="size-4" />
-            Send Message
+            Send
           </>
         )}
       </button>

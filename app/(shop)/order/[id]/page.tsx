@@ -39,7 +39,7 @@ export default async function OrderPage({
         icon: CheckCircle2,
         tone: "bg-primary/10 text-primary",
         heading: `Thank you, ${user.name.split(" ")[0]}`,
-        body: `Your order has been confirmed. A receipt has been sent to ${order.email}.`,
+        body: `Your order has been confirmed. Any digital items are ready in your account library.`,
       }
     : isCancelled
       ? {
@@ -52,7 +52,7 @@ export default async function OrderPage({
           icon: Clock,
           tone: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
           heading: "Payment processing",
-          body: `We're waiting for your payment to be confirmed. This page will update once it's complete, and a receipt will be sent to ${order.email}.`,
+          body: `We're waiting for your payment to be confirmed. This page will update once it's complete.`,
         }
   const StatusIcon = statusUi.icon
 

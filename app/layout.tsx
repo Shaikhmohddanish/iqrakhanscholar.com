@@ -1,18 +1,18 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata } from 'next'
-import { Jost, Playfair_Display, Geist_Mono } from 'next/font/google'
+import { Poppins, Playfair_Display, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import { readCart } from '@/lib/cart'
 import { getActiveCurrency } from '@/lib/currency-server'
 import { CartProvider } from '@/components/cart/cart-provider'
 import { CurrencyProvider } from '@/components/currency/currency-provider'
 import { CookieConsent } from '@/components/cookie-consent'
-import { ThemeProvider } from '@/components/theme-provider'
 import { AdsenseLoader } from '@/components/ads/adsense-loader'
 import { SITE_URL as siteUrl } from '@/lib/site-config'
 
-const jost = Jost({
-  variable: '--font-jost',
+// Poppins has no variable-font build on Google Fonts, so weights are explicit.
+const poppins = Poppins({
+  variable: '--font-poppins',
   subsets: ['latin'],
   display: 'swap',
   weight: ['300', '400', '500', '600', '700'],
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     template: '%s | Iqra Khan',
   },
   description:
-    'Authentic Islamic knowledge for the modern Muslim woman. Explore digital books, journals, free resources, video lessons, and one-to-one consultations rooted in Quran & Sunnah.',
+    'From e-books to one-to-one mentorship with Iqra Khan Scholar — authentic Islamic knowledge, rooted in Quran & Sunnah, guiding you every step of the way!',
   keywords: [
     'Islamic scholar',
     'Islamic guidance',
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Iqra Khan - Islamic Scholar & Educator',
     description:
-      'Authentic Islamic knowledge for the modern Muslim woman - books, resources, and one-to-one mentorship.',
+      'From e-books to one-to-one mentorship with Iqra Khan Scholar — authentic Islamic knowledge, rooted in Quran & Sunnah.',
   },
   alternates: {
     canonical: siteUrl,
@@ -85,22 +85,15 @@ export default async function RootLayout({
       lang="en"
       data-scroll-behavior="smooth"
       suppressHydrationWarning
-      className={`${jost.variable} ${playfair.variable} ${geistMono.variable}`}
+      className={`${poppins.variable} ${playfair.variable} ${geistMono.variable}`}
     >
       <body className="font-sans antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem={false}
-          disableTransitionOnChange
-        >
-          <CurrencyProvider initialCurrency={currency}>
-            <CartProvider initialItems={cart.items}>
-              {children}
-              <CookieConsent />
-            </CartProvider>
-          </CurrencyProvider>
-        </ThemeProvider>
+        <CurrencyProvider initialCurrency={currency}>
+          <CartProvider initialItems={cart.items}>
+            {children}
+            <CookieConsent />
+          </CartProvider>
+        </CurrencyProvider>
         <AdsenseLoader />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

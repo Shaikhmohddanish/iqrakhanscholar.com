@@ -72,11 +72,11 @@ const COPY: Record<EmailKind, EmailCopy> = {
 
 // Brand palette mirrors the site's light theme (see app/globals.css).
 const BRAND = {
-  ink: "#6b5a47",
-  primary: "#a89685",
-  cream: "#f1ece6",
-  muted: "#7c7066",
-  bg: "#f6f4f1",
+  ink: "#17211c",
+  primary: "#2f5d50",
+  cream: "#eef2ec",
+  muted: "#5f6b64",
+  bg: "#f5f5f5",
 }
 
 function renderHtml(copy: EmailCopy, link: string): string {
@@ -181,6 +181,8 @@ function escapeHtml(value: string): string {
 export interface ContactMessage {
   name: string
   email: string
+  /** Optional - the public form asks for it, but it isn't required. */
+  phone?: string
   subject: string
   message: string
 }
@@ -209,13 +211,16 @@ export async function sendContactEmail(msg: ContactMessage): Promise<void> {
         <h1 style="margin:0 0 16px;font-family:Georgia,serif;font-size:20px;color:${BRAND.ink};">New contact message</h1>
         <p style="margin:0 0 6px;font-size:14px;color:${BRAND.muted};"><strong>Name:</strong> ${escapeHtml(msg.name)}</p>
         <p style="margin:0 0 6px;font-size:14px;color:${BRAND.muted};"><strong>Email:</strong> ${escapeHtml(msg.email)}</p>
+        ${msg.phone ? `<p style="margin:0 0 6px;font-size:14px;color:${BRAND.muted};"><strong>Phone:</strong> ${escapeHtml(msg.phone)}</p>` : ""}
         <p style="margin:0 0 16px;font-size:14px;color:${BRAND.muted};"><strong>Subject:</strong> ${escapeHtml(msg.subject)}</p>
         <div style="padding:16px;background:${BRAND.bg};border-radius:8px;font-size:15px;line-height:1.6;color:${BRAND.ink};">${safeMessage}</div>
       </td></tr>
     </table>
   </body>
 </html>`
-  const text = `New contact message\n\nName: ${msg.name}\nEmail: ${msg.email}\nSubject: ${msg.subject}\n\n${msg.message}`
+  const text = `New contact message\n\nName: ${msg.name}\nEmail: ${msg.email}${
+    msg.phone ? `\nPhone: ${msg.phone}` : ""
+  }\nSubject: ${msg.subject}\n\n${msg.message}`
 
   await transporter.sendMail({
     from: fromAddress(),

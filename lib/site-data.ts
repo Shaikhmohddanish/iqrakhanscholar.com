@@ -1,23 +1,27 @@
 export const navLinks = [
-  { label: 'About', href: '/about' },
-  { label: 'Library', href: '/library' },
+  { label: 'Home', href: '/' },
   { label: 'Abayas', href: '/store' },
+  { label: 'Accessories', href: '/store?category=Accessories' },
+  { label: 'E-books', href: '/library' },
   { label: 'Consultation', href: '/consultation' },
-  { label: 'Blog', href: '/blog' },
+  { label: 'Contact', href: '/contact' },
 ]
 
 export const stats = [
-  { value: '480K+', label: 'Followers on Instagram', numeric: 480, suffix: 'K+' },
-  { value: '12,000+', label: 'Subscribers on YouTube', numeric: 12000, suffix: '+' },
-  { value: '12,000+', label: 'Followers on Facebook', numeric: 12000, suffix: '+' },
-  { value: '60,000+', label: 'Followers on TikTok', numeric: 60000, suffix: '+' },
+  { value: '150,000+', label: 'Followers on Instagram', numeric: 150000, suffix: '+' },
+  { value: '10,000+', label: 'Subscribers on YouTube', numeric: 10000, suffix: '+' },
+  { value: '20,000+', label: 'Followers on Facebook', numeric: 20000, suffix: '+' },
+  { value: '15,000+', label: 'Followers on TikTok', numeric: 15000, suffix: '+' },
 ]
 
 export const socialLinks = {
   instagram: 'https://www.instagram.com/iqrakhanscholar',
   youtube: 'https://youtube.com/@iqrakhanscholar',
   facebook: 'https://www.facebook.com/people/Iqrakhanscholar/61577575244442/',
+  tiktok: 'https://www.tiktok.com/@iqrakhanscholar',
 }
+
+export const contactEmail = 'iqrakspromo@gmail.com'
 
 export type Product = {
   title: string
@@ -156,26 +160,35 @@ export const blogPosts = [
   },
 ]
 
-export const faqs = [
+export type FaqCategory = 'General' | 'Products & Delivery' | 'Consultations'
+
+// Grouped by `category` rather than array position - /faq buckets on this field,
+// so entries can be reordered or added without silently landing in the wrong section.
+export const faqs: { q: string; a: string; category: FaqCategory }[] = [
   {
-    q: 'Who are your teachings and resources designed for?',
-    a: 'Everything is created with the modern Muslim woman in mind - whether you are returning to your faith, deepening your practice, or seeking clarity in a specific area of life. The language is accessible and rooted firmly in authentic Quran & Sunnah.',
+    category: 'General',
+    q: 'Who are our teachings and resources designed for?',
+    a: 'Everything is created for the modern Muslim - whether you are returning to your faith, strengthening your practice, or seeking clarity in a specific area of life. The language is simple and accessible, and is firmly based on authentic Qur’an and Sunnah.',
   },
   {
-    q: 'Are the digital products delivered instantly?',
-    a: 'Yes. Ebooks, study guides, and resource packs are delivered to your inbox immediately after checkout, so you can begin learning right away on any device.',
+    category: 'General',
+    q: 'Is the guidance from a recognised scholarly background?',
+    a: 'Iqra Khan has completed a 7-year Aalimiyyah degree under qualified scholars.',
   },
   {
+    category: 'Products & Delivery',
+    q: 'How do I get my e-book after buying it?',
+    a: 'Your e-book unlocks instantly in your account library, where you can read it in our in-browser reader on any device. Nothing is sent by email, so there is no attachment to lose - just sign in and continue where you left off.',
+  },
+  {
+    category: 'Products & Delivery',
+    q: 'Do you ship physical products internationally?',
+    a: 'Yes, we ship our abayas, books, journals, and planners worldwide. Shipping rates and estimated delivery times are calculated at checkout based on your location.',
+  },
+  {
+    category: 'Consultations',
     q: 'What happens during a one-to-one consultation?',
     a: 'Each session is a private, confidential conversation tailored to your situation. We discuss your concerns, ground them in Islamic guidance, and build a clear, compassionate plan forward. You receive a recording and follow-up notes.',
-  },
-  {
-    q: 'Is the guidance from a recognised scholarly background?',
-    a: 'Iqra has studied under qualified scholars in classical Islamic sciences with a focus on Quran, Aqeedah, and Fiqh for women, and continues to teach under scholarly supervision.',
-  },
-  {
-    q: 'Do you ship physical products internationally?',
-    a: 'Yes, we ship our books, journals, and planners worldwide. Shipping rates and estimated delivery times are calculated at checkout based on your location.',
   },
 ]
 

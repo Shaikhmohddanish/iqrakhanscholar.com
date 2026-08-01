@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og'
 
 export const alt =
-  'Iqra Khan - Authentic Islamic Knowledge for the Modern Muslim Woman'
+  'Iqra Khan Scholar - Authentic Islamic Knowledge Rooted in Quran & Sunnah'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
@@ -17,8 +17,8 @@ export default function OpengraphImage() {
           flexDirection: 'column',
           justifyContent: 'center',
           padding: '90px',
-          background: '#1f1b16',
-          color: '#f0ebe4',
+          background: '#2f5d50',
+          color: '#ffffff',
           fontFamily: 'serif',
         }}
       >
@@ -28,7 +28,7 @@ export default function OpengraphImage() {
             fontSize: 26,
             letterSpacing: 8,
             textTransform: 'uppercase',
-            color: '#b8a591',
+            color: '#d4af37',
             fontFamily: 'sans-serif',
           }}
         >
@@ -50,20 +50,20 @@ export default function OpengraphImage() {
             display: 'flex',
             marginTop: 30,
             fontSize: 40,
-            color: '#d8cfc2',
+            color: '#e8efe9',
             maxWidth: 900,
             lineHeight: 1.3,
           }}
         >
-          Authentic Islamic knowledge for the modern Muslim woman — rooted in
-          Quran &amp; Sunnah.
+          From e-books to one-to-one mentorship — authentic Islamic knowledge,
+          rooted in Quran &amp; Sunnah.
         </div>
         <div
           style={{
             display: 'flex',
             marginTop: 60,
             fontSize: 28,
-            color: '#b8a591',
+            color: '#d4af37',
             fontFamily: 'sans-serif',
           }}
         >

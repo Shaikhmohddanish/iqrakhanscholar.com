@@ -25,8 +25,8 @@ export default function GlobalError({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: '#f6f4f1',
-          color: '#1f1b16',
+          background: '#f5f5f5',
+          color: '#17211c',
           fontFamily: 'Arial, Helvetica, sans-serif',
           padding: '24px',
         }}
@@ -35,7 +35,7 @@ export default function GlobalError({
           <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '24px', margin: '0 0 12px' }}>
             Something went wrong
           </h1>
-          <p style={{ fontSize: '15px', lineHeight: 1.6, color: '#7c7066', margin: '0 0 24px' }}>
+          <p style={{ fontSize: '15px', lineHeight: 1.6, color: '#5f6b64', margin: '0 0 24px' }}>
             An unexpected error occurred while loading the page. Please try again.
           </p>
           <button
@@ -46,7 +46,7 @@ export default function GlobalError({
               padding: '13px 28px',
               borderRadius: '9999px',
               border: 'none',
-              background: '#a89685',
+              background: '#2f5d50',
               color: '#ffffff',
               fontSize: '15px',
               fontWeight: 600,

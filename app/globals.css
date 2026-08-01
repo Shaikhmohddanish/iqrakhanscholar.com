@@ -11,7 +11,7 @@
 @theme inline {
   /* Typography */
   --font-heading: var(--font-playfair), Georgia, serif;
-  --font-sans: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), 'Geist Mono Fallback';
 
   /* Sidebar tokens */
@@ -38,6 +38,8 @@
   --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
+  /* Darkened gold for small text on light surfaces (the brand gold fails AA there). */
+  --color-accent-ink: var(--accent-ink);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -71,31 +73,34 @@
 }
 
 /* ================================================================
-   LIGHT MODE - Taupe / neutral palette
+   THEME - Pure white / elegant gold / deep green (light only)
    ================================================================ */
 :root {
   --background: #ffffff;
-  --foreground: #1f1b16;
+  --foreground: #17211c;
   --card: #ffffff;
-  --card-foreground: #1f1b16;
+  --card-foreground: #17211c;
   --popover: #ffffff;
-  --popover-foreground: #1f1b16;
-  /* Darkened from #a89685 (2.85:1) to meet WCAG AA 4.5:1 for white-on-primary
-     buttons and primary-colored text on white. */
-  --primary: #807366;
+  --popover-foreground: #17211c;
+  /* Deep green carries every filled surface (buttons, bg-arabesque bands).
+     7.4:1 with white text. */
+  --primary: #2f5d50;
   --primary-foreground: #ffffff;
-  --brand-ink: #6b5a47;
-  --secondary: #f1ece6;
-  --secondary-foreground: #5a4f44;
-  --muted: #f6f4f1;
-  /* Nudged from #7c7066 so muted text clears AA on the muted background too. */
-  --muted-foreground: #786c63;
-  --accent: #b8a591;
-  --accent-foreground: #1f1b16;
+  --brand-ink: #24463c;
+  --secondary: #eef2ec;
+  --secondary-foreground: #2b3d34;
+  --muted: #f5f5f5;
+  /* Clears AA on both white and the muted background. */
+  --muted-foreground: #5f6b64;
+  /* Brand gold - fills, badges, icons, and gold text on the green bands. */
+  --accent: #d4af37;
+  --accent-foreground: #17211c;
+  /* Small gold text on white needs a darker gold (#d4af37 is only 2.1:1). */
+  --accent-ink: #8a6d1c;
   --destructive: #c0392b;
-  --border: #e6e2dc;
-  --input: #e6e2dc;
-  --ring: #8a7765;
+  --border: #e3e7e2;
+  --input: #e3e7e2;
+  --ring: #2f5d50;
 
   /* Semantic */
   --success: #4f7a52;
@@ -106,23 +111,23 @@
   --info-foreground: #ffffff;
 
   /* Charts */
-  --chart-1: #8f7c6a;
-  --chart-2: #b8a591;
-  --chart-3: #6b5d4f;
-  --chart-4: #c8b9a6;
-  --chart-5: #9a8d7d;
+  --chart-1: #2f5d50;
+  --chart-2: #d4af37;
+  --chart-3: #a8c1a2;
+  --chart-4: #6f8f80;
+  --chart-5: #b99a3e;
 
   --radius: 0.5rem;
 
   /* Sidebar */
   --sidebar: #ffffff;
-  --sidebar-foreground: #1f1b16;
-  --sidebar-primary: #8f7c6a;
+  --sidebar-foreground: #17211c;
+  --sidebar-primary: #2f5d50;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f6f4f1;
-  --sidebar-accent-foreground: #5a4f44;
-  --sidebar-border: #e6e2dc;
-  --sidebar-ring: #8f7c6a;
+  --sidebar-accent: #f5f5f5;
+  --sidebar-accent-foreground: #2b3d34;
+  --sidebar-border: #e3e7e2;
+  --sidebar-ring: #2f5d50;
 
   /* Elevation / Shadows */
   --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.04);
@@ -140,71 +145,9 @@
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* ================================================================
-   DARK MODE - Warm espresso / taupe palette
-   ================================================================ */
-.dark {
-  /* Core */
-  --background: #1a1714;
-  --foreground: #f0ebe4;
-  --card: #221d19;
-  --card-foreground: #f0ebe4;
-  --popover: #221d19;
-  --popover-foreground: #f0ebe4;
-
-  /* Brand — light taupe pops on espresso; foreground inverted to dark */
-  --primary: #c9b9a6;
-  --primary-foreground: #211c17;
-  --brand-ink: #cdbda9;
-  --secondary: #2b2520;
-  --secondary-foreground: #e6ddd1;
-
-  /* Neutral */
-  --muted: #241f1b;
-  --muted-foreground: #b3a596;
-
-  /* Accent */
-  --accent: #b8a591;
-  --accent-foreground: #211c17;
-
-  /* Utility */
-  --destructive: #e06a5a;
-  --border: #332b25;
-  --input: #332b25;
-  --ring: #c9b9a6;
-
-  /* Semantic - readable on espresso */
-  --success: #7fae7f;
-  --success-foreground: #16210f;
-  --warning: #d9a45f;
-  --warning-foreground: #241704;
-  --info: #8fa9b6;
-  --info-foreground: #0f1a20;
-
-  /* Charts - warm earth tones */
-  --chart-1: #c9b9a6;
-  --chart-2: #b8a591;
-  --chart-3: #9a8470;
-  --chart-4: #d8cab8;
-  --chart-5: #80705f;
-
-  /* Sidebar */
-  --sidebar: #1e1a16;
-  --sidebar-foreground: #f0ebe4;
-  --sidebar-primary: #c9b9a6;
-  --sidebar-primary-foreground: #211c17;
-  --sidebar-accent: #2b2520;
-  --sidebar-accent-foreground: #e6ddd1;
-  --sidebar-border: #332b25;
-  --sidebar-ring: #c9b9a6;
-
-  /* Elevation */
-  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.4);
-  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.5), 0 1px 2px -1px rgb(0 0 0 / 0.4);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.4);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.6), 0 4px 6px -4px rgb(0 0 0 / 0.3);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.3);
-}
+/* The site is light-only by design - there is no dark palette and no theme
+   toggle. The `dark` variant stays defined above so any leftover `dark:`
+   utilities still compile; they simply never match. */
 
 /* ================================================================
    BASE LAYER
