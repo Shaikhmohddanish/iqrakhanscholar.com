@@ -133,30 +133,20 @@ export const testimonials = [
   },
 ]
 
-export const blogPosts = [
+// Topic artworks shown on the homepage. Each image carries its own title and
+// tagline, so `title` is used as alt text only - never rendered next to the art.
+export const topics = [
   {
-    title: 'How to Build a Consistent Salah Routine That Actually Lasts',
-    category: 'Worship',
-    readTime: '8 min read',
-    excerpt:
-      'Practical, Sunnah-rooted steps to anchor your five daily prayers - even in your busiest seasons.',
-    image: '/blog-salah.webp',
-  },
-  {
-    title: 'Raising Faithful Children in a Distracted World',
-    category: 'Parenting',
-    readTime: '11 min read',
-    excerpt:
-      'Gentle, prophetic parenting principles to nurture love of Allah in your home from an early age.',
-    image: '/blog-parenting.webp',
+    title: 'My Consistent Salah Journey',
+    image: '/topic-salah.webp',
   },
   {
     title: 'A Woman’s Worth: Honour & Rights in Islam',
-    category: 'Women in Islam',
-    readTime: '9 min read',
-    excerpt:
-      'Revisiting the dignity, autonomy, and spiritual station Islam grants to women - straight from the sources.',
-    image: '/blog-women.webp',
+    image: '/topic-womens-rights.webp',
+  },
+  {
+    title: 'Raising Faithful Children in a Distracted World',
+    image: '/topic-parenting.webp',
   },
 ]
 

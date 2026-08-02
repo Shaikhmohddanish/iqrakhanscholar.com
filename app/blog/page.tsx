@@ -22,7 +22,9 @@ export const metadata: Metadata = {
     description:
       'Islamic articles, guides, and reflections on worship, parenting, and faith by Iqra Khan.',
     url: '/blog',
-    images: [{ url: '/blog-women.webp' }],
+    // Next doesn't inherit the root opengraph-image into a page that declares
+    // its own `openGraph` block, so point at the branded card explicitly.
+    images: [{ url: '/opengraph-image' }],
   },
 }
 

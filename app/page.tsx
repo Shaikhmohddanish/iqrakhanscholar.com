@@ -7,6 +7,7 @@ import { ProductShowcase } from '@/components/product-showcase'
 import { ConsultationCta } from '@/components/consultation-cta'
 import { VideoGallery } from '@/components/video-gallery'
 import { TestimonialsSection } from '@/components/testimonials-section'
+import { TopicsSection } from '@/components/topics-section'
 import { BlogHub } from '@/components/blog-hub'
 import { EmailCapture } from '@/components/email-capture'
 import { DailyReflection } from '@/components/daily-reflection'
@@ -58,6 +59,7 @@ export default async function HomePage() {
         <VideoGallery />
         <DailyReflection />
         <TestimonialsSection />
+        <TopicsSection />
         <BlogHub posts={blogPosts} />
         <EmailCapture />
         <FaqSection />
