@@ -72,11 +72,11 @@ const COPY: Record<EmailKind, EmailCopy> = {
 
 // Brand palette mirrors the site's light theme (see app/globals.css).
 const BRAND = {
-  ink: "#17211c",
-  primary: "#2f5d50",
-  cream: "#eef2ec",
-  muted: "#5f6b64",
-  bg: "#f5f5f5",
+  ink: "#1a1713",
+  primary: "#8a6d1c",
+  cream: "#f7f3e8",
+  muted: "#6b6459",
+  bg: "#f6f4f0",
 }
 
 function renderHtml(copy: EmailCopy, link: string): string {

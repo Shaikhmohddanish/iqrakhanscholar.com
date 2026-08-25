@@ -20,7 +20,7 @@ export default function CookiePolicyPage() {
     <>
       <SiteHeader />
       <main id="main-content">
-        <LegalPageLayout title="Cookie Policy" lastUpdated="15 June 2026" sections={sections}>
+        <LegalPageLayout title="Cookie Policy" lastUpdated="6 August 2026" sections={sections}>
           <section id="what-are">
             <h2>What Are Cookies</h2>
             <p>Cookies are small text files stored on your device when you visit a website. They help the website remember your preferences and improve your experience.</p>
@@ -34,8 +34,9 @@ export default function CookiePolicyPage() {
             <h3>Analytics Cookies</h3>
             <p>With your consent, we use analytics cookies (Vercel Analytics) to understand how visitors interact with our website. This data is anonymised and helps us improve the user experience.</p>
 
-            <h3>Marketing Cookies</h3>
-            <p>With your consent, we may use marketing cookies to deliver personalised content and advertisements. We currently do not use third-party advertising cookies.</p>
+            <h3>Advertising Cookies</h3>
+            <p>We use Google AdSense to display advertisements on our blog and content pages. Google and its partners use cookies (including the DoubleClick cookie) to serve ads based on your prior visits to this and other websites, and to measure ad performance.</p>
+            <p>You can opt out of personalised advertising at any time through <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer">Google Ads Settings</a> or <a href="https://www.aboutads.info/choices" target="_blank" rel="noopener noreferrer">www.aboutads.info/choices</a>. For more detail on how Google uses data from this site, see <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer">Google&apos;s advertising policies</a>.</p>
           </section>
 
           <section id="manage">

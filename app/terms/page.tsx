@@ -27,7 +27,7 @@ export default function TermsPage() {
     <>
       <SiteHeader />
       <main id="main-content">
-        <LegalPageLayout title="Terms of Service" lastUpdated="15 June 2026" sections={sections}>
+        <LegalPageLayout title="Terms of Service" lastUpdated="5 August 2026" sections={sections}>
           <section id="acceptance">
             <h2>Acceptance of Terms</h2>
             <p>By accessing and using iqrakhanscholar.com (&ldquo;the Platform&rdquo;), you agree to be bound by these Terms of Service. If you do not agree, please do not use the Platform.</p>
@@ -88,7 +88,7 @@ export default function TermsPage() {
 
           <section id="governing-law">
             <h2>Governing Law</h2>
-            <p>These terms are governed by the laws of England and Wales. Any disputes shall be resolved in the courts of England.</p>
+            <p>These terms are governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of the courts of New Delhi.</p>
           </section>
         </LegalPageLayout>
       </main>

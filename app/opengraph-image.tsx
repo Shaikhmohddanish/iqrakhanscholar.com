@@ -17,7 +17,7 @@ export default function OpengraphImage() {
           flexDirection: 'column',
           justifyContent: 'center',
           padding: '90px',
-          background: '#2f5d50',
+          background: '#1a1713',
           color: '#ffffff',
           fontFamily: 'serif',
         }}
@@ -50,7 +50,7 @@ export default function OpengraphImage() {
             display: 'flex',
             marginTop: 30,
             fontSize: 40,
-            color: '#e8efe9',
+            color: '#e8e2d4',
             maxWidth: 900,
             lineHeight: 1.3,
           }}

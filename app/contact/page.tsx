@@ -3,7 +3,7 @@ import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { ContactForm } from './contact-form'
-import { Mail, MapPin } from 'lucide-react'
+import { Mail } from 'lucide-react'
 import {
   FacebookIcon,
   InstagramIcon,
@@ -57,7 +57,7 @@ export default function ContactPage() {
 
           {/* Compact contact details */}
           <div className="mt-12 border-t border-border pt-8 text-center">
-            <div className="flex flex-col items-center justify-center gap-3 text-sm text-muted-foreground sm:flex-row sm:gap-8">
+            <div className="flex items-center justify-center text-sm text-muted-foreground">
               <a
                 href={`mailto:${contactEmail}`}
                 className="inline-flex items-center gap-2 transition-colors hover:text-primary"
@@ -65,10 +65,6 @@ export default function ContactPage() {
                 <Mail className="size-4" />
                 {contactEmail}
               </a>
-              <span className="inline-flex items-center gap-2">
-                <MapPin className="size-4" />
-                Based in India
-              </span>
             </div>
 
             <div className="mt-6 flex justify-center gap-3">
