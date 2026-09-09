@@ -35,8 +35,12 @@ export function AboutSection() {
               />
             </div>
             <div className="absolute -right-4 -bottom-6 hidden rounded-2xl border border-border bg-accent px-5 py-4 text-accent-foreground shadow-lg sm:block">
-              <p className="font-heading text-2xl font-bold">7 yrs</p>
-              <p className="text-xs font-medium">of Islamic study</p>
+              <p className="font-heading text-2xl font-bold">Aalimiyyah</p>
+              <p className="text-xs font-medium">
+                7-year degree under
+                <br />
+                qualified scholars
+              </p>
             </div>
           </Reveal>
 

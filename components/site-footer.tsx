@@ -7,7 +7,7 @@ import {
   TiktokIcon,
   YoutubeIcon,
 } from '@/components/icons/social-icons'
-import { contactEmail, socialLinks } from '@/lib/site-data'
+import { socialLinks } from '@/lib/site-data'
 
 const columns = [
   {
@@ -90,20 +90,32 @@ export function SiteFooter() {
                 { icon: YoutubeIcon, label: 'YouTube', href: socialLinks.youtube },
                 { icon: FacebookIcon, label: 'Facebook', href: socialLinks.facebook },
                 { icon: TiktokIcon, label: 'TikTok', href: socialLinks.tiktok },
-                { icon: Mail, label: 'Email', href: `mailto:${contactEmail}` },
-              ].map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  aria-label={s.label}
-                  {...(s.href.startsWith('http')
-                    ? { target: '_blank', rel: 'noopener noreferrer' }
-                    : {})}
-                  className="flex size-10 items-center justify-center rounded-full border border-primary-foreground/20 text-primary-foreground/80 transition-colors hover:border-accent hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none"
-                >
-                  <s.icon className="size-4" />
-                </a>
-              ))}
+                // Points at /contact rather than mailto: - a mailto link does
+                // nothing (silently) on a browser with no mail handler
+                // registered, which is what made this icon look broken.
+                { icon: Mail, label: 'Contact us', href: '/contact' },
+              ].map((s) => {
+                const cls =
+                  'flex size-10 items-center justify-center rounded-full border border-primary-foreground/20 text-primary-foreground/80 transition-colors hover:border-accent hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none'
+                // Internal routes go through Link for client-side navigation;
+                // external ones open in a new tab.
+                return s.href.startsWith('/') ? (
+                  <Link key={s.label} href={s.href} aria-label={s.label} className={cls}>
+                    <s.icon className="size-4" />
+                  </Link>
+                ) : (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    aria-label={s.label}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cls}
+                  >
+                    <s.icon className="size-4" />
+                  </a>
+                )
+              })}
             </div>
           </div>
 

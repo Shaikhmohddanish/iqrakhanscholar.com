@@ -6,7 +6,6 @@ import { AboutSection } from '@/components/about-section'
 import { ProductShowcase } from '@/components/product-showcase'
 import { ConsultationCta } from '@/components/consultation-cta'
 import { VideoGallery } from '@/components/video-gallery'
-import { TestimonialsSection } from '@/components/testimonials-section'
 import { TopicsSection } from '@/components/topics-section'
 import { BlogHub } from '@/components/blog-hub'
 import { EmailCapture } from '@/components/email-capture'
@@ -58,7 +57,11 @@ export default async function HomePage() {
         <ConsultationCta />
         <VideoGallery />
         <DailyReflection />
-        <TestimonialsSection />
+        {/* Testimonials are hidden until Iqra supplies real client quotes,
+            names/photos and consent to publish them. The three that shipped
+            with the template were placeholder copy with stock avatars.
+            Re-enable by restoring <TestimonialsSection /> once real data is in
+            `testimonials` in lib/site-data.ts. */}
         <TopicsSection />
         <BlogHub posts={blogPosts} />
         <EmailCapture />

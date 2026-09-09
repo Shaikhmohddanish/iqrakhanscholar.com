@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { Star, ArrowRight } from 'lucide-react'
+import { Star, ArrowRight, GraduationCap } from 'lucide-react'
 import { CountUp } from '@/components/count-up'
 import { HeroVideo } from '@/components/hero-video'
 
@@ -23,10 +23,11 @@ export function HeroSection({ videoSrc }: HeroSectionProps = {}) {
         </>
       )}
 
-      {/* Decorative blobs + pattern - skipped when a video carries the visual interest
-          (they're barely visible over video and add costly per-frame compositing).
-          Static (no infinite animation) to keep non-video pages smooth too. */}
-      {!videoSrc && (
+      {/* Decorative blobs + pattern. Always rendered: HeroVideo mounts nothing on
+          mobile (so phones never download the video), and this is what mobile
+          visitors see instead. On desktop the video paints over it. Static (no
+          infinite animation) so it stays cheap either way. */}
+      {
         <>
           {/* Soft background blobs */}
           <div
@@ -48,7 +49,7 @@ export function HeroSection({ videoSrc }: HeroSectionProps = {}) {
             className="pointer-events-none absolute inset-0 opacity-[0.025] bg-arabesque"
           />
         </>
-      )}
+      }
 
       <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-4 pt-12 pb-16 sm:px-6 lg:grid-cols-2 lg:gap-8 lg:px-8 lg:pt-20 lg:pb-24">
         {/* ── Copy ── */}
@@ -139,6 +140,10 @@ export function HeroSection({ videoSrc }: HeroSectionProps = {}) {
                   <CountUp to={12000} suffix="+" />
                 </strong>{' '}
                 students worldwide
+              </p>
+              <p className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-accent-ink">
+                <GraduationCap className="size-3.5 shrink-0" />
+                7-year Aalimiyyah degree under qualified scholars
               </p>
             </div>
           </div>

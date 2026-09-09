@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface HeroVideoProps {
   /** Path to the mp4 source; the .webm sibling is preferred automatically. */
@@ -16,10 +16,26 @@ interface HeroVideoProps {
  * immediately), and an IntersectionObserver play/pauses the video so it never
  * decodes on the main thread once the user scrolls past the hero.
  */
+// Below this width the video is never mounted, so phones never download it.
+const DESKTOP_QUERY = '(min-width: 768px)'
+
 export function HeroVideo({ src, poster }: HeroVideoProps) {
   const ref = useRef<HTMLVideoElement>(null)
+  // Starts false so the server renders no <video> at all and mobile issues no
+  // request; desktop mounts it after hydration. Rendering nothing first is safe
+  // because the video is purely decorative and sits behind the hero content.
+  const [showVideo, setShowVideo] = useState(false)
 
   useEffect(() => {
+    const mq = window.matchMedia(DESKTOP_QUERY)
+    const sync = () => setShowVideo(mq.matches)
+    sync()
+    mq.addEventListener('change', sync)
+    return () => mq.removeEventListener('change', sync)
+  }, [])
+
+  useEffect(() => {
+    if (!showVideo) return
     const video = ref.current
     if (!video) return
 
@@ -50,7 +66,9 @@ export function HeroVideo({ src, poster }: HeroVideoProps) {
       window.removeEventListener('load', start)
       observer?.disconnect()
     }
-  }, [])
+  }, [showVideo])
+
+  if (!showVideo) return null
 
   return (
     <video

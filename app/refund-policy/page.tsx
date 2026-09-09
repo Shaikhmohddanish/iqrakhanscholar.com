@@ -37,14 +37,14 @@ export default function RefundPolicyPage() {
             <h2>Physical Products</h2>
             <p>
               We want you to be completely satisfied with your purchase. If you are not happy, you
-              may return physical products within <strong>2 days of delivery</strong>, provided:
+              may return physical products within 2 days of delivery, provided:
             </p>
             <ul>
               <li>Items are unused and in their original packaging</li>
               <li>You can provide proof of purchase (barcode / QR code)</li>
             </ul>
             <p>
-              Outside this window, items are non-refundable unless they arrive damaged or defective.
+              Outside this window, items are non-refundable.
             </p>
           </section>
 
