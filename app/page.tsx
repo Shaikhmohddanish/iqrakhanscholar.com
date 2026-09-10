@@ -26,13 +26,24 @@ export default async function HomePage() {
   ])
   const blogPosts = articles.map(toBlogListItem)
 
+  // Hero e-book: the featured digital product, falling back to the first one.
+  // HeroSection decides whether it's showable (it ignores placeholder covers).
+  const heroEbookSource = digital.find((p) => p.featured) ?? digital[0]
+  const heroEbook = heroEbookSource
+    ? {
+        slug: heroEbookSource.slug,
+        title: heroEbookSource.title,
+        image: heroEbookSource.image,
+      }
+    : null
+
   return (
     <>
       <StructuredData />
       <AnnouncementBar />
       <SiteHeader />
       <main id="main-content">
-        <HeroSection videoSrc="/video/background.mp4" />
+        <HeroSection videoSrc="/video/background.mp4" ebook={heroEbook} />
         <FeaturedCategories />
         <AboutSection />
         <ProductShowcase

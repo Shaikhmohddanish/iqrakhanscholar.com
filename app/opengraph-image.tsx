@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og'
 
 export const alt =
-  'Iqra Khan Scholar - Authentic Islamic Knowledge Rooted in Quran & Sunnah'
+  'Iqra Khan Scholar - Authentic Islamic Guidance & Modest Living'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 

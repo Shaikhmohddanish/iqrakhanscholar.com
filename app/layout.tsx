@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: siteUrl,
     siteName: 'Iqra Khan',
-    title: 'Iqra Khan - Authentic Islamic Knowledge for Modern Muslim Women',
+    title: 'Iqra Khan - Authentic Islamic Guidance & Modest Living for the Modern Muslim Woman',
     description:
       'Learn. Grow. Transform your life through Quran & Sunnah with books, courses, and personal mentorship.',
   },
