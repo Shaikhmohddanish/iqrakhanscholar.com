@@ -161,29 +161,23 @@ export function HeroSection({ videoSrc, ebook }: HeroSectionProps = {}) {
         {/* ── Visual ── */}
         <div className="relative animate-fade-in-up animate-delay-200">
           {ebook ? (
-            /* E-book showcase. A cover sits ON a backdrop rather than being
-               cropped by one, so the panel carries the texture and the cover is
-               object-contain inside it. */
+            /* The cover IS the visual - no surrounding panel. The trimmed
+               artwork is ~4:5, the same ratio the portrait panel used, so
+               rendering it full-width fills exactly the same footprint with no
+               dead space around the book. */
             <Link
-              // /store/<slug>, not /library/<slug>: proxy.ts gates /library
-              // behind auth, so a library link would bounce every logged-out
-              // visitor to /login from the hero.
               href={ebook.href}
               aria-label={`View ${ebook.title}`}
-              className="group relative mx-auto flex aspect-[4/5] w-full max-w-md items-center justify-center overflow-hidden rounded-[2rem] border border-border bg-gradient-to-br from-secondary via-background to-secondary shadow-2xl shadow-primary/10 lg:max-w-lg"
+              className="group relative mx-auto block w-full max-w-md lg:max-w-lg"
             >
-              <span
-                aria-hidden
-                className="absolute inset-0 opacity-[0.04] bg-arabesque"
-              />
               <Image
                 src={ebook.image}
                 alt={ebook.title}
-                width={420}
-                height={560}
+                width={982}
+                height={1212}
                 priority
-                className="relative h-auto w-[62%] rounded-lg object-contain shadow-2xl transition-transform duration-500 group-hover:scale-[1.03]"
-                sizes="(max-width: 640px) 62vw, 320px"
+                className="h-auto w-full rounded-xl shadow-xl shadow-primary/10 transition-transform duration-500 group-hover:scale-[1.02]"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 448px, 512px"
               />
             </Link>
           ) : (
