@@ -4,7 +4,11 @@ import { hasRole } from "@/lib/types"
 import { CURRENCY_COOKIE, currencyForCountry } from "@/lib/currency"
 
 // Routes that require an authenticated session.
-const PROTECTED = ["/account", "/library", "/read", "/reader"]
+// NOTE: /library is the PUBLIC e-books storefront (listing + detail pages with
+// prices and Add to Cart) and must stay open - gating it sent every logged-out
+// visitor who clicked "E-books" in the nav straight to /login. Reading a
+// purchased book is gated separately via /read and /reader.
+const PROTECTED = ["/account", "/read", "/reader"]
 // Routes that require an elevated role.
 const ROLE_GATES: { prefix: string; role: "editor" | "admin" }[] = [
   { prefix: "/admin", role: "admin" },

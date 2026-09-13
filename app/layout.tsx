@@ -35,18 +35,12 @@ export const metadata: Metadata = {
     default: 'Iqra Khan - Islamic Scholar, Educator & Mentor for Muslim Women',
     template: '%s | Iqra Khan',
   },
+  // Leads with what the site actually offers rather than generic phrasing, and
+  // stays inside the ~155 chars search results display.
   description:
-    'From e-books to one-to-one mentorship with Iqra Khan Scholar — authentic Islamic knowledge, rooted in Quran & Sunnah, guiding you every step of the way!',
-  keywords: [
-    'Islamic scholar',
-    'Islamic guidance',
-    'Islamic education',
-    'Quran learning',
-    'Muslim women education',
-    'Islamic consultation',
-    'Islamic books',
-    'Iqra Khan',
-  ],
+    'One-to-one Islamic consultation, e-books and modest wear from Iqra Khan Scholar — guidance rooted in Quran & Sunnah, from a 7-year Aalimiyyah graduate.',
+  // No `keywords` meta: search engines have ignored it for years and a stuffed
+  // list reads as spam to anyone inspecting the page.
   authors: [{ name: 'Iqra Khan' }],
   creator: 'Iqra Khan',
   openGraph: {

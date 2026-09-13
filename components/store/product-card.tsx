@@ -3,12 +3,13 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Star, Eye, ShoppingBag, Check } from 'lucide-react'
+import { Eye, ShoppingBag, Check } from 'lucide-react'
 import { BarLoader } from '@/components/ui/bar-loader'
 import { type PublicProduct } from '@/lib/product-types'
 import { useCart } from '@/components/cart/cart-provider'
 import { ProductPrice } from '@/components/currency/product-price'
 import { WishlistButton } from './wishlist-button'
+import { ProductRating } from '@/components/store/product-rating'
 
 interface ProductCardProps {
   product: PublicProduct
@@ -85,14 +86,7 @@ export function ProductCard({
           </Link>
         </h3>
 
-        <div className="mt-2 flex items-center gap-1.5">
-          <div className="flex items-center gap-0.5 text-accent">
-            {Array.from({ length: product.rating }).map((_, i) => (
-              <Star key={i} className="size-3.5 fill-current" />
-            ))}
-          </div>
-          <span className="text-xs text-muted-foreground">({product.reviews})</span>
-        </div>
+        <ProductRating rating={product.rating} reviews={product.reviews} className="mt-2" />
 
         {product.shortDescription && (
           <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">

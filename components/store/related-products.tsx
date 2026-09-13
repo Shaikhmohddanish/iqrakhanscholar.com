@@ -1,8 +1,9 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Star } from 'lucide-react'
+
 import { type PublicProduct } from '@/lib/product-types'
 import { ProductPrice } from '@/components/currency/product-price'
+import { ProductRating } from '@/components/store/product-rating'
 
 interface RelatedProductsProps {
   products: PublicProduct[]
@@ -40,14 +41,7 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
               <h3 className="mt-1 font-heading text-base font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
                 {product.title}
               </h3>
-              <div className="mt-1.5 flex items-center gap-1.5">
-                <div className="flex items-center gap-0.5 text-accent">
-                  {Array.from({ length: product.rating }).map((_, i) => (
-                    <Star key={i} className="size-3 fill-current" />
-                  ))}
-                </div>
-                <span className="text-xs text-muted-foreground">({product.reviews})</span>
-              </div>
+              <ProductRating rating={product.rating} reviews={product.reviews} className="mt-1.5" />
               <ProductPrice item={product} className="mt-2 block font-heading text-lg font-bold text-foreground" />
             </div>
           </Link>

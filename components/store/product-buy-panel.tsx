@@ -89,7 +89,7 @@ export function ProductBuyPanel({ product }: { product: PublicProduct }) {
         <span>
           {isDigital
             ? "Unlocked in your account library immediately after purchase."
-            : "Free returns within 14 days. Tracked worldwide shipping."}
+            : "Returns accepted within 2 days of delivery. Flat ₹99 shipping."}
         </span>
       </div>
     </div>

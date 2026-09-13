@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Star, Eye, ShoppingBag, SlidersHorizontal, Check } from 'lucide-react'
+import { Eye, ShoppingBag, SlidersHorizontal, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { type PublicProduct } from '@/lib/product-types'
 import { ProductPrice } from '@/components/currency/product-price'
@@ -18,6 +18,7 @@ import { ProductCard } from './product-card'
 import { RecentlyViewed } from './recently-viewed'
 import { GridSkeleton } from '@/components/ui/grid-skeleton'
 import { useInfiniteScroll } from '@/lib/use-infinite-scroll'
+import { ProductRating } from '@/components/store/product-rating'
 
 const sorts = [
   { label: 'Featured', value: 'featured' },
@@ -276,14 +277,7 @@ function ProductListItem({
           <WishlistButton productId={product.id} initialWishlisted={initialWishlisted} size="sm" />
         </div>
 
-        <div className="mt-1.5 flex items-center gap-1.5">
-          <div className="flex items-center gap-0.5 text-accent">
-            {Array.from({ length: product.rating }).map((_, i) => (
-              <Star key={i} className="size-3 fill-current" />
-            ))}
-          </div>
-          <span className="text-xs text-muted-foreground">({product.reviews})</span>
-        </div>
+        <ProductRating rating={product.rating} reviews={product.reviews} className="mt-1.5" />
 
         <p className="mt-2 line-clamp-2 text-sm text-muted-foreground hidden sm:block">
           {product.shortDescription}

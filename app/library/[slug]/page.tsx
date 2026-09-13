@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { SITE_URL } from '@/lib/site-config'
 import {
-  Star,
   BookOpen,
   FileText,
   Eye,
@@ -29,6 +28,7 @@ import { getActiveCurrency } from '@/lib/currency-server'
 import { getCurrentUser } from '@/lib/session'
 import { getPurchasedProductIds } from '@/lib/orders'
 import { AddToCartButton } from '@/components/cart/add-to-cart-button'
+import { ProductRating } from '@/components/store/product-rating'
 
 type Params = Promise<{ slug: string }>
 
@@ -76,11 +76,17 @@ export default async function BookDetailPage({ params }: { params: Params }) {
     image: product.image,
     description: product.description,
     numberOfPages: product.pageCount,
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: product.rating,
-      reviewCount: product.reviews,
-    },
+    // Only emit a rating when real reviews exist - aggregateRating with a zero
+    // count is invalid schema, and inventing one is review spam.
+    ...(product.reviews > 0
+      ? {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: product.rating,
+            reviewCount: product.reviews,
+          },
+        }
+      : {}),
     offers: {
       '@type': 'Offer',
       price: (product.price / 100).toFixed(2),
@@ -169,17 +175,13 @@ export default async function BookDetailPage({ params }: { params: Params }) {
                 <p className="mt-2 text-muted-foreground">by {product.author}</p>
               )}
 
-              {/* Rating */}
-              <div className="mt-3 flex items-center gap-2">
-                <div className="flex items-center gap-0.5 text-accent">
-                  {Array.from({ length: product.rating }).map((_, i) => (
-                    <Star key={i} className="size-4 fill-current" />
-                  ))}
-                </div>
-                <span className="text-sm text-muted-foreground">
-                  {product.rating}.0 · {product.reviews} reviews
-                </span>
-              </div>
+              {/* Rating - hidden until real reviews exist */}
+              <ProductRating
+                rating={product.rating}
+                reviews={product.reviews}
+                verbose
+                className="mt-3"
+              />
 
               {/* Stats */}
               <div className="mt-4 flex flex-wrap gap-4">
@@ -189,10 +191,12 @@ export default async function BookDetailPage({ params }: { params: Params }) {
                     {product.pageCount} pages
                   </div>
                 )}
-                <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <Users className="size-4" />
-                  {product.reviews}+ readers
-                </div>
+                {product.reviews > 0 && (
+                  <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                    <Users className="size-4" />
+                    {product.reviews}+ readers
+                  </div>
+                )}
                 {product.pageCount && (
                   <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                     <Clock className="size-4" />

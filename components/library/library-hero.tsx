@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Star, ArrowRight, BookOpen } from 'lucide-react'
+import { ProductRating } from '@/components/store/product-rating'
 
 interface LibraryHeroProps {
   book: {
@@ -48,14 +49,7 @@ export function LibraryHero({ book }: LibraryHeroProps) {
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">by {book.author}</p>
 
-          <div className="mt-2 flex items-center gap-1.5 sm:justify-start justify-center">
-            <div className="flex items-center gap-0.5 text-accent">
-              {Array.from({ length: Math.round(book.rating) }).map((_, i) => (
-                <Star key={i} className="size-3.5 fill-current" />
-              ))}
-            </div>
-            <span className="text-xs text-muted-foreground">({book.reviews} reviews)</span>
-          </div>
+          <ProductRating rating={book.rating} reviews={book.reviews} verbose className="mt-2 sm:justify-start justify-center" />
 
           <p className="mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground line-clamp-3">
             {book.description}

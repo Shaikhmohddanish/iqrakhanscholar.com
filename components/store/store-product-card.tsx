@@ -1,9 +1,10 @@
 import Image from "next/image"
 import Link from "next/link"
-import { Star } from "lucide-react"
+
 import { type PublicProduct } from "@/lib/products"
 import { AddToCartButton } from "@/components/cart/add-to-cart-button"
 import { ProductPrice } from "@/components/currency/product-price"
+import { ProductRating } from '@/components/store/product-rating'
 
 export function StoreProductCard({ product }: { product: PublicProduct }) {
   return (
@@ -35,14 +36,7 @@ export function StoreProductCard({ product }: { product: PublicProduct }) {
             {product.title}
           </Link>
         </h3>
-        <div className="mt-2 flex items-center gap-1.5">
-          <div className="flex items-center gap-0.5 text-accent">
-            {Array.from({ length: product.rating }).map((_, i) => (
-              <Star key={i} className="size-3.5 fill-current" />
-            ))}
-          </div>
-          <span className="text-xs text-muted-foreground">({product.reviews})</span>
-        </div>
+        <ProductRating rating={product.rating} reviews={product.reviews} className="mt-2" />
         <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
           {product.shortDescription}
         </p>

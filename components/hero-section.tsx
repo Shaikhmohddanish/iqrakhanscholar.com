@@ -6,32 +6,19 @@ import { HeroVideo } from '@/components/hero-video'
 
 /** The e-book to showcase in the hero, if there is a real one to show. */
 export interface HeroEbook {
-  slug: string
   title: string
   image: string
+  href: string
 }
 
 interface HeroSectionProps {
   /** Optional path to a full-bleed background video (mp4 / webm) shown behind the hero. */
   videoSrc?: string
-  /** Featured digital product. When absent, the hero falls back to the portrait. */
+  /** Featured e-book cover. When absent, the hero falls back to the portrait. */
   ebook?: HeroEbook | null
 }
 
-// Cover art that shipped with the starter template - AI-generated mockups with
-// garbled text on the spine, in the old green palette. The hero must never show
-// these, so it keeps the portrait until a genuine cover is uploaded via
-// /admin/products. Delete this list once the catalogue is real.
-const PLACEHOLDER_COVERS = [
-  '/product-ebook-salah.webp',
-  '/product-ebook-quran.webp',
-  '/product-ebook-dua.webp',
-  '/product-book.webp',
-  '/placeholder.svg',
-]
-
 export function HeroSection({ videoSrc, ebook }: HeroSectionProps = {}) {
-  const showEbook = !!ebook?.image && !PLACEHOLDER_COVERS.includes(ebook.image)
   return (
     <section id="top" className="relative overflow-hidden">
       {/* Full-bleed background video + readability overlay */}
@@ -173,7 +160,7 @@ export function HeroSection({ videoSrc, ebook }: HeroSectionProps = {}) {
 
         {/* ── Visual ── */}
         <div className="relative animate-fade-in-up animate-delay-200">
-          {showEbook && ebook ? (
+          {ebook ? (
             /* E-book showcase. A cover sits ON a backdrop rather than being
                cropped by one, so the panel carries the texture and the cover is
                object-contain inside it. */
@@ -181,7 +168,7 @@ export function HeroSection({ videoSrc, ebook }: HeroSectionProps = {}) {
               // /store/<slug>, not /library/<slug>: proxy.ts gates /library
               // behind auth, so a library link would bounce every logged-out
               // visitor to /login from the hero.
-              href={`/store/${ebook.slug}`}
+              href={ebook.href}
               aria-label={`View ${ebook.title}`}
               className="group relative mx-auto flex aspect-[4/5] w-full max-w-md items-center justify-center overflow-hidden rounded-[2rem] border border-border bg-gradient-to-br from-secondary via-background to-secondary shadow-2xl shadow-primary/10 lg:max-w-lg"
             >

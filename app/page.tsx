@@ -2,6 +2,7 @@ import { AnnouncementBar } from '@/components/announcement-bar'
 import { SiteHeader } from '@/components/site-header'
 import { HeroSection } from '@/components/hero-section'
 import { FeaturedCategories } from '@/components/featured-categories'
+import { ShippingStrip } from '@/components/shipping-strip'
 import { AboutSection } from '@/components/about-section'
 import { ProductShowcase } from '@/components/product-showcase'
 import { ConsultationCta } from '@/components/consultation-cta'
@@ -26,16 +27,14 @@ export default async function HomePage() {
   ])
   const blogPosts = articles.map(toBlogListItem)
 
-  // Hero e-book: the featured digital product, falling back to the first one.
-  // HeroSection decides whether it's showable (it ignores placeholder covers).
-  const heroEbookSource = digital.find((p) => p.featured) ?? digital[0]
-  const heroEbook = heroEbookSource
-    ? {
-        slug: heroEbookSource.slug,
-        title: heroEbookSource.title,
-        image: heroEbookSource.image,
-      }
-    : null
+  // Hero e-book. Points at the E-books listing rather than a product page: this
+  // title isn't in the catalogue yet (no price or file), so there is nothing
+  // purchasable to link to. Swap `href` to /store/<slug> once it is a product.
+  const heroEbook = {
+    title: 'The Halal Income Blueprint',
+    image: '/ebook-halal-income-blueprint.webp',
+    href: '/library',
+  }
 
   return (
     <>
@@ -45,6 +44,7 @@ export default async function HomePage() {
       <main id="main-content">
         <HeroSection videoSrc="/video/background.mp4" ebook={heroEbook} />
         <FeaturedCategories />
+        <ShippingStrip />
         <AboutSection />
         <ProductShowcase
           id="digital"

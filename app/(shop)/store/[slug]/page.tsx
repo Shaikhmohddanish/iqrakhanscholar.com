@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { SITE_URL } from '@/lib/site-config'
-import { Star, Check, Shield, Truck, Download, RotateCcw } from 'lucide-react'
+import { Check, Shield, Truck, Download, RotateCcw } from 'lucide-react'
 import { getProductBySlug, getAllProducts } from '@/lib/products'
 import { formatPrice } from '@/lib/product-types'
 import { getCurrentUser } from '@/lib/session'
@@ -17,6 +17,7 @@ import { WishlistButton } from '@/components/store/wishlist-button'
 import { StickyPurchaseBar } from '@/components/store/mobile-purchase-footer'
 import { RecentlyViewed } from '@/components/store/recently-viewed'
 import { ProductViewTracker } from '@/components/store/product-view-tracker'
+import { ProductRating } from '@/components/store/product-rating'
 
 type Params = Promise<{ slug: string }>
 
@@ -58,11 +59,17 @@ export default async function ProductPage({ params }: { params: Params }) {
     description: product.shortDescription,
     category: product.category,
     brand: { '@type': 'Brand', name: 'Iqra Khan' },
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: product.rating,
-      reviewCount: product.reviews,
-    },
+    // Only emit a rating when real reviews exist - aggregateRating with a zero
+    // count is invalid schema, and inventing one is review spam.
+    ...(product.reviews > 0
+      ? {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: product.rating,
+            reviewCount: product.reviews,
+          },
+        }
+      : {}),
     offers: {
       '@type': 'Offer',
       price: (product.price / 100).toFixed(2),
@@ -107,7 +114,7 @@ export default async function ProductPage({ params }: { params: Params }) {
     },
     {
       id: 'reviews',
-      label: `Reviews (${product.reviews})`,
+      label: product.reviews > 0 ? `Reviews (${product.reviews})` : 'Reviews',
       content: <ReviewSection rating={product.rating} reviewCount={product.reviews} />,
     },
     {
@@ -142,19 +149,19 @@ export default async function ProductPage({ params }: { params: Params }) {
               <div className="flex items-start gap-3">
                 <Truck className="mt-0.5 size-5 text-primary" />
                 <div>
-                  <p className="font-medium text-foreground">Worldwide Shipping</p>
+                  <p className="font-medium text-foreground">Flat-Rate Shipping</p>
                   <p className="text-sm text-muted-foreground">
-                    We ship to over 50 countries. Standard delivery takes 5–10 business days.
-                    Express options available at checkout.
+                    A flat ₹99 shipping charge applies to orders containing physical items,
+                    calculated at checkout.
                   </p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <RotateCcw className="mt-0.5 size-5 text-primary" />
                 <div>
-                  <p className="font-medium text-foreground">14-Day Returns</p>
+                  <p className="font-medium text-foreground">2-Day Returns</p>
                   <p className="text-sm text-muted-foreground">
-                    Not satisfied? Return unused items within 14 days for a full refund.
+                    Return unused items in their original packaging within 2 days of delivery.
                     See our <Link href="/refund-policy" className="text-primary hover:underline">refund policy</Link>.
                   </p>
                 </div>
@@ -201,17 +208,13 @@ export default async function ProductPage({ params }: { params: Params }) {
             <WishlistButton productId={product.id} initialWishlisted={initialWishlisted} />
           </div>
 
-          {/* Rating */}
-          <div className="mt-3 flex items-center gap-2">
-            <div className="flex items-center gap-0.5 text-accent">
-              {Array.from({ length: product.rating }).map((_, i) => (
-                <Star key={i} className="size-4 fill-current" />
-              ))}
-            </div>
-            <span className="text-sm text-muted-foreground">
-              {product.rating}.0 · {product.reviews} reviews
-            </span>
-          </div>
+          {/* Rating - hidden until real reviews exist */}
+          <ProductRating
+            rating={product.rating}
+            reviews={product.reviews}
+            verbose
+            className="mt-3"
+          />
 
           {/* Description */}
           <p className="mt-5 text-pretty leading-relaxed text-muted-foreground">{product.description}</p>
@@ -250,7 +253,7 @@ export default async function ProductPage({ params }: { params: Params }) {
             <div className="flex items-center gap-2 rounded-lg border border-border px-3 py-2.5">
               <RotateCcw className="size-4 text-primary" />
               <span className="text-xs font-medium text-foreground">
-                {isDigital ? 'Lifetime Updates' : '14-Day Returns'}
+                {isDigital ? 'Lifetime Updates' : '2-Day Returns'}
               </span>
             </div>
           </div>
