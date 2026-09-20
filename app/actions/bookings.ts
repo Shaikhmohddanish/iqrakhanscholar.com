@@ -5,6 +5,7 @@ import {
   createBooking,
   cancelBooking,
   rescheduleBooking,
+  getAvailableSlots,
   SESSION_TYPES,
   type SessionType,
 } from "@/lib/bookings"
@@ -27,6 +28,18 @@ export async function bookSessionAction(data: {
 
   const topic = data.topic?.trim().slice(0, 2000)
   if (!topic) return { error: "Please share the questions you'd like to discuss." }
+
+  // Re-check the slot server-side. The wizard picked from a list fetched
+  // earlier, so by now someone else may have taken it - or this may be a
+  // resubmitted/stale form. Without this a second booking is silently inserted
+  // and Iqra is double-booked.
+  const stillFree = await getAvailableSlots(data.date)
+  if (!stillFree.includes(data.slot)) {
+    return {
+      error:
+        "Sorry, that time has just been taken. Please pick another slot.",
+    }
+  }
 
   // Record the price in the visitor's active currency (falls back to base).
   const activeCurrency = await getActiveCurrency()

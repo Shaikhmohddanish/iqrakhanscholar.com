@@ -55,7 +55,7 @@ export default async function AdminDashboardPage() {
       {/* KPIs */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <div className="sm:col-span-2 xl:col-span-2">
-          <KpiCard title="Total Revenue" value={formatPrice(totalRevenue, "USD")} icon={TrendingUp} />
+          <KpiCard title="Total Revenue" value={formatPrice(totalRevenue, "INR")} icon={TrendingUp} />
         </div>
         <KpiCard title="Orders" value={totalOrders} icon={ShoppingBag} />
         <KpiCard title="Bookings" value={totalBookings} icon={CalendarClock} />

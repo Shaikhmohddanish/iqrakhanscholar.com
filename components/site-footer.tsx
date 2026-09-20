@@ -8,6 +8,7 @@ import {
   YoutubeIcon,
 } from '@/components/icons/social-icons'
 import { socialLinks } from '@/lib/site-data'
+import { NewsletterForm } from '@/components/newsletter-form'
 
 const columns = [
   {
@@ -15,7 +16,7 @@ const columns = [
     links: [
       { label: 'About Iqra Khan Scholar', href: '/about' },
       { label: 'E-books', href: '/library' },
-      { label: 'Abayas', href: '/store' },
+      { label: 'Abayas', href: '/store/abayas' },
       { label: 'Knowledge Hub', href: '/blog' },
     ],
   },
@@ -60,29 +61,7 @@ export function SiteFooter() {
             </p>
 
             {/* Newsletter signup */}
-            <form
-              className="mt-6"
-              action="#"
-            >
-              <label htmlFor="footer-email" className="text-xs font-medium uppercase tracking-wider text-accent">
-                Stay Connected
-              </label>
-              <div className="mt-2 flex gap-2">
-                <input
-                  id="footer-email"
-                  type="email"
-                  placeholder="Your email"
-                  required
-                  className="flex-1 rounded-lg border border-primary-foreground/20 bg-primary-foreground/10 px-3 py-2 text-sm text-primary-foreground placeholder:text-primary-foreground/40 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
-                />
-                <button
-                  type="submit"
-                  className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90"
-                >
-                  Join
-                </button>
-              </div>
-            </form>
+            <NewsletterForm />
 
             <div className="mt-6 flex items-center gap-3">
               {[
@@ -144,8 +123,7 @@ export function SiteFooter() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-primary-foreground/15 pt-8 text-center sm:flex-row sm:text-left">
           <p className="text-xs text-primary-foreground/60">
-            © {new Date().getFullYear()} Iqra Khan. All rights reserved. Made by
-            Danish.
+            © {new Date().getFullYear()} Iqra Khan. All rights reserved.
           </p>
           <p className="text-xs text-primary-foreground/60">
             &ldquo;The best of you are those who learn the Quran and teach it.&rdquo;

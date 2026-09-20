@@ -5,6 +5,9 @@ const nextConfig = {
   },
   images: {
     formats: ['image/avif', 'image/webp'],
+    // Default list ends at 3840, which only a 5K display would ever request -
+    // capping at 2048 trims every srcset and cuts on-demand image transforms.
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     remotePatterns: [
       // Cloudinary-delivered media (product images, uploads).
       { protocol: 'https', hostname: 'res.cloudinary.com' },

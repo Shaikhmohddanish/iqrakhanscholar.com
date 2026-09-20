@@ -1,6 +1,6 @@
 // Client-safe product types and pure helpers (no DB / server-only imports).
 
-import { currencyDecimals } from "./currency"
+import { DEFAULT_CURRENCY, currencyDecimals } from "./currency"
 
 export type ProductType = "digital" | "physical"
 
@@ -35,7 +35,7 @@ export interface PublicProduct {
 // Format an amount given in minor units into a localized currency string.
 // Handles 0-decimal (JPY), 2-decimal (USD) and 3-decimal (KWD) currencies, and
 // drops the fraction for whole amounts (e.g. "$14" instead of "$14.00").
-export function formatPrice(minor: number, currency = "USD"): string {
+export function formatPrice(minor: number, currency = DEFAULT_CURRENCY): string {
   const decimals = currencyDecimals(currency)
   const factor = 10 ** decimals
   const isWhole = minor % factor === 0

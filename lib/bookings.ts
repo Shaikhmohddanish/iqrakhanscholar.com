@@ -45,6 +45,14 @@ async function bookingsCol() {
   const db = await getDb()
   const col = db.collection<BookingDoc>("bookings")
   await col.createIndex({ userId: 1, date: -1 })
+  // Deliberately NOT unique: a cancelled booking leaves its date+slot behind,
+  // and that slot must be bookable again. A plain unique index would block the
+  // re-booking; a partial one would depend on operator support that varies by
+  // server version, and a failed createIndex here would break every booking
+  // page. Double-booking is prevented in bookSessionAction, which re-checks
+  // availability immediately before insert. That leaves a millisecond-wide
+  // race on simultaneous submits - acceptable for this volume, and visible to
+  // Iqra in the admin bookings list if it ever happens.
   await col.createIndex({ date: 1, slot: 1 })
   return col
 }

@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react'
 // was never implemented - shipping is a flat rate at any order value).
 const items = [
   'New: 30 Day Quran Reflection Journey',
-  'Limited consultation slots this month',
+  'One-to-one consultations open for booking',
   'Free Islamic self-improvement guide',
 ]
 

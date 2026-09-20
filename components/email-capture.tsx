@@ -1,17 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { useActionState, useState } from 'react'
 import { Gift, Check, BookOpenCheck } from 'lucide-react'
+import { subscribeAction, type SubscribeState } from '@/app/actions/subscribe'
+
+const initialState: SubscribeState = {}
 
 export function EmailCapture() {
   const [email, setEmail] = useState('')
-  const [submitted, setSubmitted] = useState(false)
-
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!email) return
-    setSubmitted(true)
-  }
+  const [state, action, isPending] = useActionState(subscribeAction, initialState)
+  const submitted = state.ok === true
 
   return (
     <section id="community" className="scroll-mt-20">
@@ -59,14 +57,18 @@ export function EmailCapture() {
                   <h3 className="mt-4 font-heading text-2xl font-semibold text-foreground">
                     Alhamdulillah!
                   </h3>
+                  {/* Says only what is true: the address is saved. The guide is
+                      still being finished, so we must not claim it was sent. */}
                   <p className="mt-2 max-w-sm text-pretty text-muted-foreground">
-                    Your guide is on its way to{' '}
-                    <span className="font-medium text-foreground">{email}</span>
-                    . Please check your inbox (and spam folder).
+                    We&apos;ve added{' '}
+                    <span className="font-medium text-foreground">{email}</span> to the
+                    list. The guide is being finished now — we&apos;ll email it to you as
+                    soon as it&apos;s ready, insha&apos;Allah.
                   </p>
                 </div>
               ) : (
-                <form onSubmit={onSubmit} className="space-y-4">
+                <form action={action} className="space-y-4">
+                  <input type="hidden" name="source" value="guide" />
                   <div>
                     <label
                       htmlFor="capture-name"
@@ -76,6 +78,7 @@ export function EmailCapture() {
                     </label>
                     <input
                       id="capture-name"
+                      name="name"
                       type="text"
                       placeholder="Aisha"
                       className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
@@ -90,6 +93,7 @@ export function EmailCapture() {
                     </label>
                     <input
                       id="capture-email"
+                      name="email"
                       type="email"
                       required
                       value={email}
@@ -98,11 +102,15 @@ export function EmailCapture() {
                       className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
+                  {state.error && (
+                    <p className="text-sm text-destructive">{state.error}</p>
+                  )}
                   <button
                     type="submit"
-                    className="inline-flex h-12 w-full items-center justify-center rounded-xl bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+                    disabled={isPending}
+                    className="inline-flex h-12 w-full items-center justify-center rounded-xl bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
                   >
-                    Send Me the Free Guide
+                    {isPending ? 'Sending…' : 'Send Me the Free Guide'}
                   </button>
                   <p className="text-center text-xs text-muted-foreground">
                     No spam, ever. Unsubscribe anytime. We respect your privacy.

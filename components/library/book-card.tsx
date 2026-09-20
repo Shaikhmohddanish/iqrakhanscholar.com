@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Star, BookOpen } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { DEFAULT_CURRENCY } from '@/lib/currency'
 import { ProductPrice } from '@/components/currency/product-price'
 
 interface BookCardProps {
@@ -29,7 +30,7 @@ export function BookCard({
   rating,
   reviews,
   price,
-  currency = 'USD',
+  currency = DEFAULT_CURRENCY,
   prices,
   category,
   owned,

@@ -38,6 +38,7 @@ export const metadata: Metadata = {
 const tiers = [
   {
     name: '30-Minute Session',
+    bestFor: 'Best if you have one specific question or concern to work through.',
     note: 'For women only',
     currency: 'INR',
     price: 210000,
@@ -52,6 +53,7 @@ const tiers = [
   },
   {
     name: 'Group Islamic Guidance Session',
+    bestFor: 'Best for couples and families facing marriage, relationship or parenting questions together.',
     note: 'For couples & family members',
     currency: 'INR',
     price: 410000,
@@ -67,6 +69,7 @@ const tiers = [
   },
   {
     name: '3-Session Package',
+    bestFor: 'Best if you want sustained guidance and accountability over several weeks.',
     note: 'For women, couples & family only',
     currency: 'INR',
     price: 1360000,
@@ -165,6 +168,11 @@ export default async function ConsultationPage() {
                   {tier.note && (
                     <p className="mt-1 text-xs font-medium text-muted-foreground">({tier.note})</p>
                   )}
+                  {tier.bestFor && (
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                      {tier.bestFor}
+                    </p>
+                  )}
                   <div className="mt-3 flex items-baseline gap-1">
                     {(() => {
                       const { amount, currency } = resolveProductPrice(tier, activeCurrency)
@@ -198,6 +206,24 @@ export default async function ConsultationPage() {
                 </div>
               ))}
             </div>
+
+            {/* Payment reassurance at the point of decision. Razorpay was
+                previously mentioned only inside a collapsed FAQ further down
+                the page. */}
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-muted-foreground">
+              <span className="inline-flex items-center gap-2">
+                <Shield className="size-4 text-primary" />
+                Secure payment via Razorpay
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <Video className="size-4 text-primary" />
+                Private audio call on Google Meet
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <Clock className="size-4 text-primary" />
+                Reschedule within 2 hours of booking
+              </span>
+            </div>
           </div>
         </section>
 
@@ -225,31 +251,9 @@ export default async function ConsultationPage() {
           </div>
         </section>
 
-        {/* Testimonials */}
-        <section className="py-20">
-          <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-            <div className="mb-12 text-center">
-              <h2 className="font-heading text-3xl font-bold text-foreground">What Clients Say</h2>
-            </div>
-            <div className="grid gap-6 sm:grid-cols-3">
-              {testimonials.map((t) => (
-                <div key={t.name} className="rounded-2xl border border-border bg-card p-6">
-                  <Quote className="mb-3 size-6 text-accent/50" />
-                  <p className="text-sm leading-relaxed text-foreground">&ldquo;{t.quote}&rdquo;</p>
-                  <div className="mt-4 flex items-center gap-3">
-                    <div className="flex size-9 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
-                      {t.name[0]}
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-foreground">{t.name}</p>
-                      <p className="text-xs text-muted-foreground">{t.role}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        {/* Testimonials hidden: these three quotes are placeholder copy that
+            shipped with the template, not real clients. Restore once Iqra
+            supplies genuine testimonials and consent to publish them. */}
 
         {/* FAQ */}
         <section className="bg-muted py-20">

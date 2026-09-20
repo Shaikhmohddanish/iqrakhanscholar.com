@@ -1,5 +1,6 @@
 "use server"
 
+import { DEFAULT_CURRENCY } from "@/lib/currency"
 import { revalidatePath } from "next/cache"
 import { readCart, writeCart, clearCartCookie, type Cart } from "@/lib/cart"
 import { getProductsByIds } from "@/lib/products"
@@ -51,7 +52,7 @@ export async function addToCartAction(productId: string, quantity = 1) {
       title: "",
       image: "",
       price: 0,
-      currency: "USD",
+      currency: DEFAULT_CURRENCY,
       type: "physical",
       quantity,
     })

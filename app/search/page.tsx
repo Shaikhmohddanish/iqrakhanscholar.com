@@ -162,7 +162,7 @@ export default async function SearchPage({
                     <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                       <Image
                         src={post.image || '/placeholder.svg'}
-                        alt=""
+                        alt={post.title}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
                         sizes="(max-width: 1024px) 100vw, 33vw"

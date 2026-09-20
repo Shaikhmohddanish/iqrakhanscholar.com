@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
+import { DEFAULT_CURRENCY } from '@/lib/currency'
 
 interface PriceRangeFilterProps {
   min: number // in cents
@@ -12,7 +13,7 @@ interface PriceRangeFilterProps {
   className?: string
 }
 
-function formatCents(cents: number, currency = 'USD') {
+function formatCents(cents: number, currency = DEFAULT_CURRENCY) {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency,
@@ -26,7 +27,7 @@ export function PriceRangeFilter({
   max,
   value,
   onChange,
-  currency = 'USD',
+  currency = DEFAULT_CURRENCY,
   className,
 }: PriceRangeFilterProps) {
   const [localValue, setLocalValue] = useState(value)

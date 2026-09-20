@@ -29,7 +29,6 @@ import { CartButton } from '@/components/cart/cart-button'
 import { logoutAction } from '@/app/actions/auth'
 import type { PublicUser } from '@/lib/types'
 import { hasRole } from '@/lib/types'
-import { CurrencySwitcher } from '@/components/currency/currency-switcher'
 
 interface SmartHeaderProps {
   user?: PublicUser | null
@@ -271,9 +270,6 @@ export function SmartHeader({ user }: SmartHeaderProps) {
                 {/* Cart */}
                 <CartButton />
 
-                {/* Currency switcher - desktop */}
-                <CurrencySwitcher className="hidden lg:flex" />
-
                 {/* Avatar dropdown - desktop */}
                 <div className="relative hidden lg:block" ref={avatarRef}>
                   <button
@@ -384,9 +380,6 @@ export function SmartHeader({ user }: SmartHeaderProps) {
 
                 {/* Cart */}
                 <CartButton />
-
-                {/* Currency switcher - desktop */}
-                <CurrencySwitcher className="hidden lg:flex" />
 
                 {/* Desktop: Sign In + CTA */}
                 <Link
@@ -532,8 +525,6 @@ export function SmartHeader({ user }: SmartHeaderProps) {
             )}
 
             <div className="mobile-drawer-footer">
-              {/* Currency switcher - always visible in drawer */}
-              <CurrencySwitcher variant="labeled" />
 
               {user ? (
                 <>

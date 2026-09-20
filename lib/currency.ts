@@ -13,28 +13,23 @@ export interface CurrencyInfo {
   decimals: number
 }
 
-export const DEFAULT_CURRENCY = "USD"
+export const DEFAULT_CURRENCY = "INR"
 
 // Cookie that persists the visitor's selected currency. Not httpOnly so the
 // client switcher can read/write it; server code reads it via next/headers.
 export const CURRENCY_COOKIE = "ik_currency"
 
-// The set of currencies the store sells in. This is the single source of truth
-// the admin price editor and the visitor-facing switcher both read from. To add
-// a market, add a row here (and, if needed, map its countries below).
+// The store sells in INR only. Everything is priced, charged and shipped in
+// rupees, so there is no switcher and no FX conversion (there never was any -
+// multi-currency only ever worked via manually entered per-currency overrides,
+// which no product had, so non-INR visitors saw raw USD base prices while
+// shipping was quoted in rupees).
+//
+// Anything already stored in another currency (historical orders, bookings)
+// keeps rendering in its own currency: every record stores its own code and
+// formatPrice accepts any ISO code, regardless of this list.
 export const SUPPORTED_CURRENCIES: CurrencyInfo[] = [
-  { code: "USD", symbol: "$", label: "US Dollar", decimals: 2 },
-  { code: "EUR", symbol: "€", label: "Euro", decimals: 2 },
-  { code: "GBP", symbol: "£", label: "British Pound", decimals: 2 },
   { code: "INR", symbol: "₹", label: "Indian Rupee", decimals: 2 },
-  { code: "PKR", symbol: "₨", label: "Pakistani Rupee", decimals: 2 },
-  { code: "AED", symbol: "AED", label: "UAE Dirham", decimals: 2 },
-  { code: "SAR", symbol: "SAR", label: "Saudi Riyal", decimals: 2 },
-  { code: "CAD", symbol: "CA$", label: "Canadian Dollar", decimals: 2 },
-  { code: "AUD", symbol: "A$", label: "Australian Dollar", decimals: 2 },
-  { code: "MYR", symbol: "RM", label: "Malaysian Ringgit", decimals: 2 },
-  { code: "JPY", symbol: "¥", label: "Japanese Yen", decimals: 0 },
-  { code: "KWD", symbol: "KWD", label: "Kuwaiti Dinar", decimals: 3 },
 ]
 
 const CURRENCY_BY_CODE: Record<string, CurrencyInfo> = Object.fromEntries(
