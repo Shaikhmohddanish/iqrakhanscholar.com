@@ -7,19 +7,30 @@ export const navLinks = [
   { label: 'Contact', href: '/contact' },
 ]
 
-export const stats = [
-  { value: '150,000+', label: 'Followers on Instagram', numeric: 150000, suffix: '+' },
-  { value: '10,000+', label: 'Subscribers on YouTube', numeric: 10000, suffix: '+' },
-  { value: '20,000+', label: 'Followers on Facebook', numeric: 20000, suffix: '+' },
-  { value: '15,000+', label: 'Followers on TikTok', numeric: 15000, suffix: '+' },
-]
-
 export const socialLinks = {
   instagram: 'https://www.instagram.com/iqrakhanscholar',
   youtube: 'https://youtube.com/@iqrakhanscholar',
   facebook: 'https://www.facebook.com/people/Iqrakhanscholar/61577575244442/',
   tiktok: 'https://www.tiktok.com/@iqrakhanscholar',
 }
+
+// Social presence, shown as linked handles rather than follower counts.
+//
+// Hardcoded numbers were wrong the day after they were written and there is no
+// way to keep them honest: Instagram, Facebook and TikTok have no public
+// follower API (each needs a Business account plus app review), so a "live"
+// count is not something the site can fetch. Rather than publish figures that
+// quietly rot - and that a visitor can disprove in one click - each card links
+// to the real profile, where the current number is always correct by
+// definition.
+//
+// Must stay below socialLinks: it reads from it at module-evaluation time.
+export const socialProfiles = [
+  { platform: 'Instagram', handle: '@iqrakhanscholar', href: socialLinks.instagram },
+  { platform: 'YouTube', handle: '@iqrakhanscholar', href: socialLinks.youtube },
+  { platform: 'Facebook', handle: 'Iqra Khan Scholar', href: socialLinks.facebook },
+  { platform: 'TikTok', handle: '@iqrakhanscholar', href: socialLinks.tiktok },
+]
 
 export const contactEmail = 'iqrakspromo@gmail.com'
 

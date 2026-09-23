@@ -6,7 +6,7 @@ import { LoginForm } from "@/components/auth/login-form"
 
 export const metadata: Metadata = {
   title: "Sign in",
-  description: "Sign in to your Iqra Khan account to access your library, courses, and consultations.",
+  description: "Sign in to your Iqra Khan account to access your library, orders and consultations.",
   robots: { index: false },
 }
 

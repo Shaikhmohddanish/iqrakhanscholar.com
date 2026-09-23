@@ -1,35 +1,33 @@
 import Link from 'next/link'
-import { Check, CalendarCheck, Clock, Video } from 'lucide-react'
+import { Check, CalendarCheck, Clock, Mic } from 'lucide-react'
 import { Reveal } from '@/components/reveal'
+import { SESSION_TYPES } from '@/lib/booking-types'
+import { formatPrice } from '@/lib/product-types'
 
+// Sessions are AUDIO on Google Meet, not video. The wording and the icon both
+// said video while the consultation page and its FAQ said audio.
 const includes = [
-  'A private, confidential 1-to-1 video session',
+  'A private, confidential 1-to-1 audio session on Google Meet',
   'Personalised guidance rooted in Quran & Sunnah',
   'A clear, compassionate action plan',
   'Session recording & written follow-up notes',
 ]
 
-const tiers = [
-  {
-    name: 'Clarity Call',
-    duration: '30 minutes',
-    price: '$60',
-    desc: 'A focused session for one specific question or concern.',
-  },
-  {
-    name: 'Deep Guidance',
-    duration: '60 minutes',
-    price: '$110',
-    desc: 'Space to explore your situation in depth with a full plan.',
-    featured: true,
-  },
-  {
-    name: 'Mentorship',
-    duration: '4 sessions',
-    price: '$380',
-    desc: 'Ongoing monthly support for lasting transformation.',
-  },
-]
+// Derived from SESSION_TYPES - the same source the booking wizard prices
+// against - rather than hand-written here.
+//
+// This block previously hardcoded "Clarity Call $60 / Deep Guidance $110 /
+// Mentorship $380": tier names that existed nowhere else on the site, in a
+// currency the store no longer sells in, on the homepage, while /consultation
+// and the actual checkout charged Rs.2,100 / Rs.4,100 / Rs.13,600. Deriving
+// them means a price change can never leave this section stale again.
+const tiers = SESSION_TYPES.map((s, i) => ({
+  name: s.title,
+  duration: s.id === 'package-3x60' ? '3 × 60 minutes' : `${s.duration} minutes`,
+  price: formatPrice(s.price, s.currency),
+  desc: s.description,
+  featured: i === 1,
+}))
 
 export function ConsultationCta() {
   return (
@@ -65,7 +63,7 @@ export function ConsultationCta() {
 
             <div className="mt-8 flex flex-wrap gap-6 text-sm text-primary-foreground/80">
               <span className="inline-flex items-center gap-2">
-                <Video className="size-4 text-accent" /> Online via Google Meet
+                <Mic className="size-4 text-accent" /> Audio call on Google Meet
               </span>
               <span className="inline-flex items-center gap-2">
                 <Clock className="size-4 text-accent" /> Flexible time zones
@@ -115,8 +113,11 @@ export function ConsultationCta() {
             >
               Book Your Session Now
             </Link>
+            {/* No "limited slots each month" claim: no monthly cap exists
+                anywhere in the code, and manufactured scarcity on a scholar's
+                site is both untrue and a bad look. */}
             <p className="text-center text-xs text-primary-foreground/60">
-              Limited slots available each month · Secure checkout
+              Secure checkout via Razorpay · Reschedule within 2 hours
             </p>
           </div>
           </Reveal>

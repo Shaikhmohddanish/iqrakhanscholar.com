@@ -1,10 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { Minus, Plus, Check, ShoppingBag, Truck, Download } from "lucide-react"
+import { Minus, Plus, Check, ShoppingBag, Truck, BookOpen } from "lucide-react"
 import { BarLoader } from "@/components/ui/bar-loader"
 import { useCart } from "@/components/cart/cart-provider"
 import { type PublicProduct } from "@/lib/product-types"
+import { shippingHeadline } from "@/lib/shipping-copy"
 import { ProductPrice } from "@/components/currency/product-price"
 
 export function ProductBuyPanel({ product }: { product: PublicProduct }) {
@@ -85,11 +86,13 @@ export function ProductBuyPanel({ product }: { product: PublicProduct }) {
       </button>
 
       <div className="mt-5 flex items-center gap-2 text-sm text-muted-foreground">
-        {isDigital ? <Download className="size-4 text-primary" /> : <Truck className="size-4 text-primary" />}
+        {/* BookOpen, not Download: e-books are read in the in-browser reader
+            and downloading them is explicitly prohibited by the Terms. */}
+        {isDigital ? <BookOpen className="size-4 text-primary" /> : <Truck className="size-4 text-primary" />}
         <span>
           {isDigital
             ? "Unlocked in your account library immediately after purchase."
-            : "Returns accepted within 2 days of delivery. Flat ₹99 shipping."}
+            : `Returns accepted within 2 days of delivery. ${shippingHeadline()}.`}
         </span>
       </div>
     </div>

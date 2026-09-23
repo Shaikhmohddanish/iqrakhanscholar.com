@@ -5,6 +5,7 @@ import { SITE_URL } from '@/lib/site-config'
 import { Check, Shield, Truck, Download, RotateCcw } from 'lucide-react'
 import { getProductBySlug, getAllProducts } from '@/lib/products'
 import { formatPrice } from '@/lib/product-types'
+import { shippingHeadline, shippingDetail } from '@/lib/shipping-copy'
 import { getCurrentUser } from '@/lib/session'
 import { getWishlist } from '@/lib/wishlist'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
@@ -25,14 +26,26 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const { slug } = await params
   const product = await getProductBySlug(slug)
   if (!product) return { title: 'Product not found' }
+  // A digital product is reachable here AND at /library/<slug>, rendered from
+  // the same document. Both used to self-canonicalise, so Google saw two pages
+  // claiming to be the original. /library is the canonical home for e-books -
+  // it carries the richer Book schema and the reading/ownership UI - so this
+  // route points at it instead of at itself.
+  const canonical =
+    product.type === 'digital'
+      ? `/library/${product.slug}`
+      : `/store/${product.slug}`
+
   return {
     title: product.title,
     description: product.shortDescription,
-    alternates: { canonical: `/store/${product.slug}` },
+    alternates: { canonical },
     openGraph: {
+      type: 'website',
       title: product.title,
       description: product.shortDescription,
-      images: [{ url: product.image }],
+      url: canonical,
+      images: [{ url: product.image, alt: product.title }],
     },
   }
 }
@@ -81,15 +94,24 @@ export default async function ProductPage({ params }: { params: Params }) {
     },
   }
 
+  // The middle crumb was hardcoded to "Abayas" pointing at /store, so every
+  // accessory and e-book declared an abaya as its parent, and the label didn't
+  // match the heading at the URL it pointed to. Derived from the product now.
   const breadcrumbLd = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
-      { '@type': 'ListItem', position: 2, name: 'Abayas', item: `${SITE_URL}/store` },
+      { '@type': 'ListItem', position: 2, name: 'Shop', item: `${SITE_URL}/store` },
       {
         '@type': 'ListItem',
         position: 3,
+        name: product.category,
+        item: `${SITE_URL}/store?category=${encodeURIComponent(product.category)}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 4,
         name: product.title,
         item: `${SITE_URL}/store/${product.slug}`,
       },
@@ -149,11 +171,8 @@ export default async function ProductPage({ params }: { params: Params }) {
               <div className="flex items-start gap-3">
                 <Truck className="mt-0.5 size-5 text-primary" />
                 <div>
-                  <p className="font-medium text-foreground">Flat-Rate Shipping</p>
-                  <p className="text-sm text-muted-foreground">
-                    A flat ₹99 shipping charge applies to orders containing physical items,
-                    calculated at checkout.
-                  </p>
+                  <p className="font-medium text-foreground">{shippingHeadline()}</p>
+                  <p className="text-sm text-muted-foreground">{shippingDetail()}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -246,8 +265,11 @@ export default async function ProductPage({ params }: { params: Params }) {
               ) : (
                 <Truck className="size-4 text-primary" />
               )}
+              {/* Was a flat "Free Shipping" claim, which contradicted the
+                  flat-rate notice on this same page and the amount checkout
+                  actually charged. Now derived from the real threshold. */}
               <span className="text-xs font-medium text-foreground">
-                {isDigital ? 'Instant Access' : 'Free Shipping'}
+                {isDigital ? 'Instant Access' : shippingHeadline()}
               </span>
             </div>
             <div className="flex items-center gap-2 rounded-lg border border-border px-3 py-2.5">

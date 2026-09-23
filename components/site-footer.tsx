@@ -32,8 +32,9 @@ const columns = [
   {
     title: 'Support',
     links: [
-      { label: 'Privacy Policy', href: '/privacy' },
+      { label: 'Shipping Policy', href: '/shipping-policy' },
       { label: 'Refund Policy', href: '/refund-policy' },
+      { label: 'Privacy Policy', href: '/privacy' },
       { label: 'Terms of Service', href: '/terms' },
       { label: 'Cookie Policy', href: '/cookie-policy' },
     ],

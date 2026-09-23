@@ -50,18 +50,25 @@ export const metadata: Metadata = {
     url: siteUrl,
     siteName: 'Iqra Khan',
     title: 'Iqra Khan - Authentic Islamic Guidance & Modest Living for the Modern Muslim Woman',
+    // "courses" removed: the site sells e-books, abayas and accessories, and
+    // one-to-one consultations. There is no course product anywhere.
     description:
-      'Learn. Grow. Transform your life through Quran & Sunnah with books, courses, and personal mentorship.',
+      'Learn. Grow. Transform your life through Quran & Sunnah with e-books, modest wear and personal mentorship.',
   },
+  // Only `card` here, deliberately. A root twitter block with a title and
+  // description wins on every page that doesn't declare its own - and setting
+  // `openGraph` on a child does NOT populate `twitter`, so all twelve pages
+  // that carefully wrote their own OG copy still shipped this one homepage
+  // card. With just `card` set, Next derives the title and description per page
+  // from each page's own metadata.
   twitter: {
     card: 'summary_large_image',
-    title: 'Iqra Khan - Islamic Scholar & Educator',
-    description:
-      'From e-books to one-to-one mentorship with Iqra Khan Scholar — authentic Islamic knowledge, rooted in Quran & Sunnah.',
   },
-  alternates: {
-    canonical: siteUrl,
-  },
+  // No `alternates.canonical` here on purpose. `alternates` is a single
+  // top-level key, so any page that didn't override it inherited the site root
+  // verbatim and told Google it was a duplicate of the homepage - which is what
+  // /terms, /privacy, /refund-policy and /cookie-policy were all doing. The
+  // homepage declares its own canonical in app/page.tsx.
   verification: process.env.NEXT_PUBLIC_GSC_VERIFICATION
     ? { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION }
     : undefined,

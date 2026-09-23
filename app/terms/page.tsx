@@ -3,10 +3,12 @@ import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { LegalPageLayout } from '@/components/legal/legal-page-layout'
+import { SITE_HOST } from '@/lib/site-config'
 
 export const metadata: Metadata = {
   title: 'Terms of Service',
   description: 'Iqra Khan terms of service governing the use of our platform, digital products, consultations, and store.',
+  alternates: { canonical: '/terms' },
 }
 
 const sections = [
@@ -30,7 +32,7 @@ export default function TermsPage() {
         <LegalPageLayout title="Terms of Service" lastUpdated="5 August 2026" sections={sections}>
           <section id="acceptance">
             <h2>Acceptance of Terms</h2>
-            <p>By accessing and using iqrakhanscholar.com (&ldquo;the Platform&rdquo;), you agree to be bound by these Terms of Service. If you do not agree, please do not use the Platform.</p>
+            <p>By accessing and using {SITE_HOST} (&ldquo;the Platform&rdquo;), you agree to be bound by these Terms of Service. If you do not agree, please do not use the Platform.</p>
           </section>
 
           <section id="accounts">

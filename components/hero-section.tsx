@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { Star, ArrowRight, GraduationCap } from 'lucide-react'
-import { CountUp } from '@/components/count-up'
+import { ArrowRight, GraduationCap, BookOpen } from 'lucide-react'
 import { HeroVideo } from '@/components/hero-video'
 
 /** The e-book to showcase in the hero, if there is a real one to show. */
@@ -117,44 +116,23 @@ export function HeroSection({ videoSrc, ebook }: HeroSectionProps = {}) {
             </Link>
           </div>
 
-          {/* Social proof */}
-          <div
-            className="mt-10 flex items-center gap-4 animate-fade-in-up animate-delay-500"
-          >
-            <div className="flex -space-x-3">
-              {['/avatar-1.webp', '/avatar-2.webp', '/avatar-3.webp'].map((src) => (
-                <span
-                  key={src}
-                  className="relative size-10 overflow-hidden rounded-full border-2 border-background"
-                >
-                  <Image
-                    src={src}
-                    alt=""
-                    fill
-                    className="object-cover"
-                    sizes="40px"
-                  />
-                </span>
-              ))}
-            </div>
-            <div>
-              <div className="flex items-center gap-0.5 text-accent">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="size-4 fill-current" />
-                ))}
-              </div>
-              <p className="mt-0.5 text-sm text-muted-foreground">
-                Trusted by{' '}
-                <strong className="font-semibold text-foreground">
-                  <CountUp to={12000} suffix="+" />
-                </strong>{' '}
-                students worldwide
-              </p>
-              <p className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-accent-ink">
-                <GraduationCap className="size-3.5 shrink-0" />
-                7-year Aalimiyyah degree under qualified scholars
-              </p>
-            </div>
+          {/* Credentials.
+              This was a "social proof" row: three stock-photo avatars with
+              empty alt text, five hard-coded gold stars, and "Trusted by
+              12,000+ students worldwide". None of it was real - there is no
+              reviews collection behind the stars, the avatars are not
+              students, and the 12,000 figure is not backed by anything. The
+              client's instruction was "asli numbers do ya hata do", so what
+              remains is the one claim the About page actually substantiates. */}
+          <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 animate-fade-in-up animate-delay-500">
+            <p className="flex items-center gap-2 text-sm font-medium text-accent-ink">
+              <GraduationCap className="size-4 shrink-0" />
+              7-year Aalimiyyah degree under qualified scholars
+            </p>
+            <p className="flex items-center gap-2 text-sm text-muted-foreground">
+              <BookOpen className="size-4 shrink-0 text-primary" />
+              Guidance rooted in Qur&apos;an &amp; Sunnah
+            </p>
           </div>
         </div>
 

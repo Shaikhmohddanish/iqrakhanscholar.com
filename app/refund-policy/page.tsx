@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: 'Refund Policy',
   description:
     'Iqra Khan Scholar refund policy for digital products, physical products, and consultations.',
+  alternates: { canonical: '/refund-policy' },
 }
 
 const sections = [

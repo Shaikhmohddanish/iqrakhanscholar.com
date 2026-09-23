@@ -1,16 +1,18 @@
 import { Truck, RotateCcw, BookOpen, ShieldCheck } from 'lucide-react'
 import { Reveal } from '@/components/reveal'
+import { shippingHeadline, shippingDetail } from '@/lib/shipping-copy'
 
-// Every claim here is verifiable in code: the flat rate comes from
-// SHIPPING_RATES.INR in lib/currency.ts, the returns window matches
-// /refund-policy, and digital access is how lib/orders.ts grants library items.
+// Every claim here is verifiable in code: the shipping labels are derived from
+// SHIPPING_RATES / FREE_SHIPPING_THRESHOLDS in lib/currency.ts (the same values
+// checkout charges), the returns window matches /refund-policy, and digital
+// access is how lib/orders.ts grants library items.
 // Deliberately NO delivery-time promise - we don't have real dispatch windows
 // from the client, and inventing one commits the business to it.
 const items = [
   {
     icon: Truck,
-    title: 'Flat ₹99 shipping',
-    desc: 'One flat rate on orders with physical items, shown at checkout.',
+    title: shippingHeadline(),
+    desc: shippingDetail(),
   },
   {
     icon: RotateCcw,

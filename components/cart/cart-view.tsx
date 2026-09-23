@@ -8,7 +8,16 @@ import { formatPrice } from "@/lib/product-types"
 import { cartLineAmount } from "@/lib/currency"
 
 export function CartView() {
-  const { items, currency, subtotal, shipping, total, setQuantity, removeItem } = useCart()
+  const {
+    items,
+    currency,
+    subtotal,
+    shipping,
+    freeShippingRemaining,
+    total,
+    setQuantity,
+    removeItem,
+  } = useCart()
 
   if (items.length === 0) {
     return (
@@ -116,6 +125,15 @@ export function CartView() {
               {shipping === 0 ? "Free" : formatPrice(shipping, currency)}
             </dd>
           </div>
+          {freeShippingRemaining != null && (
+            <p className="rounded-lg bg-primary/5 px-3 py-2 text-xs text-muted-foreground">
+              Add{" "}
+              <span className="font-semibold text-foreground">
+                {formatPrice(freeShippingRemaining, currency)}
+              </span>{" "}
+              more to get free shipping.
+            </p>
+          )}
           <div className="flex items-center justify-between border-t border-border pt-3">
             <dt className="font-heading text-base font-semibold text-foreground">Total</dt>
             <dd className="font-heading text-base font-semibold text-foreground">{formatPrice(total, currency)}</dd>

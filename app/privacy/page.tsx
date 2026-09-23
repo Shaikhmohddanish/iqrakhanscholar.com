@@ -9,6 +9,7 @@ import { SITE_URL } from '@/lib/site-config'
 export const metadata: Metadata = {
   title: 'Privacy Policy',
   description: 'Iqra Khan Scholar privacy policy - how we collect, use, and protect your personal data.',
+  alternates: { canonical: '/privacy' },
 }
 
 const sections = [

@@ -12,7 +12,7 @@ import {
   MessageCircle,
   Shield,
   Star,
-  Video,
+  Mic,
   FileText,
   ArrowRight,
   CheckCircle,
@@ -115,7 +115,9 @@ const faqs = [
   { q: 'How do sessions take place?', a: 'All sessions are conducted via secure audio call on Google Meet. You can join from anywhere in the world.' },
   { q: 'Is everything confidential?', a: 'Absolutely. Every session is strictly private.' },
   { q: 'Can I reschedule or cancel?', a: 'Yes, you can reschedule within 2 hours. Cancellations within 2 hours are refundable, after 2 hours not.' },
-  { q: 'What payment methods are accepted?', a: 'We accept credit/debit cards and UPI via Razorpay. All transactions are secure and encrypted.' },
+  { q: 'What payment methods are accepted?', a: 'We accept credit/debit cards, UPI and net banking via Razorpay. All transactions are secure and encrypted.' },
+  { q: 'Is this counselling or therapy?', a: 'No. These are personal Islamic guidance sessions rooted in the Quran and Sunnah. They do not constitute professional counselling, therapy, medical or legal advice. If you need clinical support, please speak to a qualified professional.' },
+  { q: 'Are sessions recorded?', a: 'Yes — a recording is included with each tier so you can revisit the guidance. You are told before recording begins, recordings are stored securely, shared only with you, and deleted on request. See our Privacy Policy for how long they are kept.' },
 ]
 
 export default async function ConsultationPage() {
@@ -132,7 +134,7 @@ export default async function ConsultationPage() {
         <section className="py-16 text-center sm:py-24">
           <div className="mx-auto max-w-3xl px-4">
             <span className="inline-flex items-center rounded-full bg-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary">
-              <Video className="mr-1.5 size-3.5" />
+              <Mic className="mr-1.5 size-3.5" />
               One-to-One Sessions
             </span>
             <h1 className="mt-6 font-heading text-4xl font-bold text-foreground sm:text-5xl">
@@ -216,7 +218,7 @@ export default async function ConsultationPage() {
                 Secure payment via Razorpay
               </span>
               <span className="inline-flex items-center gap-2">
-                <Video className="size-4 text-primary" />
+                <Mic className="size-4 text-primary" />
                 Private audio call on Google Meet
               </span>
               <span className="inline-flex items-center gap-2">
@@ -224,6 +226,18 @@ export default async function ConsultationPage() {
                 Reschedule within 2 hours of booking
               </span>
             </div>
+
+            {/* Scope disclaimer. The Terms carry this wording, but nobody reads
+                the Terms before booking - and a limitation hidden inside a
+                collapsed FAQ accordion is weak if it is ever relied on. It sits
+                in the open, directly under the tiers and the Book Now buttons. */}
+            <p className="mx-auto mt-6 max-w-2xl rounded-xl border border-border bg-muted/50 px-5 py-4 text-center text-xs leading-relaxed text-muted-foreground">
+              <span className="font-semibold text-foreground">Please note:</span>{' '}
+              These are personal Islamic guidance sessions. They do not constitute
+              professional counselling, therapy, medical or legal advice. If you are
+              in crisis or need clinical support, please contact a qualified
+              professional or your local emergency services.
+            </p>
           </div>
         </section>
 

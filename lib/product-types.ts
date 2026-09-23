@@ -30,6 +30,8 @@ export interface PublicProduct {
   author?: string
   pageCount?: number
   hasPdf?: boolean  // true when a PDF has been uploaded (pdfPublicId is never sent to client)
+  // ISO timestamp of the last edit, for sitemap <lastmod>.
+  updatedAt?: string
 }
 
 // Format an amount given in minor units into a localized currency string.

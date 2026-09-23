@@ -5,6 +5,31 @@ interface IconProps {
   className?: string
 }
 
+// Picks the right brand mark for a platform name, so callers can iterate over
+// socialProfiles in lib/site-data.ts without hand-mapping icons each time.
+export function SocialGlyph({
+  platform,
+  className,
+}: {
+  platform: string
+  className?: string
+}) {
+  switch (platform.toLowerCase()) {
+    case 'instagram':
+      return <InstagramIcon className={className} />
+    case 'youtube':
+      return <YoutubeIcon className={className} />
+    case 'facebook':
+      return <FacebookIcon className={className} />
+    case 'tiktok':
+      return <TiktokIcon className={className} />
+    case 'whatsapp':
+      return <WhatsappIcon className={className} />
+    default:
+      return null
+  }
+}
+
 export function InstagramIcon({ className }: IconProps) {
   return (
     <svg

@@ -59,6 +59,9 @@ export function toPublicProduct(doc: ProductDoc): PublicProduct {
     author: doc.author,
     pageCount: doc.pageCount,
     hasPdf: !!doc.pdfPublicId,  // pdfPublicId itself is never exposed to the client
+    // ISO string rather than a Date so the value survives the server ->
+    // client component boundary. Used by the sitemap for a truthful <lastmod>.
+    updatedAt: doc.updatedAt ? new Date(doc.updatedAt).toISOString() : undefined,
   }
 }
 
@@ -178,6 +181,15 @@ export async function decrementStock(productId: string, quantity: number): Promi
   )
 }
 
+// Seed catalogue. Two rules this data must keep:
+//
+// 1. rating/reviews are 0. There is no reviews collection - nothing in the app
+//    can produce a review - so any non-zero value here is invented social proof
+//    and, once it reaches the Product JSON-LD, review spam. ProductRating
+//    renders nothing when reviews is 0.
+// 2. No "download" wording in `highlights`. E-books are read in the in-browser
+//    reader; downloading them is prohibited by the Terms and blocked in the
+//    reader layout.
 const SEED_PRODUCTS: Omit<ProductDoc, "_id" | "createdAt" | "updatedAt">[] = [
   {
     slug: "the-art-of-khushu-in-salah",
@@ -188,14 +200,14 @@ const SEED_PRODUCTS: Omit<ProductDoc, "_id" | "createdAt" | "updatedAt">[] = [
     currency: "INR",
     image: "/product-ebook-salah.webp",
     badge: "Bestseller",
-    rating: 5,
-    reviews: 218,
+    rating: 0,
+    reviews: 0,
     shortDescription: "A practical guide to attaining presence and serenity in your prayer.",
     description:
       "Discover the lost art of khushuʿ - the deep stillness and presence that transforms salah from routine into a living conversation with Allah. Rooted in Quran and Sunnah, this ebook offers gentle, actionable practices to quiet the restless heart and pray with meaning.",
     highlights: [
-      "120-page beautifully designed PDF",
-      "Instant download to any device",
+      "120-page ebook",
+      "Instant access in your library, on any device",
       "Daily practice framework & checklists",
       "Lifetime access and free updates",
     ],
@@ -210,8 +222,8 @@ const SEED_PRODUCTS: Omit<ProductDoc, "_id" | "createdAt" | "updatedAt">[] = [
     price: 159900,
     currency: "INR",
     image: "/product-ebook-quran.webp",
-    rating: 5,
-    reviews: 164,
+    rating: 0,
+    reviews: 0,
     shortDescription: "A guided month of tadabbur to reconnect with the Book of Allah.",
     description:
       "A structured 30-day journey through selected passages of the Quran, with reflections, journaling prompts, and practical takeaways for each day. Designed to rebuild a consistent, heart-centred relationship with revelation.",
@@ -233,8 +245,8 @@ const SEED_PRODUCTS: Omit<ProductDoc, "_id" | "createdAt" | "updatedAt">[] = [
     currency: "INR",
     image: "/product-ebook-dua.webp",
     badge: "New",
-    rating: 5,
-    reviews: 312,
+    rating: 0,
+    reviews: 0,
     shortDescription: "A curated collection of authentic supplications for every day.",
     description:
       "A beautifully formatted resource pack of authentic duʿas drawn from the Quran and Sunnah, organised around the rhythms of a modern woman's day - from morning intentions to evening gratitude.",
@@ -256,8 +268,8 @@ const SEED_PRODUCTS: Omit<ProductDoc, "_id" | "createdAt" | "updatedAt">[] = [
     currency: "INR",
     image: "/product-book.webp",
     badge: "Signed Edition",
-    rating: 5,
-    reviews: 96,
+    rating: 0,
+    reviews: 0,
     shortDescription: "A signed hardcover on reclaiming faith, dignity, and purpose.",
     description:
       "A heartfelt hardcover exploring what it means to grow into your fullest self as a Muslim woman - anchored in faith, free of comparison, and rooted in purpose. This signed edition includes a personal handwritten note.",
@@ -278,8 +290,8 @@ const SEED_PRODUCTS: Omit<ProductDoc, "_id" | "createdAt" | "updatedAt">[] = [
     price: 269900,
     currency: "INR",
     image: "/product-journal.webp",
-    rating: 5,
-    reviews: 141,
+    rating: 0,
+    reviews: 0,
     shortDescription: "A linen-bound journal to anchor daily gratitude and remembrance.",
     description:
       "A luxurious linen-bound journal with guided prompts for daily gratitude, dhikr tracking, and reflection. Designed to make remembrance of Allah a beautiful, lasting habit.",
@@ -301,8 +313,8 @@ const SEED_PRODUCTS: Omit<ProductDoc, "_id" | "createdAt" | "updatedAt">[] = [
     currency: "INR",
     image: "/product-planner.webp",
     badge: "Limited",
-    rating: 5,
-    reviews: 88,
+    rating: 0,
+    reviews: 0,
     shortDescription: "A daily planner that places salah and intentions at the centre.",
     description:
       "A thoughtfully designed daily planner that organises your day around your five prayers and spiritual intentions - helping you stay productive without losing sight of what matters most.",

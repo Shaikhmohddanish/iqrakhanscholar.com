@@ -1,7 +1,7 @@
 import Image from 'next/image'
-import { stats } from '@/lib/site-data'
+import { socialProfiles } from '@/lib/site-data'
 import { Reveal } from '@/components/reveal'
-import { CountUp } from '@/components/count-up'
+import { SocialGlyph } from '@/components/icons/social-icons'
 
 const pillars = [
   {
@@ -78,14 +78,26 @@ export function AboutSection() {
           </div>
         </div>
 
-        {/* Stats with animated counters */}
+        {/* Social profiles.
+            These were animated follower counters (150,000+ / 10,000+ / ...).
+            The numbers were unverifiable and went stale the moment they were
+            written, so each card now links to the real profile where the
+            current count is always accurate. */}
         <div className="mt-16 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-border bg-border lg:grid-cols-4">
-          {stats.map((stat, i) => (
-            <Reveal key={stat.label} delay={i * 80} className="bg-card px-6 py-8 text-center">
-              <p className="font-heading text-3xl font-bold text-primary sm:text-4xl">
-                <CountUp to={stat.numeric} suffix={stat.suffix} />
-              </p>
-              <p className="mt-1.5 text-sm text-muted-foreground">{stat.label}</p>
+          {socialProfiles.map((profile, i) => (
+            <Reveal key={profile.platform} delay={i * 80}>
+              <a
+                href={profile.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-full flex-col items-center justify-center gap-2 bg-card px-6 py-8 text-center transition-colors hover:bg-muted focus-visible:bg-muted focus-visible:outline-none"
+              >
+                <SocialGlyph platform={profile.platform} className="size-7 text-primary" />
+                <p className="font-heading text-base font-semibold text-foreground">
+                  {profile.platform}
+                </p>
+                <p className="text-sm text-muted-foreground">{profile.handle}</p>
+              </a>
             </Reveal>
           ))}
         </div>

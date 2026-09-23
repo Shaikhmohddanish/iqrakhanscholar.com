@@ -4,9 +4,9 @@ import { z } from "zod"
 import { redirect } from "next/navigation"
 import { headers } from "next/headers"
 import { getCurrentUser, isUserVerified } from "@/lib/session"
-import { readCart, clearCartCookie, cartShipping } from "@/lib/cart"
+import { readCart, clearCartCookie } from "@/lib/cart"
 import { getActiveCurrency } from "@/lib/currency-server"
-import { resolveCartCurrency, cartLineAmount } from "@/lib/currency"
+import { resolveCartCurrency, cartLineAmount, shippingForCurrency } from "@/lib/currency"
 import { getProductsByIds } from "@/lib/products"
 import { createOrder, setOrderProvider, type OrderItem, type ShippingAddress } from "@/lib/orders"
 import { selectProvider } from "@/lib/payments"
@@ -106,7 +106,11 @@ export async function placeOrderAction(
   }
 
   const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0)
-  const shipping = cartShipping(cart, currency)
+  // Charge shipping off the re-priced subtotal, not the cart cookie's. The
+  // free-shipping threshold has to be judged against the amount we are actually
+  // billing - a stale cookie price could otherwise tip an order over the
+  // threshold (or under it) and disagree with the total we charge.
+  const shipping = hasPhysical ? shippingForCurrency(currency, subtotal) : 0
   const total = subtotal + shipping
 
   // --- Payment ---

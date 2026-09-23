@@ -5,7 +5,7 @@ import { RegisterForm } from "@/components/auth/register-form"
 
 export const metadata: Metadata = {
   title: "Create your account",
-  description: "Join the Iqra Khan community to access digital books, courses, resources, and consultations.",
+  description: "Join the Iqra Khan community to access e-books, resources and one-to-one consultations.",
   robots: { index: false },
 }
 

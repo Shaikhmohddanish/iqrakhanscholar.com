@@ -4,7 +4,8 @@ import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
-import { stats, socialLinks } from '@/lib/site-data'
+import { socialProfiles, socialLinks } from '@/lib/site-data'
+import { SocialGlyph } from '@/components/icons/social-icons'
 import { SITE_URL } from '@/lib/site-config'
 import {
   BookOpen,
@@ -185,15 +186,28 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Stats */}
+        {/* Social profiles - linked handles, not follower counts. See the note
+            on socialProfiles in lib/site-data.ts. */}
         <section className="py-16">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
-              {stats.map((stat) => (
-                <div key={stat.label} className="text-center">
-                  <p className="font-heading text-3xl font-bold text-primary sm:text-4xl">{stat.value}</p>
-                  <p className="mt-2 text-sm font-medium text-muted-foreground">{stat.label}</p>
-                </div>
+            <h2 className="text-center font-heading text-2xl font-bold text-foreground">
+              Follow along
+            </h2>
+            <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+              {socialProfiles.map((profile) => (
+                <a
+                  key={profile.platform}
+                  href={profile.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-card px-6 py-8 text-center transition-colors hover:border-primary/40 hover:bg-muted focus-visible:border-primary focus-visible:outline-none"
+                >
+                  <SocialGlyph platform={profile.platform} className="size-7 text-primary" />
+                  <p className="font-heading text-base font-semibold text-foreground">
+                    {profile.platform}
+                  </p>
+                  <p className="text-sm text-muted-foreground">{profile.handle}</p>
+                </a>
               ))}
             </div>
           </div>
