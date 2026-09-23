@@ -135,7 +135,7 @@ export function cartLineAmount(item: PricedLike, currency: string): number {
 }
 
 // Flat-rate shipping per currency (minor units), applied when a cart contains a
-// physical item. Falls back to the USD rate for unconfigured currencies.
+// physical item. Falls back to the default rate for unconfigured currencies.
 export const SHIPPING_RATES: Record<string, number> = {
   USD: 599,
   EUR: 549,
@@ -151,6 +151,33 @@ export const SHIPPING_RATES: Record<string, number> = {
   KWD: 1800,
 }
 
-export function shippingForCurrency(currency: string): number {
+// Order subtotal (minor units, same currency) at or above which shipping is
+// free. A currency with no entry here simply never qualifies.
+//
+// Every customer-facing claim about free shipping must be derived from this
+// map - the previous "free shipping over $50" banner was copy with no code
+// behind it, and the checkout charged full rate regardless.
+export const FREE_SHIPPING_THRESHOLDS: Record<string, number> = {
+  INR: 99900, // ₹999
+}
+
+// Shipping charge for a cart subtotal in the given currency. Pass the subtotal
+// so the free-shipping threshold can apply; omitting it always bills the flat
+// rate, which is the safe default for callers that only know the currency.
+export function shippingForCurrency(currency: string, subtotal?: number): number {
+  const threshold = FREE_SHIPPING_THRESHOLDS[currency]
+  if (threshold != null && subtotal != null && subtotal >= threshold) return 0
   return SHIPPING_RATES[currency] ?? SHIPPING_RATES[DEFAULT_CURRENCY]
+}
+
+// Amount still needed to qualify for free shipping, or null when the currency
+// has no threshold or the cart already qualifies. Drives the "add ₹X more"
+// nudge in the cart.
+export function amountToFreeShipping(
+  currency: string,
+  subtotal: number,
+): number | null {
+  const threshold = FREE_SHIPPING_THRESHOLDS[currency]
+  if (threshold == null || subtotal >= threshold) return null
+  return threshold - subtotal
 }

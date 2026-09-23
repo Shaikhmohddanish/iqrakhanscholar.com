@@ -1,32 +1,33 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata } from 'next'
-import { Poppins, Playfair_Display, Geist_Mono } from 'next/font/google'
+import { Poppins, Playfair_Display } from 'next/font/google'
 import './globals.css'
-import { readCart } from '@/lib/cart'
-import { getActiveCurrency } from '@/lib/currency-server'
 import { CartProvider } from '@/components/cart/cart-provider'
 import { CurrencyProvider } from '@/components/currency/currency-provider'
 import { CookieConsent } from '@/components/cookie-consent'
 import { AdsenseLoader } from '@/components/ads/adsense-loader'
+import { AnnouncementBar } from '@/components/announcement-bar'
+import { WhatsappButton } from '@/components/whatsapp-button'
+import { StructuredData } from '@/components/structured-data'
 import { SITE_URL as siteUrl } from '@/lib/site-config'
 
 // Poppins has no variable-font build on Google Fonts, so weights are explicit.
+// Each weight is a separate file fetched on first paint, so only the ones the
+// design actually uses are listed. 300 was loaded on every page with zero
+// `font-light` utilities in the codebase. 700 stays - `font-bold` is used on
+// Poppins elements (prices, badges, counters) and dropping it would leave the
+// browser to synthesise a fake bold.
 const poppins = Poppins({
   variable: '--font-poppins',
   subsets: ['latin'],
   display: 'swap',
-  weight: ['300', '400', '500', '600', '700'],
+  weight: ['400', '500', '600', '700'],
 })
 
 const playfair = Playfair_Display({
   variable: '--font-playfair',
   subsets: ['latin'],
   display: 'swap',
-})
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
 })
 
 export const metadata: Metadata = {
@@ -67,25 +68,39 @@ export const metadata: Metadata = {
   generator: 'v0.app',
 }
 
-export default async function RootLayout({
+// Deliberately NOT async, and deliberately reads no cookies or headers.
+//
+// This layout previously did `await readCart()` and `await getActiveCurrency()`,
+// both of which touch next/headers. In a ROOT layout that opts the entire
+// application out of static rendering: every route rendered on demand, and the
+// `export const revalidate = 3600` on the homepage and blog was dead code.
+// /terms and /privacy - static text with no data at all - were hitting a server
+// function on every request.
+//
+// Both providers now resolve their own state on the client: CartProvider
+// hydrates from the (non-httpOnly) cart cookie, and the store is INR-only so
+// there is no currency to resolve per visitor. Pages that genuinely need
+// server-side currency still call getActiveCurrency() themselves and stay
+// dynamic, which is correct.
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const cart = await readCart()
-  const currency = await getActiveCurrency()
   return (
     <html
       lang="en"
       data-scroll-behavior="smooth"
       suppressHydrationWarning
-      className={`${poppins.variable} ${playfair.variable} ${geistMono.variable}`}
+      className={`${poppins.variable} ${playfair.variable}`}
     >
       <body className="font-sans antialiased">
-        <CurrencyProvider initialCurrency={currency}>
-          <CartProvider initialItems={cart.items}>
+        <CurrencyProvider>
+          <CartProvider>
+            <AnnouncementBar />
             {children}
             <CookieConsent />
+            <WhatsappButton />
           </CartProvider>
         </CurrencyProvider>
         <AdsenseLoader />

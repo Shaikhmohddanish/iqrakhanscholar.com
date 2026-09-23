@@ -1,6 +1,19 @@
-import { faqs, socialLinks } from '@/lib/site-data'
+import { socialLinks } from '@/lib/site-data'
 import { SITE_URL } from '@/lib/site-config'
 
+/**
+ * Site-wide identity schema: who runs this site, what it is, and how to search
+ * it. Mounted in the root layout so it appears on every URL.
+ *
+ * It used to be rendered from app/page.tsx, which meant a Rich Results or
+ * schema-validator run against any inner page (/store/<slug>, /about, /terms)
+ * correctly reported no Organization and no WebSite - the client read that as
+ * "schema missing".
+ *
+ * FAQPage deliberately lives NOT here but on /faq (app/faq/page.tsx), the page
+ * that actually displays those questions. Emitting it site-wide would put two
+ * FAQPage entities on /faq and attach FAQ markup to pages with no FAQ on them.
+ */
 export function StructuredData() {
   const personSchema = {
     '@context': 'https://schema.org',
@@ -43,20 +56,7 @@ export function StructuredData() {
     sameAs: Object.values(socialLinks),
   }
 
-  const faqSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faqs.map((faq) => ({
-      '@type': 'Question',
-      name: faq.q,
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: faq.a,
-      },
-    })),
-  }
-
-  const schemas = [personSchema, websiteSchema, organizationSchema, faqSchema]
+  const schemas = [personSchema, websiteSchema, organizationSchema]
 
   return (
     <>

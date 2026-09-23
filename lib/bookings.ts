@@ -41,9 +41,16 @@ function toPublicAvailability(doc: WithId<AvailabilityDoc>): PublicAvailability 
   return { id: _id.toString(), ...rest }
 }
 
+// Guarded so index creation happens once per server instance, not on every
+// read - see the note in lib/blog.ts. getAvailableSlots hits this collection
+// on every date the booking wizard shows.
+let bookingIndexesEnsured = false
+let availabilityIndexesEnsured = false
+
 async function bookingsCol() {
   const db = await getDb()
   const col = db.collection<BookingDoc>("bookings")
+  if (bookingIndexesEnsured) return col
   await col.createIndex({ userId: 1, date: -1 })
   // Deliberately NOT unique: a cancelled booking leaves its date+slot behind,
   // and that slot must be bookable again. A plain unique index would block the
@@ -54,13 +61,17 @@ async function bookingsCol() {
   // race on simultaneous submits - acceptable for this volume, and visible to
   // Iqra in the admin bookings list if it ever happens.
   await col.createIndex({ date: 1, slot: 1 })
+  bookingIndexesEnsured = true
   return col
 }
 
 async function availabilityCol() {
   const db = await getDb()
   const col = db.collection<AvailabilityDoc>("availability")
-  await col.createIndex({ date: 1 }, { unique: true })
+  if (!availabilityIndexesEnsured) {
+    await col.createIndex({ date: 1 }, { unique: true })
+    availabilityIndexesEnsured = true
+  }
   return col
 }
 

@@ -2,7 +2,7 @@
 
 import { DEFAULT_CURRENCY } from "@/lib/currency"
 import { revalidatePath } from "next/cache"
-import { readCart, writeCart, clearCartCookie, type Cart } from "@/lib/cart"
+import { readCart, writeCart, clearCartCookie, type Cart, type CartItem } from "@/lib/cart"
 import { getProductsByIds } from "@/lib/products"
 
 // Re-derives the whole cart against the DB so prices/titles are always
@@ -60,7 +60,7 @@ export async function addToCartAction(productId: string, quantity = 1) {
   const reconciled = await reconcile(cart)
   await writeCart(reconciled)
   revalidatePath("/cart")
-  return { ok: true, count: reconciled.items.reduce((s, i) => s + i.quantity, 0) }
+  return { ok: true, items: reconciled.items }
 }
 
 export async function updateQuantityAction(productId: string, quantity: number) {
@@ -72,7 +72,7 @@ export async function updateQuantityAction(productId: string, quantity: number) 
   })
   await writeCart(reconciled)
   revalidatePath("/cart")
-  return { ok: true }
+  return { ok: true, items: reconciled.items }
 }
 
 export async function removeFromCartAction(productId: string) {
@@ -82,11 +82,11 @@ export async function removeFromCartAction(productId: string) {
   })
   await writeCart(reconciled)
   revalidatePath("/cart")
-  return { ok: true }
+  return { ok: true, items: reconciled.items }
 }
 
 export async function clearCartAction() {
   await clearCartCookie()
   revalidatePath("/cart")
-  return { ok: true }
+  return { ok: true, items: [] as CartItem[] }
 }

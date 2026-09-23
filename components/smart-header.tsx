@@ -31,6 +31,10 @@ import type { PublicUser } from '@/lib/types'
 import { hasRole } from '@/lib/types'
 
 interface SmartHeaderProps {
+  // `undefined` means "resolve the session yourself" - the public SiteHeader
+  // passes nothing so the page it sits on can stay static. `null` means the
+  // caller already knows nobody is signed in, and a PublicUser means it already
+  // has the session; both skip the fetch and render immediately.
   user?: PublicUser | null
 }
 
@@ -52,9 +56,12 @@ const accountLinks = [
   { href: '/account/settings', label: 'Settings', icon: Settings },
 ]
 
-export function SmartHeader({ user }: SmartHeaderProps) {
+export function SmartHeader({ user: userProp }: SmartHeaderProps) {
   const pathname = usePathname()
   const router = useRouter()
+  // Session resolved in the browser when the caller didn't supply one.
+  const [fetchedUser, setFetchedUser] = useState<PublicUser | null>(null)
+  const [sessionResolved, setSessionResolved] = useState(userProp !== undefined)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -63,6 +70,30 @@ export function SmartHeader({ user }: SmartHeaderProps) {
   const [pending, startTransition] = useTransition()
   const searchInputRef = useRef<HTMLInputElement>(null)
   const avatarRef = useRef<HTMLDivElement>(null)
+
+  // Resolve the session client-side so the pages rendering this header don't
+  // have to read cookies (which would make every one of them dynamic).
+  useEffect(() => {
+    if (userProp !== undefined) return
+    let cancelled = false
+    fetch('/api/auth/me', { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : { user: null }))
+      .then((data) => {
+        if (cancelled) return
+        setFetchedUser(data?.user ?? null)
+        setSessionResolved(true)
+      })
+      // On failure fall through to the signed-out header rather than leaving
+      // the slot in its loading state forever.
+      .catch(() => {
+        if (!cancelled) setSessionResolved(true)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [userProp])
+
+  const user = userProp !== undefined ? userProp : fetchedUser
 
   // Scroll detection
   useEffect(() => {
@@ -381,13 +412,21 @@ export function SmartHeader({ user }: SmartHeaderProps) {
                 {/* Cart */}
                 <CartButton />
 
-                {/* Desktop: Sign In + CTA */}
-                <Link
-                  href="/login"
-                  className="hidden h-9 items-center justify-center rounded-full px-4 text-sm font-medium text-foreground/80 transition-colors hover:text-primary lg:inline-flex"
-                >
-                  Sign In
-                </Link>
+                {/* Desktop: Sign In + CTA.
+                    While the session is still resolving we hold the space but
+                    show nothing, so a signed-in visitor never sees "Sign In"
+                    flash before their avatar appears. The placeholder keeps the
+                    header from shifting when the real control arrives. */}
+                {sessionResolved ? (
+                  <Link
+                    href="/login"
+                    className="hidden h-9 items-center justify-center rounded-full px-4 text-sm font-medium text-foreground/80 transition-colors hover:text-primary lg:inline-flex"
+                  >
+                    Sign In
+                  </Link>
+                ) : (
+                  <span className="hidden h-9 w-[72px] lg:inline-flex" aria-hidden="true" />
+                )}
                 <Link
                   href="/consultation"
                   className="hidden h-9 items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 lg:inline-flex"
@@ -396,6 +435,9 @@ export function SmartHeader({ user }: SmartHeaderProps) {
                 </Link>
 
                 {/* Mobile user icon */}
+                {!sessionResolved ? (
+                  <span className="inline-flex size-10 lg:hidden" aria-hidden="true" />
+                ) : (
                 <Link
                   href="/login"
                   className="inline-flex size-10 items-center justify-center rounded-md text-foreground/80 transition-colors hover:text-foreground lg:hidden"
@@ -403,6 +445,7 @@ export function SmartHeader({ user }: SmartHeaderProps) {
                 >
                   <User className="size-5" />
                 </Link>
+                )}
               </>
             )}
           </div>

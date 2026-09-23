@@ -13,10 +13,16 @@ function toPublicWishlist(doc: WithId<WishlistDoc>): { userId: string; productId
   return { userId: doc.userId, productIds: doc.productIds }
 }
 
+// Once per server instance, not once per query - see the note in lib/blog.ts.
+let indexesEnsured = false
+
 async function wishlistCol() {
   const db = await getDb()
   const col = db.collection<WishlistDoc>("wishlists")
-  await col.createIndex({ userId: 1 }, { unique: true })
+  if (!indexesEnsured) {
+    await col.createIndex({ userId: 1 }, { unique: true })
+    indexesEnsured = true
+  }
   return col
 }
 

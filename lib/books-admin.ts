@@ -37,10 +37,16 @@ function toPublic(doc: WithId<BookDoc>): PublicBookAdmin {
   return { id: _id.toString(), ...rest }
 }
 
+// Once per server instance, not once per query - see the note in lib/blog.ts.
+let indexesEnsured = false
+
 async function booksCol() {
   const db = await getDb()
   const col = db.collection<BookDoc>("books")
-  await col.createIndex({ slug: 1 }, { unique: true })
+  if (!indexesEnsured) {
+    await col.createIndex({ slug: 1 }, { unique: true })
+    indexesEnsured = true
+  }
   return col
 }
 

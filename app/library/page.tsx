@@ -7,6 +7,12 @@ import { LibraryClient, type LibraryItem } from './library-client'
 import { queryProducts, getProductFacets } from '@/lib/products'
 import { SITE_URL } from '@/lib/site-config'
 
+// This page reads the catalogue but no longer reads cookies, so Next will
+// prerender it. Without a revalidate window that prerender happens once at
+// build time and a new or edited book would never appear until the next
+// deploy. One hour matches the homepage and blog.
+export const revalidate = 3600
+
 export const metadata: Metadata = {
   title: 'E-books - Islamic Books & Guides',
   description:
@@ -37,9 +43,14 @@ function toLibraryItem(p: { id: string; slug: string; title: string; author?: st
 }
 
 export default async function LibraryPage() {
-  const [allResult, facets] = await Promise.all([
+  // `initial` seeds the paginated grid and is sorted by `featured`, so it can't
+  // be sliced out of `allResult` (which is sorted by `newest`) - but it has no
+  // dependency on the other two either, so all three go in one wave instead of
+  // hanging a third round-trip off the end.
+  const [allResult, facets, initial] = await Promise.all([
     queryProducts({ page: 1, limit: 100, type: 'digital', sort: 'newest' }),
     getProductFacets(),
+    queryProducts({ page: 1, limit: 8, type: 'digital' }),
   ])
 
   const allBooks = allResult.items
@@ -48,8 +59,6 @@ export default async function LibraryPage() {
   const featured = allBooks.find((b) => b.featured) ?? allBooks[0]
   const recentlyAdded = [...allBooks].slice(0, 6)
   const popular = [...allBooks].sort((a, b) => b.reviews - a.reviews).slice(0, 6)
-
-  const initial = await queryProducts({ page: 1, limit: 8, type: 'digital' })
 
   const jsonLd = {
     '@context': 'https://schema.org',

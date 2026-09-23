@@ -40,28 +40,41 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     title: `${product.title} - E-books`,
     description: product.description,
     alternates: { canonical: `/library/${product.slug}` },
+    // Without its own openGraph block this page fell back to the root layout's
+    // homepage card, so sharing a book link showed the site's generic title and
+    // no cover image.
+    openGraph: {
+      type: 'article',
+      title: product.title,
+      description: product.description,
+      url: `/library/${product.slug}`,
+      images: [{ url: product.image, alt: `${product.title} cover` }],
+    },
   }
 }
 
 export default async function BookDetailPage({ params }: { params: Params }) {
   const { slug } = await params
-  const product = await getProductBySlug(slug)
+
+  // These three don't depend on each other, so they run together. They used to
+  // be sequential awaits, which meant three round-trips to Atlas stacked
+  // end-to-end before the page could start rendering.
+  const [product, allDigital, user] = await Promise.all([
+    getProductBySlug(slug),
+    queryProducts({ page: 1, limit: 20, type: 'digital' }),
+    getCurrentUser(),
+  ])
   if (!product || product.type !== 'digital') notFound()
 
-  // Fetch related digital books
-  const allDigital = await queryProducts({ page: 1, limit: 20, type: 'digital' })
+  // Related digital books
   const related = allDigital.items
     .filter((b) => b.id !== product.id)
     .sort((a, b) => (a.category === product.category ? -1 : 1))
     .slice(0, 4)
 
-  // Check ownership
-  const user = await getCurrentUser()
-  let owns = false
-  if (user) {
-    const purchasedIds = await getPurchasedProductIds(user.id)
-    owns = purchasedIds.includes(product.id)
-  }
+  // Ownership check needs both `user` and `product`, so it follows.
+  const purchasedIds = user ? await getPurchasedProductIds(user.id) : []
+  const owns = purchasedIds.includes(product.id)
 
   // Display the price in the visitor's active currency (falls back to base).
   const activeCurrency = await getActiveCurrency()

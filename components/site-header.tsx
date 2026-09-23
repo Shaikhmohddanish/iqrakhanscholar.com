@@ -1,12 +1,19 @@
-import { getCurrentUser } from '@/lib/session'
 import { SmartHeader } from './smart-header'
 
 /**
- * Server component wrapper - reads the current user from cookies and
- * passes it to the client-side SmartHeader. Use this in layouts/pages
- * instead of importing SmartHeader directly.
+ * Site header for public pages.
+ *
+ * Deliberately does NOT read the session. It used to call getCurrentUser(),
+ * which reads cookies - and because almost every page renders this component,
+ * that single call opted the whole public site out of static rendering. Even
+ * /terms and /privacy, which have no data of their own, were server-rendered
+ * per request.
+ *
+ * SmartHeader now resolves the session itself from /api/auth/me after mount.
+ * Pages that are dynamic anyway and already have the user in hand (e.g.
+ * app/account/layout.tsx) should keep passing it to SmartHeader directly, which
+ * skips the fetch and renders the signed-in state immediately.
  */
-export async function SiteHeader() {
-  const user = await getCurrentUser()
-  return <SmartHeader user={user} />
+export function SiteHeader() {
+  return <SmartHeader />
 }

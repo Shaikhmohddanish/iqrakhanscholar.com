@@ -3,15 +3,11 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { X, Cookie, Shield } from 'lucide-react'
-
-const CONSENT_KEY = 'ik-cookie-consent'
-
-type ConsentChoice = {
-  necessary: true
-  analytics: boolean
-  marketing: boolean
-  timestamp: string
-}
+import {
+  readConsent,
+  saveConsent as persistConsent,
+  type ConsentChoice,
+} from '@/lib/consent'
 
 export function CookieConsent() {
   const [visible, setVisible] = useState(false)
@@ -20,18 +16,16 @@ export function CookieConsent() {
   const [marketing, setMarketing] = useState(false)
 
   useEffect(() => {
-    const stored = localStorage.getItem(CONSENT_KEY)
-    if (!stored) {
-      // Delay showing to avoid layout shift on first paint
-      const timer = setTimeout(() => setVisible(true), 1500)
-      return () => clearTimeout(timer)
-    }
+    if (readConsent()) return
+    // Delay showing to avoid layout shift on first paint
+    const timer = setTimeout(() => setVisible(true), 1500)
+    return () => clearTimeout(timer)
   }, [])
 
+  // Persisting through lib/consent also broadcasts the choice, so AdsenseLoader
+  // picks it up immediately instead of waiting for a reload.
   function saveConsent(choice: ConsentChoice) {
-    localStorage.setItem(CONSENT_KEY, JSON.stringify(choice))
-    // Also set a cookie for server-side reading
-    document.cookie = `cookie-consent=${encodeURIComponent(JSON.stringify(choice))};path=/;max-age=${365 * 24 * 60 * 60};SameSite=Lax`
+    persistConsent(choice)
     setVisible(false)
   }
 

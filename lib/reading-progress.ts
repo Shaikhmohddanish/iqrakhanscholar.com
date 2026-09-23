@@ -33,10 +33,17 @@ function toPublic(doc: WithId<ProgressDoc>): PublicProgress {
   }
 }
 
+// Once per server instance, not once per query - see the note in lib/blog.ts.
+// This one is hit on every page turn in the reader.
+let indexesEnsured = false
+
 async function progressCol() {
   const db = await getDb()
   const col = db.collection<ProgressDoc>("reading_progress")
-  await col.createIndex({ userId: 1, bookId: 1 }, { unique: true })
+  if (!indexesEnsured) {
+    await col.createIndex({ userId: 1, bookId: 1 }, { unique: true })
+    indexesEnsured = true
+  }
   return col
 }
 

@@ -1,4 +1,4 @@
-import { AnnouncementBar } from '@/components/announcement-bar'
+import type { Metadata } from 'next'
 import { SiteHeader } from '@/components/site-header'
 import { HeroSection } from '@/components/hero-section'
 import { FeaturedCategories } from '@/components/featured-categories'
@@ -12,11 +12,17 @@ import { EmailCapture } from '@/components/email-capture'
 import { DailyReflection } from '@/components/daily-reflection'
 import { FaqSection } from '@/components/faq-section'
 import { SiteFooter } from '@/components/site-footer'
-import { StructuredData } from '@/components/structured-data'
 import { getProductsByType } from '@/lib/products'
 import { getPublishedArticles, toBlogListItem } from '@/lib/blog'
 
 export const revalidate = 3600
+
+// The root layout no longer declares a global canonical (it made every page
+// that didn't override it claim to be the homepage), so the homepage declares
+// its own.
+export const metadata: Metadata = {
+  alternates: { canonical: '/' },
+}
 
 export default async function HomePage() {
   const [digital, physical, { articles }] = await Promise.all([
@@ -37,8 +43,6 @@ export default async function HomePage() {
 
   return (
     <>
-      <StructuredData />
-      <AnnouncementBar />
       <SiteHeader />
       <main id="main-content">
         <HeroSection videoSrc="/video/background.mp4" ebook={heroEbook} />
@@ -49,7 +53,7 @@ export default async function HomePage() {
           id="digital"
           eyebrow="E-books"
           title="Featured digital products"
-          description="Instantly downloadable ebooks, study guides, and resource packs to learn at your own pace."
+          description="Ebooks, study guides and resource packs that unlock instantly in your library, to read at your own pace."
           products={digital.slice(0, 3)}
           ctaLabel="Browse the full library"
           ctaHref="/library"

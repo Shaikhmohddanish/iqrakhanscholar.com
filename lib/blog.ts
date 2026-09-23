@@ -45,11 +45,20 @@ export function toBlogListItem(a: PublicArticle): BlogPostItem {
   }
 }
 
+// Guarded so index creation happens once per server instance, not on every
+// read. createIndex is a round-trip to Atlas even when the index already
+// exists, so the unguarded version added two network hops to every article
+// query - the homepage alone paid for it on each request.
+let indexesEnsured = false
+
 async function articlesCol() {
   const db = await getDb()
   const col = db.collection<ArticleDoc>("articles")
-  await col.createIndex({ slug: 1 }, { unique: true })
-  await col.createIndex({ status: 1, publishedAt: -1 })
+  if (!indexesEnsured) {
+    await col.createIndex({ slug: 1 }, { unique: true })
+    await col.createIndex({ status: 1, publishedAt: -1 })
+    indexesEnsured = true
+  }
   return col
 }
 

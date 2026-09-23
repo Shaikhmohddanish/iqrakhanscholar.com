@@ -12,7 +12,10 @@
   /* Typography */
   --font-heading: var(--font-playfair), Georgia, serif;
   --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), 'Geist Mono Fallback';
+  /* System mono stack: `font-mono` only appears in admin, the reader and the
+     2FA screens, never on a public page, so it is not worth a webfont download
+     on every route. */
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   /* Sidebar tokens */
   --color-sidebar-ring: var(--sidebar-ring);

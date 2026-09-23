@@ -6,7 +6,16 @@ if (!uri) {
   throw new Error("Missing MONGODB_URI environment variable")
 }
 
-const options = {}
+const options = {
+  // Serverless functions each get their own pool, so the driver default of 100
+  // multiplies by the number of warm instances and will exhaust an Atlas M0/M10
+  // connection cap under traffic. Ten is plenty for this workload: requests are
+  // short and mostly a single query.
+  maxPoolSize: 10,
+  // Fail fast instead of hanging a request for the default 30s when Atlas is
+  // unreachable - a slow error is worse than a quick one behind a CDN.
+  serverSelectionTimeoutMS: 5000,
+}
 
 let client: MongoClient
 let clientPromise: Promise<MongoClient>

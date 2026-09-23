@@ -21,10 +21,16 @@ function toPublic(doc: WithId<NotificationDoc>): PublicNotification {
   return { id: _id.toString(), ...rest }
 }
 
+// Once per server instance, not once per query - see the note in lib/blog.ts.
+let indexesEnsured = false
+
 async function notifCol() {
   const db = await getDb()
   const col = db.collection<NotificationDoc>("notifications")
-  await col.createIndex({ userId: 1, createdAt: -1 })
+  if (!indexesEnsured) {
+    await col.createIndex({ userId: 1, createdAt: -1 })
+    indexesEnsured = true
+  }
   return col
 }
 

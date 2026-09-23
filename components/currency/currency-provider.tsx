@@ -26,7 +26,11 @@ export function CurrencyProvider({
   initialCurrency,
   children,
 }: {
-  initialCurrency: string
+  // Optional: the root layout no longer resolves this server-side, because
+  // doing so read cookies/headers and forced every route to render on demand.
+  // The store is INR-only, so normaliseCurrency() collapses anything to the
+  // default anyway. Pages that resolve it themselves may still pass it.
+  initialCurrency?: string
   children: React.ReactNode
 }) {
   const router = useRouter()
