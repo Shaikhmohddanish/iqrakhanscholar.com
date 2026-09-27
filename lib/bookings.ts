@@ -20,6 +20,11 @@ export interface BookingDoc {
   topic: string
   price: number
   currency: string
+  // Public payment reference, e.g. "BK-M4X2QKT9". Travels in the Razorpay
+  // payment link's `notes` so the webhook can find this booking without a
+  // user session. The BK- prefix is what distinguishes a booking payment from
+  // an order payment (IK-) in the shared webhook handler.
+  reference?: string
   // Google Meet joining link, pasted by Iqra in /admin/bookings when she
   // confirms the session. Optional because it doesn't exist until then - and
   // the confirmation email only promises a link when one is actually present.
@@ -201,6 +206,45 @@ export async function getAllBookings(
     col.countDocuments(filter),
   ])
   return { bookings: docs.map(toPublicBooking), total }
+}
+
+// Public payment reference for a booking. The BK- prefix lets the shared
+// payment webhook tell bookings apart from orders (IK-).
+export function makeBookingReference(): string {
+  const rand = Math.random().toString(36).slice(2, 7).toUpperCase()
+  const stamp = Date.now().toString(36).slice(-4).toUpperCase()
+  return `BK-${stamp}${rand}`
+}
+
+// Look up a booking by its payment reference (used by the payment webhook,
+// which carries no user session).
+export async function getBookingByReference(
+  reference: string,
+): Promise<PublicBooking | null> {
+  const col = await bookingsCol()
+  const doc = await col.findOne({ reference })
+  return doc ? toPublicBooking(doc) : null
+}
+
+// Backfill a payment reference on a booking created before references existed.
+export async function setBookingReference(id: string, reference: string): Promise<void> {
+  if (!ObjectId.isValid(id)) return
+  const col = await bookingsCol()
+  await col.updateOne(
+    { _id: new ObjectId(id) },
+    { $set: { reference, updatedAt: new Date() } },
+  )
+}
+
+// Atomically mark a booking paid. Returns true only if THIS call made the
+// transition, so a duplicated webhook delivery can't fire side effects twice.
+export async function markBookingPaidByReference(reference: string): Promise<boolean> {
+  const col = await bookingsCol()
+  const res = await col.updateOne(
+    { reference, paymentStatus: { $ne: "paid" } },
+    { $set: { paymentStatus: "paid", updatedAt: new Date() } },
+  )
+  return res.modifiedCount > 0
 }
 
 // Admin: update booking status

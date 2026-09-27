@@ -10,6 +10,7 @@ import { useCart } from "@/components/cart/cart-provider"
 import { formatPrice } from "@/lib/product-types"
 import { cartLineAmount } from "@/lib/currency"
 import { placeOrderAction, type CheckoutState } from "@/app/actions/checkout"
+import { PaymentMethods } from "@/components/checkout/payment-methods"
 
 function FieldError({ msg }: { msg?: string }) {
   if (!msg) return null
@@ -180,6 +181,7 @@ export function CheckoutForm({ userEmail }: { userEmail: string }) {
         )}
 
         <PayButton total={total} currency={currency} />
+        <PaymentMethods className="mt-4" />
         <p className="mt-3 text-center text-xs text-muted-foreground">
           By placing this order you agree to our Terms &amp; Refund Policy.
         </p>

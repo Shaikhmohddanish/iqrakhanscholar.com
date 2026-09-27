@@ -6,6 +6,7 @@ import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react"
 import { useCart } from "./cart-provider"
 import { formatPrice } from "@/lib/product-types"
 import { cartLineAmount } from "@/lib/currency"
+import { PaymentMethods } from "@/components/checkout/payment-methods"
 
 export function CartView() {
   const {
@@ -147,8 +148,9 @@ export function CartView() {
           <ArrowRight className="size-4" />
         </Link>
         <p className="mt-3 text-center text-xs text-muted-foreground">
-          Secure checkout · Digital items unlock instantly in your library
+          Digital items unlock instantly in your library
         </p>
+        <PaymentMethods className="mt-4" />
       </aside>
     </div>
   )

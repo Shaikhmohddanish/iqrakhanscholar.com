@@ -2,6 +2,11 @@ import "server-only"
 import { getOrderByReference, markOrderPaidByReference } from "@/lib/orders"
 import { decrementStock } from "@/lib/products"
 import { createNotification } from "@/lib/notifications"
+import {
+  getBookingByReference,
+  markBookingPaidByReference,
+  SESSION_TYPES,
+} from "@/lib/bookings"
 import { sendOrderConfirmationEmail } from "@/lib/email"
 import { formatPrice } from "@/lib/product-types"
 import { SITE_URL } from "@/lib/site-config"
@@ -74,6 +79,42 @@ export async function confirmOrderPaid(reference: string): Promise<boolean> {
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error(`[fulfillment] notification failed for ${reference}:`, err)
+  }
+
+  return true
+}
+
+/**
+ * Idempotently mark a booking paid and notify the customer.
+ *
+ * The booking equivalent of confirmOrderPaid, called from the same webhook.
+ * Consultations previously bypassed the gateway entirely (a mock card form set
+ * paymentStatus directly), so nothing like this existed.
+ *
+ * Note this does NOT send the confirmation email: that goes out when Iqra adds
+ * the Google Meet link in /admin/bookings, because a confirmation with no
+ * joining link is the thing that was wrong before.
+ */
+export async function confirmBookingPaid(reference: string): Promise<boolean> {
+  const booking = await getBookingByReference(reference)
+  if (!booking) return false
+
+  const transitioned = await markBookingPaidByReference(reference)
+  if (!transitioned) return booking.paymentStatus === "paid"
+
+  const session = SESSION_TYPES.find((s) => s.id === booking.sessionType)
+
+  try {
+    await createNotification({
+      userId: booking.userId,
+      type: "booking",
+      title: "Payment received",
+      body: `Your ${session?.title ?? "session"} on ${booking.date} at ${booking.slot} is paid. Iqra will email your Google Meet joining link before the session.`,
+      link: "/account/bookings",
+    })
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(`[fulfillment] booking notification failed for ${reference}:`, err)
   }
 
   return true

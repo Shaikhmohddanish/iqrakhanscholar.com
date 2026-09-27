@@ -19,6 +19,7 @@ const sections = [
   { id: 'legal-basis', title: 'Legal Basis' },
   { id: 'retention', title: 'Data Retention' },
   { id: 'third-parties', title: 'Third-Party Processors' },
+  { id: 'recordings', title: 'Session Recordings' },
   { id: 'cookies', title: 'Cookies & Advertising' },
   { id: 'security', title: 'Security & Liability' },
   { id: 'acceptable-use', title: 'Acceptable Use' },
@@ -81,6 +82,13 @@ export default function PrivacyPage() {
                   <tr>
                     <td>Communication data</td>
                     <td>Contact form submissions, consultation notes</td>
+                  </tr>
+                  <tr>
+                    <td>Session recordings</td>
+                    <td>
+                      Audio recording of a one-to-one consultation, where the session
+                      tier includes one and you have agreed to it
+                    </td>
                   </tr>
                   <tr>
                     <td>Technical data</td>
@@ -154,6 +162,13 @@ export default function PrivacyPage() {
                     <td>Sensitive information shared during consultations</td>
                     <td>Explicit consent (given voluntarily when booking/attending a session)</td>
                   </tr>
+                  <tr>
+                    <td>Session recordings</td>
+                    <td>
+                      Explicit consent, confirmed at the start of the session before any
+                      recording begins. You may decline and still have the session.
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -182,8 +197,12 @@ export default function PrivacyPage() {
                     <td>7 years (tax obligations)</td>
                   </tr>
                   <tr>
-                    <td>Consultation records</td>
+                    <td>Consultation notes</td>
                     <td>3 years after the last session</td>
+                  </tr>
+                  <tr>
+                    <td>Session recordings</td>
+                    <td>12 months after the session, then permanently deleted &mdash; or sooner on request</td>
                   </tr>
                   <tr>
                     <td>Marketing consent</td>
@@ -219,7 +238,12 @@ export default function PrivacyPage() {
                 <strong>Vercel</strong> - Website hosting and analytics
               </li>
               <li>
-                <strong>Google AdSense</strong> - Third-party advertising
+                <strong>Google</strong> - Google Meet hosts consultation sessions, and
+                Google Drive stores session recordings where one has been made
+              </li>
+              <li>
+                <strong>Google AdSense</strong> - Third-party advertising, loaded only on
+                our blog pages and only if you accept marketing cookies
               </li>
             </ul>
             <p>
@@ -235,13 +259,54 @@ export default function PrivacyPage() {
             </p>
           </section>
 
+          {/* Consultation tiers all advertise "Session recording", and this
+              policy previously never mentioned recordings at all - not what is
+              captured, not where it is kept, not for how long, and not how
+              consent is taken. */}
+          <section id="recordings">
+            <h2>7. Session Recordings</h2>
+            <p>
+              Each consultation tier includes an audio recording of your session so you can
+              revisit the guidance afterwards. Recordings are <strong>audio only</strong> &mdash;
+              sessions are held as an audio call on Google Meet and video is not used.
+            </p>
+            <h3>Your consent</h3>
+            <p>
+              Nothing is recorded without your agreement. You are asked at the start of the
+              session, before recording begins, and you may decline &mdash; the session goes
+              ahead either way. You can also ask for recording to stop at any point during the
+              session.
+            </p>
+            <h3>Storage and access</h3>
+            <p>
+              Recordings are made through Google Meet and stored in a private Google Drive
+              folder accessible only to Iqra Khan. They are shared with you and with nobody
+              else. They are never published, never used in marketing or teaching material,
+              and never sold or shared with third parties.
+            </p>
+            <h3>Retention and deletion</h3>
+            <p>
+              Recordings are kept for <strong>12 months</strong> after the session and then
+              permanently deleted. You can ask us to delete your recording sooner at any time
+              by emailing{' '}
+              <a href={`mailto:${contactEmail}`}>{contactEmail}</a>, and we will confirm once
+              it is done.
+            </p>
+            <p>
+              Because a consultation may involve sensitive personal circumstances, recordings
+              are treated as special-category data and processed only on the basis of your
+              explicit consent.
+            </p>
+          </section>
+
           <section id="cookies">
-            <h2>7. Cookies &amp; Advertising</h2>
+            <h2>8. Cookies &amp; Advertising</h2>
             <p>
               Essential, analytics, and preference cookies are used as described in our{' '}
               <Link href="/cookie-policy">Cookie Policy</Link>. Advertising cookies via Google
-              AdSense may be used to serve relevant ads based on your browsing activity. You can opt
-              out via{' '}
+              AdSense are used <strong>only on our blog pages</strong>, and only if you accept
+              marketing cookies in our consent banner. If you decline, the advertising script is
+              never loaded. You can also opt out via{' '}
               <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer">
                 Google Ads Settings
               </a>{' '}
@@ -254,7 +319,7 @@ export default function PrivacyPage() {
           </section>
 
           <section id="security">
-            <h2>8. Data Security &amp; Limitation of Liability</h2>
+            <h2>9. Data Security &amp; Limitation of Liability</h2>
             <p>
               We implement reasonable technical and organisational measures - including password
               hashing, restricted access, and encrypted transmission - to protect your data.
@@ -271,7 +336,7 @@ export default function PrivacyPage() {
           </section>
 
           <section id="acceptable-use">
-            <h2>9. Acceptable Use</h2>
+            <h2>10. Acceptable Use</h2>
             <p>
               Content, materials, and information provided through the Website - including digital
               products and consultation materials - are for your personal use only. You may not
@@ -282,7 +347,7 @@ export default function PrivacyPage() {
           </section>
 
           <section id="children">
-            <h2>10. Children&apos;s Privacy</h2>
+            <h2>11. Children&apos;s Privacy</h2>
             <p>
               Our services are not directed at children under 16. We do not knowingly collect data
               from children. If you believe a child has provided personal data without parental
@@ -291,7 +356,7 @@ export default function PrivacyPage() {
           </section>
 
           <section id="your-rights">
-            <h2>11. Your Rights</h2>
+            <h2>12. Your Rights</h2>
             <ul>
               <li>
                 <strong>Access</strong> - Request a copy of your data
@@ -326,7 +391,7 @@ export default function PrivacyPage() {
           </section>
 
           <section id="changes">
-            <h2>12. Changes to This Policy</h2>
+            <h2>13. Changes to This Policy</h2>
             <p>
               We may update this Privacy Policy at any time at our sole discretion, to reflect
               changes in our practices, technology, legal requirements, or business operations. The
@@ -337,7 +402,7 @@ export default function PrivacyPage() {
           </section>
 
           <section id="governing-law">
-            <h2>13. Governing Law</h2>
+            <h2>14. Governing Law</h2>
             <p>
               This Privacy Policy shall be governed by and interpreted in accordance with the laws
               of India, without regard to conflict of law principles, except where mandatory local
@@ -348,7 +413,7 @@ export default function PrivacyPage() {
           </section>
 
           <section id="complaints">
-            <h2>14. Complaints</h2>
+            <h2>15. Complaints</h2>
             <p>
               If you believe your data protection rights have been violated, you may lodge a
               complaint with your local data protection authority (for EU residents, via the{' '}
@@ -364,7 +429,7 @@ export default function PrivacyPage() {
           </section>
 
           <section id="contact">
-            <h2>15. Contact Us</h2>
+            <h2>16. Contact Us</h2>
             <p>
               Email: <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
             </p>

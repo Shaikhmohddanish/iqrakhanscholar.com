@@ -1,14 +1,20 @@
 "use server"
 
+import { headers } from "next/headers"
 import { requireUser } from "@/lib/session"
 import {
   createBooking,
   cancelBooking,
   rescheduleBooking,
   getAvailableSlots,
+  getBookingById,
+  setBookingReference,
+  makeBookingReference,
   SESSION_TYPES,
   type SessionType,
 } from "@/lib/bookings"
+import { selectProvider } from "@/lib/payments"
+import { confirmBookingPaid } from "@/lib/payments/fulfillment"
 import { getActiveCurrency } from "@/lib/currency-server"
 import { resolveProductPrice } from "@/lib/currency"
 import { createNotification } from "@/lib/notifications"
@@ -56,8 +62,10 @@ export async function bookSessionAction(data: {
     paymentStatus: sessionInfo.price === 0 ? "paid" : "unpaid",
     notes: "",
     topic,
+    // Priced from SESSION_TYPES on the server, never from the client.
     price: priced.amount,
     currency: priced.currency,
+    reference: makeBookingReference(),
   })
 
   await createNotification({
@@ -72,36 +80,71 @@ export async function bookSessionAction(data: {
   return { booking }
 }
 
-export async function confirmPaymentAction(bookingId: string) {
+/**
+ * Start payment for a booking and return the gateway URL to redirect to.
+ *
+ * This replaces a mock: the old confirmPaymentAction simply set
+ * paymentStatus:"paid" and status:"confirmed" with no gateway involved, behind
+ * a fake card form pre-filled with 4242 4242 4242 4242. Consultations were
+ * therefore free - anyone could book any tier without paying, while the store
+ * was taking real money through Razorpay.
+ *
+ * The amount comes from SESSION_TYPES on the server; nothing about the price
+ * is accepted from the client.
+ */
+export async function startBookingPaymentAction(bookingId: string) {
   const user = await requireUser()
   if (!user) return { error: "Unauthorized" }
 
-  // Mock payment - mark as paid and confirmed
-  const { updateBookingStatus } = await import("@/lib/bookings")
-  const { getDb } = await import("@/lib/mongodb")
-  const { ObjectId } = await import("mongodb")
+  const booking = await getBookingById(bookingId)
+  if (!booking || booking.userId !== user.id) return { error: "Booking not found." }
+  if (booking.paymentStatus === "paid") return { ok: true, alreadyPaid: true }
 
-  const db = await getDb()
-  const col = db.collection("bookings")
-  await col.updateOne(
-    { _id: new ObjectId(bookingId), userId: user.id },
-    { $set: { paymentStatus: "paid", status: "confirmed", updatedAt: new Date() } },
-  )
+  const sessionInfo = SESSION_TYPES.find((s) => s.id === booking.sessionType)
+  if (!sessionInfo) return { error: "Invalid session type." }
 
-  // Says only what is true. This used to promise "you will receive a calendar
-  // invite shortly" - nothing in the system could send one. Iqra now confirms
-  // the booking with a Google Meet link in /admin/bookings, which is what
-  // actually triggers the confirmation email.
-  await createNotification({
-    userId: user.id,
-    type: "booking",
-    title: "Payment received",
-    body: "Your payment is confirmed. Iqra will send your Google Meet joining link by email before the session.",
-    link: "/account/bookings",
-  })
+  // Re-derive the amount from SESSION_TYPES rather than trusting the stored
+  // figure, so a tampered booking document still can't change what is charged.
+  const activeCurrency = await getActiveCurrency()
+  const priced = resolveProductPrice(sessionInfo, activeCurrency)
 
-  revalidatePath("/account/bookings")
-  return { ok: true }
+  let reference = booking.reference
+  if (!reference) {
+    // Booking created before references existed.
+    reference = makeBookingReference()
+    await setBookingReference(bookingId, reference)
+  }
+
+  const provider = selectProvider(priced.currency)
+
+  // No gateway configured (local dev): confirm directly, as checkout does.
+  if (provider.name === "simulated") {
+    await confirmBookingPaid(reference)
+    revalidatePath("/account/bookings")
+    return { ok: true, simulated: true }
+  }
+
+  const hdrs = await headers()
+  const host = hdrs.get("x-forwarded-host") ?? hdrs.get("host")
+  const proto = hdrs.get("x-forwarded-proto") ?? "https"
+  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? `${proto}://${host}`
+
+  try {
+    const payment = await provider.createPayment({
+      orderId: bookingId,
+      reference,
+      amount: priced.amount,
+      currency: priced.currency,
+      email: user.email,
+      description: `${sessionInfo.title} — ${booking.date} ${booking.slot}`,
+      successUrl: `${origin}/account/bookings?booked=1`,
+      cancelUrl: `${origin}/account/bookings?cancelled=1`,
+    })
+    return { ok: true, redirectUrl: payment.redirectUrl }
+  } catch (err) {
+    console.error("Booking payment initialization failed", err)
+    return { error: "We couldn't start the payment. Please try again." }
+  }
 }
 
 export async function cancelBookingAction(bookingId: string) {

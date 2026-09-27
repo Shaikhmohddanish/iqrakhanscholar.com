@@ -19,7 +19,7 @@ export function EmailCapture() {
             <div className="bg-secondary/60 p-8 sm:p-12">
               <span className="inline-flex items-center gap-2 rounded-full bg-accent/15 px-3 py-1.5 text-xs font-semibold text-primary">
                 <Gift className="size-3.5" />
-                Free Download
+                Free Guide
               </span>
               <h2 className="mt-5 text-balance font-heading text-3xl font-semibold text-foreground sm:text-4xl">
                 Your free Islamic self-improvement guide
@@ -46,6 +46,26 @@ export function EmailCapture() {
                   </li>
                 ))}
               </ul>
+
+              {/* Typographic cover. The client hasn't supplied artwork for the
+                  guide yet, and reusing an unrelated product photo would
+                  misrepresent it - so this renders the guide's own title
+                  instead. Swap for a real cover image when one arrives. */}
+              <div className="mt-8 flex justify-center lg:justify-start">
+                <div
+                  aria-hidden="true"
+                  className="relative w-40 rotate-[-3deg] rounded-r-lg rounded-l-sm border border-accent/30 bg-arabesque px-5 py-7 text-center shadow-xl shadow-primary/10 transition-transform duration-500 hover:rotate-0"
+                >
+                  <span className="absolute inset-y-0 left-0 w-1.5 rounded-l-sm bg-accent/60" />
+                  <BookOpenCheck className="mx-auto size-6 text-accent" />
+                  <p className="mt-3 font-heading text-sm font-semibold leading-snug text-primary-foreground">
+                    Islamic Self-Improvement Guide
+                  </p>
+                  <p className="mt-2 text-[10px] uppercase tracking-[0.2em] text-accent">
+                    30 Pages
+                  </p>
+                </div>
+              </div>
             </div>
 
             <div className="p-8 sm:p-12">
@@ -110,7 +130,7 @@ export function EmailCapture() {
                     disabled={isPending}
                     className="inline-flex h-12 w-full items-center justify-center rounded-xl bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
                   >
-                    {isPending ? 'Sending…' : 'Send Me the Free Guide'}
+                    {isPending ? 'Sending…' : 'Send Me the Guide'}
                   </button>
                   <p className="text-center text-xs text-muted-foreground">
                     No spam, ever. Unsubscribe anytime. We respect your privacy.

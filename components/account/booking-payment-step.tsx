@@ -5,7 +5,8 @@ import { SESSION_TYPES, type SessionType } from "@/lib/booking-types"
 import { formatPrice } from "@/lib/product-types"
 import { resolveProductPrice } from "@/lib/currency"
 import { useCurrency } from "@/components/currency/currency-provider"
-import { confirmPaymentAction } from "@/app/actions/bookings"
+import { startBookingPaymentAction } from "@/app/actions/bookings"
+import { PaymentMethods } from "@/components/checkout/payment-methods"
 import { CreditCard, Lock, CheckCircle2 } from "lucide-react"
 
 interface BookingPaymentStepProps {
@@ -37,15 +38,23 @@ export function BookingPaymentStep({
   const session = SESSION_TYPES.find((s) => s.id === sessionType)!
   const priced = resolveProductPrice(session, currency)
 
+  // Hands off to Razorpay. This used to call a mock action that marked the
+  // booking paid with no gateway involved, behind a fake card form - so every
+  // consultation was effectively free.
   function handlePay() {
     setError(null)
     startTransition(async () => {
-      const result = await confirmPaymentAction(bookingId)
+      const result = await startBookingPaymentAction(bookingId)
       if (result.error) {
         setError(result.error)
-      } else {
-        onConfirmed()
+        return
       }
+      if (result.redirectUrl) {
+        window.location.href = result.redirectUrl
+        return
+      }
+      // Free tier, already paid, or the simulated provider in local dev.
+      onConfirmed()
     })
   }
 
@@ -103,30 +112,13 @@ export function BookingPaymentStep({
       <div className="flex items-start gap-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
         <Lock className="size-4 shrink-0 text-primary mt-0.5" />
         <p className="text-sm text-foreground">
-          <strong>Demo mode:</strong> Payment is simulated. In production this integrates with Razorpay. Click &ldquo;Pay Now&rdquo; to confirm with mock payment.
+          You&rsquo;ll be taken to <strong>Razorpay</strong> to pay securely by card, UPI or
+          net banking. Your slot is held while you complete payment, and we never see or
+          store your card details.
         </p>
       </div>
 
-      {/* Mock card form */}
-      <div className="rounded-xl border border-border bg-card p-5">
-        <div className="mb-4 flex items-center gap-2">
-          <CreditCard className="size-4 text-muted-foreground" />
-          <span className="text-sm font-medium text-foreground">Card details (demo)</span>
-        </div>
-        <div className="space-y-3">
-          <div className="rounded-lg border border-border bg-muted px-3 py-2.5 text-sm text-muted-foreground">
-            4242 4242 4242 4242
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-lg border border-border bg-muted px-3 py-2.5 text-sm text-muted-foreground">
-              12/28
-            </div>
-            <div className="rounded-lg border border-border bg-muted px-3 py-2.5 text-sm text-muted-foreground">
-              123
-            </div>
-          </div>
-        </div>
-      </div>
+      <PaymentMethods />
 
       <button
         type="button"

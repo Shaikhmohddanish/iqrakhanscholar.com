@@ -77,6 +77,8 @@ export interface PublicBooking {
   topic: string
   price: number
   currency: string
+  // Public payment reference (BK-...), used by the payment webhook.
+  reference?: string
   // Google Meet joining link, added by Iqra when she confirms the session.
   meetingUrl?: string
   createdAt: Date
