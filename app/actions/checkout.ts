@@ -166,6 +166,10 @@ export async function placeOrderAction(
   }
 
   await setOrderProvider(order.reference, provider.name, payment.providerRef)
-  await clearCartCookie()
+  // The cart is deliberately NOT cleared here. It used to be, which meant a
+  // customer whose card was declined at the gateway came back to an empty cart
+  // and had to rebuild the whole order - a pure, self-inflicted conversion
+  // loss. The cart is cleared once payment actually succeeds, in
+  // confirmOrderPaid's callers.
   redirect(payment.redirectUrl)
 }

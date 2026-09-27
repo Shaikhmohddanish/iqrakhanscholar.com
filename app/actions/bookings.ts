@@ -88,11 +88,15 @@ export async function confirmPaymentAction(bookingId: string) {
     { $set: { paymentStatus: "paid", status: "confirmed", updatedAt: new Date() } },
   )
 
+  // Says only what is true. This used to promise "you will receive a calendar
+  // invite shortly" - nothing in the system could send one. Iqra now confirms
+  // the booking with a Google Meet link in /admin/bookings, which is what
+  // actually triggers the confirmation email.
   await createNotification({
     userId: user.id,
     type: "booking",
-    title: "Booking confirmed",
-    body: "Your session has been confirmed. You will receive a calendar invite shortly.",
+    title: "Payment received",
+    body: "Your payment is confirmed. Iqra will send your Google Meet joining link by email before the session.",
     link: "/account/bookings",
   })
 

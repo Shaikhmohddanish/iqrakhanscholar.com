@@ -4,6 +4,7 @@ import { useState, useTransition } from "react"
 import type { PublicOrder } from "@/lib/order-types"
 import { X } from "lucide-react"
 import { BarLoader } from "@/components/ui/bar-loader"
+import { requestRefundAction } from "@/app/actions/refunds"
 
 interface RefundRequestModalProps {
   order: PublicOrder | null
@@ -13,16 +14,23 @@ interface RefundRequestModalProps {
 export function RefundRequestModal({ order, onClose }: RefundRequestModalProps) {
   const [reason, setReason] = useState("")
   const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [pending, startTransition] = useTransition()
 
   if (!order) return null
 
+  // Was `await new Promise(r => setTimeout(r, 800))` followed by a success
+  // message: the reason was discarded, nothing was stored and Iqra was never
+  // told - while /refund-policy tells customers to request refunds here.
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (!order) return
+    setError(null)
+    const orderId = order.id
     startTransition(async () => {
-      // In production: POST to /api/refunds
-      await new Promise((r) => setTimeout(r, 800))
-      setSubmitted(true)
+      const res = await requestRefundAction(orderId, reason)
+      if (res?.error) setError(res.error)
+      else setSubmitted(true)
     })
   }
 
@@ -75,6 +83,11 @@ export function RefundRequestModal({ order, onClose }: RefundRequestModalProps) 
                 className="resize-none rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
+            {error && (
+              <p className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                {error}
+              </p>
+            )}
             <div className="flex gap-3">
               <button
                 type="submit"

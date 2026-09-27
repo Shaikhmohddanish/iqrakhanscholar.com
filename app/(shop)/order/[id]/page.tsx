@@ -5,6 +5,10 @@ import { notFound, redirect } from "next/navigation"
 import { CheckCircle2, Clock, XCircle, Download, Package, ArrowRight } from "lucide-react"
 import { getCurrentUser } from "@/lib/session"
 import { getOrderById } from "@/lib/orders"
+import { ClearCartOnSuccess } from "@/components/cart/clear-cart-on-success"
+import { AwaitPaymentRefresh } from "@/components/order/await-payment-refresh"
+import { verifyPaymentLinkReturn } from "@/lib/payments/razorpay"
+import { confirmOrderPaid } from "@/lib/payments/fulfillment"
 import { formatPrice } from "@/lib/product-types"
 
 export const metadata: Metadata = {
@@ -13,7 +17,15 @@ export const metadata: Metadata = {
 }
 
 type Params = Promise<{ id: string }>
-type Search = Promise<{ cancelled?: string }>
+// Razorpay appends these to callback_url on the customer's return.
+type Search = Promise<{
+  cancelled?: string
+  razorpay_payment_id?: string
+  razorpay_payment_link_id?: string
+  razorpay_payment_link_reference_id?: string
+  razorpay_payment_link_status?: string
+  razorpay_signature?: string
+}>
 
 export default async function OrderPage({
   params,
@@ -23,12 +35,40 @@ export default async function OrderPage({
   searchParams: Search
 }) {
   const { id } = await params
-  const { cancelled } = await searchParams
+  const sp = await searchParams
+  const { cancelled } = sp
   const user = await getCurrentUser()
   if (!user) redirect("/login")
 
-  const order = await getOrderById(id, user.id)
+  let order = await getOrderById(id, user.id)
   if (!order) notFound()
+
+  // Unlock immediately on a verified return, rather than making the customer
+  // sit on "Payment processing" until the webhook lands.
+  //
+  // Razorpay signs the redirect parameters with the API secret, so this is a
+  // real cryptographic check - not a matter of trusting a query string. The
+  // webhook remains the authority and the safety net (it is what covers a
+  // customer who closes the tab); confirmOrderPaid is idempotent, so whichever
+  // arrives first wins and the second is a no-op.
+  if (
+    order.paymentStatus !== "paid" &&
+    sp.razorpay_signature &&
+    sp.razorpay_payment_link_status === "paid"
+  ) {
+    const valid = verifyPaymentLinkReturn({
+      paymentLinkId: sp.razorpay_payment_link_id,
+      paymentLinkRefId: sp.razorpay_payment_link_reference_id,
+      paymentLinkStatus: sp.razorpay_payment_link_status,
+      paymentId: sp.razorpay_payment_id,
+      signature: sp.razorpay_signature,
+    })
+    if (valid) {
+      await confirmOrderPaid(order.reference)
+      // Re-read so this render shows the unlocked state.
+      order = (await getOrderById(id, user.id)) ?? order
+    }
+  }
 
   // Reflect the real payment state: paid (confirmed), pending (awaiting the
   // gateway webhook), or cancelled/failed.
@@ -52,12 +92,18 @@ export default async function OrderPage({
           icon: Clock,
           tone: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
           heading: "Payment processing",
-          body: `We're waiting for your payment to be confirmed. This page will update once it's complete.`,
+          body: `We're waiting for your bank to confirm the payment. This usually takes a few seconds and this page will update on its own.`,
         }
   const StatusIcon = statusUi.icon
+  // Only poll while genuinely waiting on the webhook - a paid or failed order
+  // is final. Previously the copy promised "this page will update once it's
+  // complete" while nothing on the page ever refreshed it.
+  const isAwaitingWebhook = !isPaid && !isCancelled
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 lg:px-8">
+      <ClearCartOnSuccess paid={isPaid} />
+      <AwaitPaymentRefresh active={isAwaitingWebhook} />
       <div className="flex flex-col items-center text-center">
         <div className={`flex size-16 items-center justify-center rounded-full ${statusUi.tone}`}>
           <StatusIcon className="size-8" />

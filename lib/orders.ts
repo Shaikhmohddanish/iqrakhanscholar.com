@@ -104,6 +104,24 @@ export async function markOrderPaidByReference(reference: string): Promise<boole
   return res.modifiedCount > 0
 }
 
+// Mark an order's payment as failed (declined card, cancelled or expired
+// payment link). Guarded on `pending` so a late failure event can never undo a
+// payment that already succeeded - Razorpay can deliver events out of order.
+export async function markOrderFailedByReference(reference: string): Promise<boolean> {
+  const col = await ordersCol()
+  const res = await col.updateOne(
+    { reference, paymentStatus: "pending" },
+    {
+      $set: {
+        paymentStatus: "failed",
+        status: "cancelled",
+        updatedAt: new Date(),
+      },
+    },
+  )
+  return res.modifiedCount > 0
+}
+
 // Returns the set of product ids the user has purchased (paid) - used by the digital library.
 export async function getPurchasedProductIds(userId: string): Promise<string[]> {
   const col = await ordersCol()

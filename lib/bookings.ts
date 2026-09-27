@@ -20,6 +20,10 @@ export interface BookingDoc {
   topic: string
   price: number
   currency: string
+  // Google Meet joining link, pasted by Iqra in /admin/bookings when she
+  // confirms the session. Optional because it doesn't exist until then - and
+  // the confirmation email only promises a link when one is actually present.
+  meetingUrl?: string
   createdAt: Date
   updatedAt: Date
 }
@@ -208,6 +212,28 @@ export async function updateBookingStatus(id: string, status: BookingStatus): Pr
     { $set: { status, updatedAt: new Date() } },
   )
   return res.modifiedCount > 0
+}
+
+// Admin: attach the Google Meet link for a session and mark it confirmed.
+// Returns the updated booking so the caller can email the link to the customer.
+export async function confirmBookingWithMeeting(
+  id: string,
+  meetingUrl: string,
+): Promise<PublicBooking | null> {
+  if (!ObjectId.isValid(id)) return null
+  const col = await bookingsCol()
+  const doc = await col.findOneAndUpdate(
+    { _id: new ObjectId(id) },
+    {
+      $set: {
+        meetingUrl,
+        status: "confirmed",
+        updatedAt: new Date(),
+      },
+    },
+    { returnDocument: "after" },
+  )
+  return doc ? toPublicBooking(doc) : null
 }
 
 // Admin: get/set availability

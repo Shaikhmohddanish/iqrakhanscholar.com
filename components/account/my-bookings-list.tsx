@@ -124,6 +124,28 @@ function BookingCard({
         </span>
       </div>
 
+      {/* Joining link. Shown here as well as in the confirmation email so the
+          customer isn't dependent on finding that email at session time. */}
+      {booking.meetingUrl && booking.status !== "cancelled" ? (
+        <div className="mt-4 rounded-lg bg-primary/5 p-3">
+          <p className="text-xs text-muted-foreground">
+            Private audio call on Google Meet — your camera is not required.
+          </p>
+          <a
+            href={booking.meetingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 inline-flex h-9 items-center justify-center rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            Join the session
+          </a>
+        </div>
+      ) : canCancel ? (
+        <p className="mt-4 text-xs text-muted-foreground">
+          Iqra will email your Google Meet joining link before the session.
+        </p>
+      ) : null}
+
       {canCancel && (
         <div className="mt-4 border-t border-border pt-4">
           <button

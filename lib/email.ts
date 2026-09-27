@@ -231,3 +231,276 @@ export async function sendContactEmail(msg: ContactMessage): Promise<void> {
     html,
   })
 }
+
+// ──────────────────────────────────────────────────────────────────────────
+// Transactional emails
+//
+// Until now the only emails this site could send were "verify" and "reset".
+// A customer who bought an e-book or booked a consultation received nothing at
+// all - no receipt, no confirmation, no access link - even though SMTP has
+// been configured the whole time. These two templates close that gap.
+//
+// Both follow sendAuthEmail's failure policy: never throw. An order is already
+// paid and fulfilled by the time we get here, so a mail outage must not break
+// the webhook or leave the customer's purchase in limbo. Failures are logged.
+// ──────────────────────────────────────────────────────────────────────────
+
+// Shared brand shell so every transactional email looks like the auth ones.
+function renderShell(heading: string, bodyHtml: string): string {
+  return `<!doctype html>
+<html lang="en">
+  <body style="margin:0;padding:0;background:${BRAND.bg};">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${BRAND.bg};padding:32px 0;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid ${BRAND.cream};">
+            <tr>
+              <td style="background:${BRAND.cream};padding:24px 32px;text-align:center;">
+                <span style="font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:700;color:${BRAND.ink};letter-spacing:0.5px;">Iqra Khan</span>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:32px;font-family:Arial,Helvetica,sans-serif;color:${BRAND.ink};">
+                <h1 style="margin:0 0 16px;font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:700;color:${BRAND.ink};">${heading}</h1>
+                ${bodyHtml}
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:20px 32px;background:${BRAND.cream};text-align:center;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:${BRAND.muted};">
+                © ${new Date().getFullYear()} Iqra Khan. All rights reserved.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>`
+}
+
+function button(href: string, label: string): string {
+  return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 24px;">
+  <tr><td style="border-radius:9999px;background:${BRAND.primary};">
+    <a href="${href}" style="display:inline-block;padding:13px 28px;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:9999px;">${label}</a>
+  </td></tr>
+</table>`
+}
+
+export interface OrderEmailInput {
+  to: string
+  reference: string
+  items: { title: string; quantity: number; price: number; type: "digital" | "physical" }[]
+  subtotal: number
+  shipping: number
+  total: number
+  currency: string
+  hasDigital: boolean
+  hasPhysical: boolean
+  shippingAddress?: {
+    fullName: string
+    line1: string
+    line2?: string
+    city: string
+    state?: string
+    postalCode: string
+    country: string
+  } | null
+  /** Absolute URL of the order page. */
+  orderUrl: string
+  /** Absolute URL of the customer's library, for digital orders. */
+  libraryUrl: string
+  /** Pre-formatted money strings, so this module stays currency-agnostic. */
+  format: (minor: number) => string
+}
+
+export async function sendOrderConfirmationEmail(input: OrderEmailInput): Promise<void> {
+  const transporter = getTransporter()
+  const subject = `Order confirmed (${input.reference}) — Iqra Khan`
+
+  if (!transporter) {
+    // eslint-disable-next-line no-console
+    console.log(`[email:order] ${subject} -> ${input.to} (${input.orderUrl})`)
+    return
+  }
+
+  const rows = input.items
+    .map(
+      (i) => `<tr>
+  <td style="padding:8px 0;font-size:14px;color:${BRAND.ink};">${escapeHtml(i.title)}${
+    i.quantity > 1 ? ` &times; ${i.quantity}` : ""
+  }</td>
+  <td style="padding:8px 0;font-size:14px;color:${BRAND.ink};text-align:right;white-space:nowrap;">${input.format(
+    i.price * i.quantity,
+  )}</td>
+</tr>`,
+    )
+    .join("")
+
+  const addr = input.shippingAddress
+  const addressBlock = addr
+    ? `<p style="margin:24px 0 6px;font-size:13px;font-weight:700;color:${BRAND.ink};">Delivery address</p>
+<p style="margin:0 0 24px;font-size:14px;line-height:1.6;color:${BRAND.muted};">
+  ${escapeHtml(addr.fullName)}<br>
+  ${escapeHtml(addr.line1)}<br>
+  ${addr.line2 ? `${escapeHtml(addr.line2)}<br>` : ""}
+  ${escapeHtml(addr.city)}${addr.state ? `, ${escapeHtml(addr.state)}` : ""} ${escapeHtml(addr.postalCode)}<br>
+  ${escapeHtml(addr.country)}
+</p>`
+    : ""
+
+  // Digital access is "unlocked in your library", never "download" - the
+  // reader is in-browser only and the Terms prohibit downloading.
+  const digitalBlock = input.hasDigital
+    ? `<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:${BRAND.muted};">
+  Your digital items are unlocked and ready to read in your library, on any device.
+</p>${button(input.libraryUrl, "Open my library")}`
+    : ""
+
+  const physicalBlock = input.hasPhysical
+    ? `<p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:${BRAND.muted};">
+  We'll email you again when your parcel is on its way. You can track the status of this order at any time from your account.
+</p>`
+    : ""
+
+  const body = `<p style="margin:0 0 8px;font-size:15px;line-height:1.6;color:${BRAND.muted};">
+  Thank you for your order. We've received your payment and your order reference is
+  <strong style="color:${BRAND.ink};">${escapeHtml(input.reference)}</strong>.
+</p>
+${digitalBlock}
+${physicalBlock}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:8px 0 0;border-top:1px solid ${BRAND.cream};">
+  ${rows}
+  <tr><td style="padding:8px 0;font-size:14px;color:${BRAND.muted};border-top:1px solid ${BRAND.cream};">Subtotal</td>
+      <td style="padding:8px 0;font-size:14px;color:${BRAND.muted};text-align:right;border-top:1px solid ${BRAND.cream};">${input.format(input.subtotal)}</td></tr>
+  <tr><td style="padding:4px 0;font-size:14px;color:${BRAND.muted};">Shipping</td>
+      <td style="padding:4px 0;font-size:14px;color:${BRAND.muted};text-align:right;">${
+        input.shipping === 0 ? "Free" : input.format(input.shipping)
+      }</td></tr>
+  <tr><td style="padding:8px 0;font-size:15px;font-weight:700;color:${BRAND.ink};border-top:1px solid ${BRAND.cream};">Total</td>
+      <td style="padding:8px 0;font-size:15px;font-weight:700;color:${BRAND.ink};text-align:right;border-top:1px solid ${BRAND.cream};">${input.format(input.total)}</td></tr>
+</table>
+${addressBlock}
+<p style="margin:24px 0 0;font-size:13px;line-height:1.6;color:${BRAND.muted};">
+  View this order any time: <a href="${input.orderUrl}" style="color:${BRAND.primary};">${input.orderUrl}</a>
+</p>`
+
+  const text = `Order confirmed — ${input.reference}
+
+Thank you for your order.
+
+${input.items.map((i) => `- ${i.title}${i.quantity > 1 ? ` x${i.quantity}` : ""}  ${input.format(i.price * i.quantity)}`).join("\n")}
+
+Subtotal: ${input.format(input.subtotal)}
+Shipping: ${input.shipping === 0 ? "Free" : input.format(input.shipping)}
+Total:    ${input.format(input.total)}
+${input.hasDigital ? `\nYour digital items are unlocked in your library: ${input.libraryUrl}\n` : ""}
+View this order: ${input.orderUrl}
+
+© ${new Date().getFullYear()} Iqra Khan`
+
+  try {
+    await transporter.sendMail({
+      from: fromAddress(),
+      to: input.to,
+      subject,
+      text,
+      html: renderShell("Your order is confirmed", body),
+    })
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(`[email:order] failed to send ${input.reference} to ${input.to}:`, err)
+  }
+}
+
+export interface BookingEmailInput {
+  to: string
+  name: string
+  sessionTitle: string
+  /** YYYY-MM-DD */
+  date: string
+  /** HH:MM, 24-hour */
+  slot: string
+  durationMinutes: number
+  /** Google Meet link, when Iqra has added one. */
+  meetingUrl?: string | null
+  bookingsUrl: string
+}
+
+export async function sendBookingConfirmationEmail(
+  input: BookingEmailInput,
+): Promise<void> {
+  const transporter = getTransporter()
+  const subject = `Your session is confirmed — ${input.date} at ${input.slot}`
+
+  if (!transporter) {
+    // eslint-disable-next-line no-console
+    console.log(`[email:booking] ${subject} -> ${input.to} (${input.meetingUrl ?? "no link yet"})`)
+    return
+  }
+
+  // Only promise a joining link when one actually exists. The in-app
+  // notification used to say "you will receive a calendar invite shortly"
+  // while nothing in the system was capable of sending one.
+  const joinBlock = input.meetingUrl
+    ? `<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:${BRAND.muted};">
+  Join the session using the link below at your booked time. Sessions are held as a private <strong style="color:${BRAND.ink};">audio call</strong> on Google Meet — your camera is not required.
+</p>${button(input.meetingUrl, "Join the session")}
+<p style="margin:0 0 24px;font-size:13px;line-height:1.6;word-break:break-all;color:${BRAND.muted};">
+  Or paste this link into your browser: <a href="${input.meetingUrl}" style="color:${BRAND.primary};">${input.meetingUrl}</a>
+</p>`
+    : `<p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:${BRAND.muted};">
+  Iqra will email you the Google Meet joining link before your session. Sessions are held as a private <strong style="color:${BRAND.ink};">audio call</strong> — your camera is not required.
+</p>`
+
+  const body = `<p style="margin:0 0 20px;font-size:15px;line-height:1.6;color:${BRAND.muted};">
+  Assalamu alaikum ${escapeHtml(input.name)}, your session is confirmed.
+</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;background:${BRAND.bg};border-radius:8px;">
+  <tr><td style="padding:16px 20px;font-size:15px;line-height:1.8;color:${BRAND.ink};">
+    <strong>${escapeHtml(input.sessionTitle)}</strong><br>
+    ${escapeHtml(input.date)} at ${escapeHtml(input.slot)}<br>
+    ${input.durationMinutes} minutes
+  </td></tr>
+</table>
+${joinBlock}
+<p style="margin:0 0 8px;font-size:13px;line-height:1.6;color:${BRAND.muted};">
+  Need to reschedule? You can do that from
+  <a href="${input.bookingsUrl}" style="color:${BRAND.primary};">your bookings</a>.
+</p>
+<p style="margin:16px 0 0;font-size:12px;line-height:1.6;color:${BRAND.muted};">
+  These are personal Islamic guidance sessions and do not constitute professional counselling, therapy, medical or legal advice.
+</p>`
+
+  const text = `Your session is confirmed
+
+Assalamu alaikum ${input.name},
+
+${input.sessionTitle}
+${input.date} at ${input.slot} (${input.durationMinutes} minutes)
+
+${
+  input.meetingUrl
+    ? `Join the audio call on Google Meet: ${input.meetingUrl}`
+    : "Iqra will email you the Google Meet joining link before your session."
+}
+
+Manage your bookings: ${input.bookingsUrl}
+
+These are personal Islamic guidance sessions and do not constitute professional
+counselling, therapy, medical or legal advice.
+
+© ${new Date().getFullYear()} Iqra Khan`
+
+  try {
+    await transporter.sendMail({
+      from: fromAddress(),
+      to: input.to,
+      subject,
+      text,
+      html: renderShell("Your session is confirmed", body),
+    })
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(`[email:booking] failed to send to ${input.to}:`, err)
+  }
+}

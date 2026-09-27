@@ -1,7 +1,10 @@
 // Client-safe order types (no DB/server-only imports)
 
 export type OrderStatus = "processing" | "fulfilled" | "cancelled"
-export type PaymentStatus = "paid" | "pending" | "failed"
+// "refunded" was always written to the database (via a cast in the admin
+// refund action) but was missing from this union, so every read of an order
+// was typed as if a refunded order could not exist.
+export type PaymentStatus = "paid" | "pending" | "failed" | "refunded"
 export type PaymentProviderName = "stripe" | "razorpay" | "simulated"
 
 export interface OrderItem {

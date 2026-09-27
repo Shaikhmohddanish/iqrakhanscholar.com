@@ -3,7 +3,11 @@
 import { useState, useTransition } from "react"
 import type { PublicBooking, BookingStatus, PublicAvailability } from "@/lib/booking-types"
 import { SESSION_TYPES, LEGACY_SESSION_TITLES } from "@/lib/booking-types"
-import { adminUpdateBookingStatusAction, setAvailabilityAction } from "@/app/actions/admin/bookings"
+import {
+  adminUpdateBookingStatusAction,
+  adminConfirmBookingAction,
+  setAvailabilityAction,
+} from "@/app/actions/admin/bookings"
 import { Calendar, CheckCircle2, XCircle, Clock, Plus, Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -23,6 +27,69 @@ function formatSlot(slot: string): string {
   const period = h >= 12 ? "PM" : "AM"
   const dh = h > 12 ? h - 12 : h === 0 ? 12 : h
   return `${dh}:${String(m).padStart(2, "0")} ${period}`
+}
+
+/**
+ * Paste the Google Meet link for a session and send it to the customer.
+ *
+ * This is the only thing that emails a customer their joining link. Until it
+ * existed, the app told people at booking time that they would "receive a
+ * calendar invite shortly" and then sent nothing at all.
+ */
+function MeetingLinkCell({ booking }: { booking: PublicBooking }) {
+  const [url, setUrl] = useState(booking.meetingUrl ?? "")
+  const [pending, startTransition] = useTransition()
+  const [sent, setSent] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const unchanged = url.trim() === (booking.meetingUrl ?? "")
+
+  function handleSend() {
+    setError(null)
+    setSent(false)
+    startTransition(async () => {
+      const res = await adminConfirmBookingAction(booking.id, url)
+      if (res?.error) setError(res.error)
+      else setSent(true)
+    })
+  }
+
+  return (
+    <div className="flex min-w-56 flex-col gap-1.5">
+      <div className="flex items-center gap-1.5">
+        <input
+          type="url"
+          value={url}
+          onChange={(e) => {
+            setUrl(e.target.value)
+            setSent(false)
+          }}
+          placeholder="https://meet.google.com/..."
+          className="w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        />
+        <button
+          type="button"
+          onClick={handleSend}
+          disabled={pending || !url.trim() || (unchanged && sent)}
+          title="Save the link, confirm the booking, and email it to the customer"
+          className="shrink-0 rounded-lg bg-primary px-2.5 py-1.5 text-xs font-medium text-primary-foreground disabled:opacity-50"
+        >
+          {pending ? "Sending…" : sent ? "Sent" : booking.meetingUrl ? "Resend" : "Send"}
+        </button>
+      </div>
+      {error && <p className="text-[11px] text-destructive">{error}</p>}
+      {sent && !error && (
+        <p className="flex items-center gap-1 text-[11px] text-green-700 dark:text-green-400">
+          <CheckCircle2 className="size-3" /> Confirmation emailed to {booking.userEmail}
+        </p>
+      )}
+      {!sent && !booking.meetingUrl && (
+        <p className="text-[11px] text-muted-foreground">
+          No link sent yet — the customer is waiting on this.
+        </p>
+      )}
+    </div>
+  )
 }
 
 export function AdminBookingsClient({
@@ -81,11 +148,12 @@ export function AdminBookingsClient({
                 <th className="hidden px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:table-cell">Session</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">Date / Time</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">Status</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">Google Meet link</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {bookings.length === 0 ? (
-                <tr><td colSpan={4} className="py-8 text-center text-sm text-muted-foreground">No bookings yet.</td></tr>
+                <tr><td colSpan={5} className="py-8 text-center text-sm text-muted-foreground">No bookings yet.</td></tr>
               ) : (
                 bookings.map((booking) => {
                   const session = SESSION_TYPES.find((s) => s.id === booking.sessionType)
@@ -109,6 +177,9 @@ export function AdminBookingsClient({
                         >
                           {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
                         </select>
+                      </td>
+                      <td className="px-4 py-3">
+                        <MeetingLinkCell booking={booking} />
                       </td>
                     </tr>
                   )
