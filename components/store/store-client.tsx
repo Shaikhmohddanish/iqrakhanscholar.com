@@ -41,7 +41,6 @@ interface StoreClientProps {
   /** Categories pre-selected from the URL (e.g. /store?category=Accessories). */
   initialCategories?: string[]
   facets: ProductFacets
-  wishlistIds?: Set<string>
 }
 
 export function StoreClient({
@@ -50,7 +49,6 @@ export function StoreClient({
   initialTotal,
   initialCategories = [],
   facets,
-  wishlistIds = new Set(),
 }: StoreClientProps) {
   const [typeFilter, setTypeFilter] = useState('')
   const [selectedCategories, setSelectedCategories] = useState<string[]>(initialCategories)
@@ -169,7 +167,6 @@ export function StoreClient({
                   key={product.id}
                   product={product}
                   onQuickView={() => setQuickViewProduct(product)}
-                  initialWishlisted={wishlistIds.has(product.id)}
                 />
               ))}
             </div>
@@ -180,7 +177,6 @@ export function StoreClient({
                   key={product.id}
                   product={product}
                   onQuickView={() => setQuickViewProduct(product)}
-                  initialWishlisted={wishlistIds.has(product.id)}
                 />
               ))}
             </div>
@@ -232,11 +228,9 @@ export function StoreClient({
 function ProductListItem({
   product,
   onQuickView,
-  initialWishlisted,
 }: {
   product: PublicProduct
   onQuickView: () => void
-  initialWishlisted: boolean
 }) {
   const { addItem } = useCart()
   const [added, setAdded] = useState(false)
@@ -274,7 +268,7 @@ function ProductListItem({
               </Link>
             </h3>
           </div>
-          <WishlistButton productId={product.id} initialWishlisted={initialWishlisted} size="sm" />
+          <WishlistButton productId={product.id} size="sm" />
         </div>
 
         <ProductRating rating={product.rating} reviews={product.reviews} className="mt-1.5" />

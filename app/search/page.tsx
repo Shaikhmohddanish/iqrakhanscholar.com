@@ -8,6 +8,7 @@ import { getCurrentUser } from '@/lib/session'
 import { getWishlist } from '@/lib/wishlist'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { SearchProductGrid } from '@/components/search/search-product-grid'
+import { WishlistProvider } from '@/components/store/wishlist-provider'
 
 const PRODUCT_LIMIT = 12
 const ARTICLE_LIMIT = 6
@@ -128,7 +129,9 @@ export default async function SearchPage({
                 )}
               </div>
               <div className="mt-6">
-                <SearchProductGrid products={products.items} wishlistIds={wishlistIds} />
+                <WishlistProvider>
+                  <SearchProductGrid products={products.items} />
+                </WishlistProvider>
               </div>
             </section>
           )}

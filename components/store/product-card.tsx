@@ -14,14 +14,12 @@ import { ProductRating } from '@/components/store/product-rating'
 interface ProductCardProps {
   product: PublicProduct
   onQuickView: () => void
-  initialWishlisted?: boolean
   showWishlist?: boolean
 }
 
 export function ProductCard({
   product,
   onQuickView,
-  initialWishlisted = false,
   showWishlist = true,
 }: ProductCardProps) {
   const { addItem, isPending } = useCart()
@@ -73,7 +71,7 @@ export function ProductCard({
 
         {showWishlist && (
           <div className="absolute bottom-3 right-3">
-            <WishlistButton productId={product.id} initialWishlisted={initialWishlisted} variant="overlay" size="sm" />
+            <WishlistButton productId={product.id} variant="overlay" size="sm" />
           </div>
         )}
       </Link>

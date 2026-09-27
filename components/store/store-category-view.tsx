@@ -1,7 +1,5 @@
 import { SITE_URL } from '@/lib/site-config'
 import { queryProducts, getProductFacets } from '@/lib/products'
-import { getCurrentUser } from '@/lib/session'
-import { getWishlist } from '@/lib/wishlist'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { StoreClient } from '@/components/store/store-client'
 
@@ -24,12 +22,13 @@ interface StoreCategoryViewProps {
 export async function StoreCategoryView({ category, label }: StoreCategoryViewProps) {
   const categories = category ? [category] : undefined
 
-  const [initial, facets, user] = await Promise.all([
+  // No getCurrentUser() here on purpose. It was the only per-visitor read on
+  // these pages, and it forced the entire storefront to render on demand.
+  // Wishlist state is now resolved in the browser by WishlistProvider.
+  const [initial, facets] = await Promise.all([
     queryProducts({ page: 1, limit: 8, sort: 'featured', categories }),
     getProductFacets(),
-    getCurrentUser(),
   ])
-  const wishlistIds = user ? new Set(await getWishlist(user.id)) : new Set<string>()
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -99,7 +98,6 @@ export async function StoreCategoryView({ category, label }: StoreCategoryViewPr
             initialTotal={initial.total}
             initialCategories={category ? [category] : []}
             facets={facets}
-            wishlistIds={wishlistIds}
           />
         </div>
       )}

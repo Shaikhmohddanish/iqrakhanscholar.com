@@ -7,10 +7,9 @@ import { QuickViewModal } from '@/components/store/quick-view-modal'
 
 interface SearchProductGridProps {
   products: PublicProduct[]
-  wishlistIds?: Set<string>
 }
 
-export function SearchProductGrid({ products, wishlistIds = new Set() }: SearchProductGridProps) {
+export function SearchProductGrid({ products }: SearchProductGridProps) {
   const [quickViewProduct, setQuickViewProduct] = useState<PublicProduct | null>(null)
 
   return (
@@ -21,7 +20,6 @@ export function SearchProductGrid({ products, wishlistIds = new Set() }: SearchP
             key={product.id}
             product={product}
             onQuickView={() => setQuickViewProduct(product)}
-            initialWishlisted={wishlistIds.has(product.id)}
           />
         ))}
       </div>

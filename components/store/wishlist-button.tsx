@@ -6,9 +6,15 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { toggleWishlistAction } from '@/app/actions/wishlist'
+import { useWishlist } from '@/components/store/wishlist-provider'
 
 interface WishlistButtonProps {
   productId: string
+  /**
+   * Explicit initial state. Omit it on pages that render statically - the
+   * button then reads from WishlistProvider, which resolves the wishlist in
+   * the browser so the page itself never has to touch the session cookie.
+   */
   initialWishlisted?: boolean
   size?: 'sm' | 'md'
   variant?: 'icon' | 'overlay'
@@ -17,14 +23,23 @@ interface WishlistButtonProps {
 
 export function WishlistButton({
   productId,
-  initialWishlisted = false,
+  initialWishlisted,
   size = 'md',
   variant = 'icon',
   className,
 }: WishlistButtonProps) {
-  const [wishlisted, setWishlisted] = useState(initialWishlisted)
+  const { isWishlisted, loaded } = useWishlist()
+  const [override, setOverride] = useState<boolean | null>(
+    initialWishlisted ?? null,
+  )
   const [pending, startTransition] = useTransition()
   const router = useRouter()
+
+  // The user's own toggle wins; otherwise fall back to whatever the provider
+  // has loaded (false until it resolves, which is the signed-out default).
+  const wishlisted = override ?? (loaded ? isWishlisted(productId) : false)
+  const setWishlisted = (fn: (prev: boolean) => boolean) =>
+    setOverride((prev) => fn(prev ?? (loaded ? isWishlisted(productId) : false)))
 
   function handleToggle(e: React.MouseEvent) {
     e.preventDefault()

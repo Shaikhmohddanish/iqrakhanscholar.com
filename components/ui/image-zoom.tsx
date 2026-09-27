@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { X, ZoomIn, ZoomOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -22,7 +23,17 @@ export function ImageZoom({ src, alt, className }: ImageZoomProps) {
         className={cn('group relative cursor-zoom-in overflow-hidden rounded-lg', className)}
         aria-label={`Zoom ${alt}`}
       >
-        <img src={src} alt={alt} className="size-full object-cover transition-transform duration-300 group-hover:scale-105" />
+        {/* next/image, not a raw <img>: this thumbnail had no width/height, so
+            it reserved no space and shifted the layout as it loaded, and it
+            skipped format conversion and resizing entirely. `fill` needs a
+            positioned parent, which the button already provides. */}
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes="(max-width: 640px) 50vw, 25vw"
+          className="object-cover transition-transform duration-300 group-hover:scale-105"
+        />
         <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/10">
           <ZoomIn className="size-6 text-white opacity-0 transition-opacity group-hover:opacity-100" />
         </div>
@@ -65,6 +76,10 @@ export function ImageZoom({ src, alt, className }: ImageZoomProps) {
             className="max-h-[90vh] max-w-[90vw] overflow-auto"
             onClick={() => setOpen(false)}
           >
+            {/* Deliberately a raw <img>. This only mounts once the user opens
+                the lightbox, so it costs nothing on load and can't shift the
+                page; and next/image's own sizing fights the scale() transform
+                that drives the zoom. */}
             <img
               src={src}
               alt={alt}
