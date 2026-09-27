@@ -110,6 +110,10 @@ export default function RootLayout({
             <WhatsappButton />
           </CartProvider>
         </CurrencyProvider>
+        {/* Site-wide identity schema (Person / WebSite / Organization). Lives
+            here rather than on the homepage so a Rich Results check against any
+            inner URL finds it. FAQPage is NOT here - it belongs on /faq. */}
+        <StructuredData />
         <AdsenseLoader />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
