@@ -147,20 +147,22 @@ function CloudinarySettings() {
   )
 }
 
+// This tab used to hold a duration/buffer/max-per-day form that saved nothing.
+// The booking hours that actually drive the calendar live with the bookings.
 function BookingSettings() {
   return (
-    <div className="flex flex-col gap-5 rounded-xl border border-border bg-card p-5">
-      <h2 className="font-heading text-base font-semibold">Booking configuration</h2>
-      <SettingRow label="Default session duration (minutes)" help="Used when no session type is specified.">
-        <input type="number" defaultValue={60} className="rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring w-32" />
-      </SettingRow>
-      <SettingRow label="Buffer between sessions (minutes)">
-        <input type="number" defaultValue={15} className="rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring w-32" />
-      </SettingRow>
-      <SettingRow label="Max bookings per day">
-        <input type="number" defaultValue={6} className="rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring w-32" />
-      </SettingRow>
-      <button className="h-9 w-fit rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground hover:bg-primary/90">Save changes</button>
+    <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-5">
+      <h2 className="font-heading text-base font-semibold">Booking hours</h2>
+      <p className="text-sm text-muted-foreground">
+        Weekly hours and changes to individual dates (all in India Standard Time) are managed
+        under Bookings.
+      </p>
+      <Link
+        href="/admin/bookings?tab=availability"
+        className="h-9 w-fit rounded-full bg-primary px-5 text-sm font-medium leading-9 text-primary-foreground hover:bg-primary/90"
+      >
+        Edit booking hours
+      </Link>
     </div>
   )
 }

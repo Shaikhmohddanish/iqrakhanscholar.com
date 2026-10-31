@@ -5,9 +5,13 @@ import {
   updateBookingStatus,
   confirmBookingWithMeeting,
   setAvailability,
+  deleteAvailability,
+  setWeeklySchedule,
   SESSION_TYPES,
   type BookingStatus,
 } from "@/lib/bookings"
+import { BOOKING_SLOT_OPTIONS } from "@/lib/booking-types"
+import { formatBookingWhen, isDateKey } from "@/lib/booking-time"
 import { createNotification } from "@/lib/notifications"
 import { sendBookingConfirmationEmail } from "@/lib/email"
 import { SITE_URL } from "@/lib/site-config"
@@ -73,7 +77,7 @@ export async function adminConfirmBookingAction(id: string, meetingUrl: string) 
     userId: booking.userId,
     type: "booking",
     title: "Session confirmed",
-    body: `Your ${session?.title ?? "session"} on ${booking.date} at ${booking.slot} is confirmed. The joining link is in your email and on this page.`,
+    body: `Your ${session?.title ?? "session"} on ${formatBookingWhen(booking.date, booking.slot)} is confirmed. The joining link is in your email and on this page.`,
     link: "/account/bookings",
   })
 
@@ -82,10 +86,39 @@ export async function adminConfirmBookingAction(id: string, meetingUrl: string) 
   return { ok: true }
 }
 
+// Keep only start times the admin grid offers, once each and in order.
+// Anything else in the payload is dropped rather than trusted.
+function cleanSlots(slots: unknown): string[] {
+  if (!Array.isArray(slots)) return []
+  return BOOKING_SLOT_OPTIONS.filter((s) => slots.includes(s))
+}
+
+// Save Iqra's recurring weekly hours. Index = day of the week (0 = Sunday).
+export async function saveWeeklyScheduleAction(weekly: string[][]) {
+  const user = await requireRole("admin")
+  if (!user) return { error: "Unauthorized" }
+  if (!Array.isArray(weekly) || weekly.length !== 7) return { error: "Invalid schedule." }
+  await setWeeklySchedule(weekly.map(cleanSlots))
+  revalidatePath("/admin/bookings")
+  return { ok: true }
+}
+
+// Give one date its own slots instead of the weekly hours ([] closes the day).
 export async function setAvailabilityAction(date: string, slots: string[]) {
   const user = await requireRole("admin")
   if (!user) return { error: "Unauthorized" }
-  await setAvailability(date, slots)
+  if (!isDateKey(date)) return { error: "Invalid date." }
+  await setAvailability(date, cleanSlots(slots))
+  revalidatePath("/admin/bookings")
+  return { ok: true }
+}
+
+// Put a date back on the weekly hours.
+export async function resetAvailabilityAction(date: string) {
+  const user = await requireRole("admin")
+  if (!user) return { error: "Unauthorized" }
+  if (!isDateKey(date)) return { error: "Invalid date." }
+  await deleteAvailability(date)
   revalidatePath("/admin/bookings")
   return { ok: true }
 }

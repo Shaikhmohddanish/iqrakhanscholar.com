@@ -10,6 +10,7 @@ import { TimeSlotPicker } from "./time-slot-picker"
 import { BookingDetailsForm } from "./booking-details-form"
 import { BookingPaymentStep } from "./booking-payment-step"
 import { BookingConfirmation } from "./booking-confirmation"
+import { formatBookingDate } from "@/lib/booking-time"
 import { ChevronLeft } from "lucide-react"
 
 const STEPS = [
@@ -118,9 +119,16 @@ export function BookingWizard() {
         <div className="flex flex-col gap-5">
           <div>
             <h2 className="font-heading text-xl font-semibold text-foreground">Choose a date</h2>
-            <p className="mt-1 text-sm text-muted-foreground">Available dates are highlighted. All times are in UK time (GMT/BST).</p>
+            <p className="mt-1 text-sm text-muted-foreground">Available dates are highlighted. All times are India Standard Time (IST).</p>
           </div>
-          <DatePickerStep selected={date} onSelect={setDate} />
+          <DatePickerStep
+            selected={date}
+            onSelect={(d) => {
+              // A slot picked for a different date may not exist on this one.
+              if (d !== date) setSlot(null)
+              setDate(d)
+            }}
+          />
         </div>
       )}
 
@@ -128,7 +136,7 @@ export function BookingWizard() {
         <div className="flex flex-col gap-5">
           <div>
             <h2 className="font-heading text-xl font-semibold text-foreground">Choose a time</h2>
-            <p className="mt-1 text-sm text-muted-foreground">Available slots on {date}:</p>
+            <p className="mt-1 text-sm text-muted-foreground">Available times on {formatBookingDate(date)} (IST):</p>
           </div>
           <TimeSlotPicker date={date} selected={slot} onSelect={setSlot} />
         </div>

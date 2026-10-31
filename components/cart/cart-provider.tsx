@@ -11,14 +11,8 @@ import {
   useCallback,
   useMemo,
 } from "react"
-import { type CartItem, readCartCookieClient } from "@/lib/cart-shared"
+import { type CartItem, readCartCookieClient, computeTotals } from "@/lib/cart-shared"
 import type { PublicProduct } from "@/lib/product-types"
-import {
-  resolveCartCurrency,
-  cartLineAmount,
-  shippingForCurrency,
-  amountToFreeShipping,
-} from "@/lib/currency"
 import { useCurrency } from "@/components/currency/currency-provider"
 import {
   addToCartAction,
@@ -156,34 +150,12 @@ export function CartProvider({
   }, [applyOptimistic])
 
   // Derive cart totals once per items/currency change, not on every render.
-  const totals = useMemo(() => {
-    const count = optimisticItems.reduce((s, i) => s + i.quantity, 0)
-    // Price the whole cart in a single currency so lines never mix currencies.
-    const currency = resolveCartCurrency(optimisticItems, activeCurrency)
-    const subtotal = optimisticItems.reduce(
-      (s, i) => s + cartLineAmount(i, currency) * i.quantity,
-      0,
-    )
-    const hasPhysical = optimisticItems.some((i) => i.type === "physical")
-    // Mirrors the authoritative server calculation in placeOrderAction. Both
-    // pass the subtotal so the free-shipping threshold is applied identically -
-    // if these two ever diverge, the total shown differs from the amount
-    // charged.
-    const shipping = hasPhysical ? shippingForCurrency(currency, subtotal) : 0
-    // How much more to spend to qualify (null when already free, no threshold
-    // for this currency, or the cart has nothing to ship).
-    const freeShippingRemaining = hasPhysical
-      ? amountToFreeShipping(currency, subtotal)
-      : null
-    return {
-      count,
-      currency,
-      subtotal,
-      shipping,
-      freeShippingRemaining,
-      total: subtotal + shipping,
-    }
-  }, [optimisticItems, activeCurrency])
+  // computeTotals is shared with the Buy Now checkout and mirrors
+  // placeOrderAction, so the total shown is the amount charged.
+  const totals = useMemo(
+    () => computeTotals(optimisticItems, activeCurrency),
+    [optimisticItems, activeCurrency],
+  )
 
   const value = useMemo(
     () => ({

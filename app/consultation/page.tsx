@@ -112,7 +112,7 @@ const testimonials = [
 
 const faqs = [
   { q: 'Who are the consultations for?', a: 'Anyone seeking guidance on faith, personal development, family life, or spiritual growth. Sessions are accessible regardless of your current level of practice.' },
-  { q: 'How do sessions take place?', a: 'All sessions are conducted via secure audio call on Google Meet. You can join from anywhere in the world.' },
+  { q: 'How do sessions take place?', a: 'All sessions are conducted via secure audio call on Google Meet. You can join from anywhere in the world; session times are shown in India Standard Time (IST).' },
   { q: 'Is everything confidential?', a: 'Absolutely. Every session is strictly private.' },
   { q: 'Can I reschedule or cancel?', a: 'Yes, you can reschedule within 2 hours. Cancellations within 2 hours are refundable, after 2 hours not.' },
   { q: 'What payment methods are accepted?', a: 'We accept credit/debit cards, UPI and net banking via Razorpay. All transactions are secure and encrypted.' },

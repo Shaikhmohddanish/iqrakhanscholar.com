@@ -7,8 +7,10 @@ import { useFormStatus } from "react-dom"
 import { Lock, ShieldCheck } from "lucide-react"
 import { BarLoader } from "@/components/ui/bar-loader"
 import { useCart } from "@/components/cart/cart-provider"
+import { useCurrency } from "@/components/currency/currency-provider"
 import { formatPrice } from "@/lib/product-types"
 import { cartLineAmount } from "@/lib/currency"
+import { computeTotals, type CartItem } from "@/lib/cart-shared"
 import { placeOrderAction, type CheckoutState } from "@/app/actions/checkout"
 import { PaymentMethods } from "@/components/checkout/payment-methods"
 
@@ -37,8 +39,23 @@ function PayButton({ total, currency }: { total: number; currency: string }) {
   )
 }
 
-export function CheckoutForm({ userEmail }: { userEmail: string }) {
-  const { items, currency, subtotal, shipping, total } = useCart()
+export function CheckoutForm({
+  userEmail,
+  buyNow = null,
+}: {
+  userEmail: string
+  // Set for a Buy Now checkout: just this one line, and the cart is left alone.
+  buyNow?: CartItem | null
+}) {
+  const cart = useCart()
+  const { currency: activeCurrency } = useCurrency()
+  // Everything below - the address fields, the summary and the totals - follows
+  // the lines actually being bought, which for Buy Now are not the cart's.
+  // Totals come from the same computeTotals the cart uses.
+  const items = buyNow ? [buyNow] : cart.items
+  const { currency, subtotal, shipping, total } = buyNow
+    ? computeTotals(items, activeCurrency)
+    : cart
   const hasPhysical = items.some((i) => i.type === "physical")
   const [state, formAction] = useActionState<CheckoutState, FormData>(placeOrderAction, {})
 
@@ -141,6 +158,11 @@ export function CheckoutForm({ userEmail }: { userEmail: string }) {
 
       <aside className="h-fit rounded-2xl border border-border bg-card p-6 lg:sticky lg:top-24">
         <h2 className="font-heading text-lg font-semibold text-foreground">Order Summary</h2>
+        {buyNow && (
+          <p className="mt-1.5 text-xs text-muted-foreground">
+            Only this item will be purchased. Anything in your cart stays there for later.
+          </p>
+        )}
         <ul className="mt-5 space-y-4">
           {items.map((item) => (
             <li key={item.productId} className="flex items-center gap-3">
@@ -175,6 +197,14 @@ export function CheckoutForm({ userEmail }: { userEmail: string }) {
 
         {/* Currency the order is placed in; the server re-derives and verifies this. */}
         <input type="hidden" name="currency" value={currency} />
+        {/* Buy Now: which product to sell instead of the cart. The server
+            re-reads it from the database and re-applies the quantity rules. */}
+        {buyNow && (
+          <>
+            <input type="hidden" name="buyNow" value={buyNow.productId} />
+            <input type="hidden" name="qty" value={buyNow.quantity} />
+          </>
+        )}
 
         {state.error && (
           <p className="mt-4 rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">{state.error}</p>

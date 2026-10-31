@@ -28,6 +28,7 @@ import { getActiveCurrency } from '@/lib/currency-server'
 import { getCurrentUser } from '@/lib/session'
 import { getPurchasedProductIds } from '@/lib/orders'
 import { AddToCartButton } from '@/components/cart/add-to-cart-button'
+import { BuyNowButton } from '@/components/cart/buy-now-button'
 import { ProductRating } from '@/components/store/product-rating'
 
 type Params = Promise<{ slug: string }>
@@ -249,8 +250,19 @@ export default async function BookDetailPage({ params }: { params: Params }) {
                         Sign in to Purchase
                       </Link>
                     )}
+                    {/* Logged-out visitors keep "Sign in to Purchase": it brings
+                        them back here, where ownership is checked before Buy Now
+                        is offered. */}
                     {user && (
-                      <AddToCartButton product={product} label="Purchase & Read" variant="full" className="h-12 rounded-lg px-6" />
+                      <>
+                        <BuyNowButton product={product} className="h-12 rounded-lg px-6" />
+                        <AddToCartButton
+                          product={product}
+                          label="Add to Cart"
+                          variant="full"
+                          className="h-12 w-auto rounded-lg border border-primary bg-transparent px-6 text-primary hover:bg-secondary hover:text-primary"
+                        />
+                      </>
                     )}
                   </>
                 )}

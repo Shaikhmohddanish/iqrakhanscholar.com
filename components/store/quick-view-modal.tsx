@@ -7,6 +7,7 @@ import { BarLoader } from '@/components/ui/bar-loader'
 import { type PublicProduct } from '@/lib/product-types'
 import { ProductPrice } from '@/components/currency/product-price'
 import { useCart } from '@/components/cart/cart-provider'
+import { BuyNowButton } from '@/components/cart/buy-now-button'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { ProductRating } from '@/components/store/product-rating'
@@ -103,29 +104,39 @@ export function QuickViewModal({ product, open, onClose }: QuickViewModalProps) 
               )}
 
               <div className="mt-4 flex gap-2">
-                <button
-                  type="button"
-                  onClick={handleAdd}
-                  disabled={soldOut}
-                  className="flex h-11 flex-1 items-center justify-center gap-2 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {soldOut ? (
-                    'Sold Out'
-                  ) : isPending && !added ? (
-                    <BarLoader size="md" />
-                  ) : added ? (
-                    <><Check className="size-4" /> Added</>
-                  ) : (
-                    <><ShoppingBag className="size-4" /> Add to Cart</>
-                  )}
-                </button>
-                <Link
-                  href={`/store/${product.slug}`}
-                  className="flex h-11 items-center rounded-lg border border-border px-4 text-sm font-medium text-foreground transition-colors hover:bg-muted"
-                >
-                  View Details
-                </Link>
+                {soldOut ? (
+                  <button
+                    type="button"
+                    disabled
+                    className="flex h-11 flex-1 cursor-not-allowed items-center justify-center rounded-lg bg-primary text-sm font-semibold text-primary-foreground opacity-50"
+                  >
+                    Sold Out
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handleAdd}
+                      className="flex h-11 flex-1 items-center justify-center gap-2 rounded-lg border border-primary text-sm font-semibold text-primary transition-colors hover:bg-secondary"
+                    >
+                      {isPending && !added ? (
+                        <BarLoader size="md" />
+                      ) : added ? (
+                        <><Check className="size-4" /> Added</>
+                      ) : (
+                        <><ShoppingBag className="size-4" /> Add to Cart</>
+                      )}
+                    </button>
+                    <BuyNowButton product={product} className="h-11 flex-1 rounded-lg px-4" />
+                  </>
+                )}
               </div>
+              <Link
+                href={`/store/${product.slug}`}
+                className="mt-3 inline-block text-sm font-medium text-primary hover:underline"
+              >
+                View full details
+              </Link>
             </div>
           </div>
         </div>

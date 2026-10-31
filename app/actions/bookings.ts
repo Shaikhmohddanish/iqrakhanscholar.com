@@ -10,9 +10,12 @@ import {
   getBookingById,
   setBookingReference,
   makeBookingReference,
+  extendBookingHold,
   SESSION_TYPES,
   type SessionType,
 } from "@/lib/bookings"
+import { BOOKING_HOLD_MINUTES, holdsSlot } from "@/lib/booking-types"
+import { formatBookingWhen } from "@/lib/booking-time"
 import { selectProvider } from "@/lib/payments"
 import { confirmBookingPaid } from "@/lib/payments/fulfillment"
 import { getActiveCurrency } from "@/lib/currency-server"
@@ -51,6 +54,7 @@ export async function bookSessionAction(data: {
   const activeCurrency = await getActiveCurrency()
   const priced = resolveProductPrice(sessionInfo, activeCurrency)
 
+  const isFree = sessionInfo.price === 0
   const booking = await createBooking({
     userId: user.id,
     userEmail: user.email,
@@ -59,20 +63,23 @@ export async function bookSessionAction(data: {
     date: data.date,
     slot: data.slot,
     status: "pending",
-    paymentStatus: sessionInfo.price === 0 ? "paid" : "unpaid",
+    paymentStatus: isFree ? "paid" : "unpaid",
     notes: "",
     topic,
     // Priced from SESSION_TYPES on the server, never from the client.
     price: priced.amount,
     currency: priced.currency,
     reference: makeBookingReference(),
+    // An unpaid booking holds the slot only while payment is under way, so an
+    // abandoned checkout doesn't take the time away from everyone else.
+    ...(isFree ? {} : { holdUntil: new Date(Date.now() + BOOKING_HOLD_MINUTES * 60 * 1000) }),
   })
 
   await createNotification({
     userId: user.id,
     type: "booking",
     title: "Booking request received",
-    body: `Your ${sessionInfo.title} on ${data.date} at ${data.slot} has been submitted and is pending confirmation.`,
+    body: `Your ${sessionInfo.title} on ${formatBookingWhen(data.date, data.slot)} has been submitted and is pending confirmation.`,
     link: "/account/bookings",
   })
 
@@ -99,9 +106,22 @@ export async function startBookingPaymentAction(bookingId: string) {
   const booking = await getBookingById(bookingId)
   if (!booking || booking.userId !== user.id) return { error: "Booking not found." }
   if (booking.paymentStatus === "paid") return { ok: true, alreadyPaid: true }
+  if (booking.status === "cancelled") return { error: "This booking was cancelled." }
 
   const sessionInfo = SESSION_TYPES.find((s) => s.id === booking.sessionType)
   if (!sessionInfo) return { error: "Invalid session type." }
+
+  // An unpaid booking reserves its slot for BOOKING_HOLD_MINUTES only. If that
+  // ran out, someone else may have booked the time since - check before taking
+  // money for it. Either way the hold restarts now and lasts exactly as long as
+  // the payment link created below.
+  if (!holdsSlot(booking)) {
+    const stillFree = await getAvailableSlots(booking.date)
+    if (!stillFree.includes(booking.slot)) {
+      return { error: "Sorry, this time is no longer available. Please book another slot." }
+    }
+  }
+  const holdUntil = await extendBookingHold(bookingId)
 
   // Re-derive the amount from SESSION_TYPES rather than trusting the stored
   // figure, so a tampered booking document still can't change what is charged.
@@ -136,9 +156,12 @@ export async function startBookingPaymentAction(bookingId: string) {
       amount: priced.amount,
       currency: priced.currency,
       email: user.email,
-      description: `${sessionInfo.title} — ${booking.date} ${booking.slot}`,
+      description: `${sessionInfo.title} — ${formatBookingWhen(booking.date, booking.slot)}`,
       successUrl: `${origin}/account/bookings?booked=1`,
       cancelUrl: `${origin}/account/bookings?cancelled=1`,
+      // The link dies with the hold, so nobody can pay for a time that has
+      // since been released to someone else.
+      expiresAt: holdUntil,
     })
     return { ok: true, redirectUrl: payment.redirectUrl }
   } catch (err) {

@@ -9,6 +9,7 @@ import {
 } from "@/lib/bookings"
 import { sendOrderConfirmationEmail } from "@/lib/email"
 import { formatPrice } from "@/lib/product-types"
+import { formatBookingWhen } from "@/lib/booking-time"
 import { SITE_URL } from "@/lib/site-config"
 
 // Idempotently mark an order paid and run post-payment side effects exactly
@@ -109,7 +110,7 @@ export async function confirmBookingPaid(reference: string): Promise<boolean> {
       userId: booking.userId,
       type: "booking",
       title: "Payment received",
-      body: `Your ${session?.title ?? "session"} on ${booking.date} at ${booking.slot} is paid. Iqra will email your Google Meet joining link before the session.`,
+      body: `Your ${session?.title ?? "session"} on ${formatBookingWhen(booking.date, booking.slot)} is paid. Iqra will email your Google Meet joining link before the session.`,
       link: "/account/bookings",
     })
   } catch (err) {

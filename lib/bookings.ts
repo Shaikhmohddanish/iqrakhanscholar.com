@@ -2,6 +2,14 @@ import "server-only"
 import { ObjectId, type WithId } from "mongodb"
 import { getDb } from "./mongodb"
 import type { SessionType, BookingStatus, BookingPaymentStatus, PublicBooking, PublicAvailability } from "./booking-types"
+import {
+  DEFAULT_WEEKLY_SCHEDULE,
+  BOOKING_WINDOW_DAYS,
+  BOOKING_LEAD_MINUTES,
+  BOOKING_HOLD_MINUTES,
+  BOOKING_HOLD_GRACE_MS,
+} from "./booking-types"
+import { todayInIST, istDateTimeKey, addDays, weekdayOf, isDateKey, isSlot } from "./booking-time"
 
 export type { SessionType, BookingStatus, BookingPaymentStatus, PublicBooking, PublicAvailability }
 export { SESSION_TYPES } from "./booking-types"
@@ -29,16 +37,31 @@ export interface BookingDoc {
   // confirms the session. Optional because it doesn't exist until then - and
   // the confirmation email only promises a link when one is actually present.
   meetingUrl?: string
+  // When an unpaid booking stops reserving its slot - see holdsSlot(). Absent
+  // on paid/free bookings and on bookings made before holds existed.
+  holdUntil?: Date
   createdAt: Date
   updatedAt: Date
 }
 
+// One date's slots, overriding the weekly schedule for that date. An empty
+// list closes the day; deleting the doc returns it to the weekly hours.
 export interface AvailabilityDoc {
   _id?: ObjectId
   date: string // YYYY-MM-DD
   slots: string[] // HH:MM
   createdAt: Date
 }
+
+// Iqra's recurring weekly hours: a single document in "settings". Index = day
+// of the week (0 = Sunday), values are IST "HH:MM" start times.
+interface BookingScheduleDoc {
+  _id: string
+  weekly: string[][]
+  updatedAt: Date
+}
+
+const SCHEDULE_ID = "booking-schedule"
 
 function toPublicBooking(doc: WithId<BookingDoc>): PublicBooking {
   const { _id, ...rest } = doc
@@ -84,61 +107,93 @@ async function availabilityCol() {
   return col
 }
 
-// Returns dates (YYYY-MM-DD) that have at least one open slot in the next 60 days
-export async function getAvailableDates(): Promise<string[]> {
-  const col = await availabilityCol()
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const cutoff = new Date(today)
-  cutoff.setDate(cutoff.getDate() + 60)
-
-  const todayStr = today.toISOString().slice(0, 10)
-  const cutoffStr = cutoff.toISOString().slice(0, 10)
-
-  const docs = await col
-    .find({ date: { $gte: todayStr, $lte: cutoffStr } })
-    .sort({ date: 1 })
-    .toArray()
-
-  // Filter out dates that are fully booked
-  const bookingsDb = await bookingsCol()
-  const bookedMap: Record<string, Set<string>> = {}
-  const confirmedBookings = await bookingsDb
-    .find({
-      date: { $gte: todayStr, $lte: cutoffStr },
-      status: { $nin: ["cancelled"] },
-    })
-    .project({ date: 1, slot: 1 })
-    .toArray()
-
-  for (const b of confirmedBookings as unknown as { date: string; slot: string }[]) {
-    if (!bookedMap[b.date]) bookedMap[b.date] = new Set()
-    bookedMap[b.date].add(b.slot)
-  }
-
-  return docs
-    .filter((d) => {
-      const booked = bookedMap[d.date]
-      const available = d.slots.filter((s) => !booked?.has(s))
-      return available.length > 0
-    })
-    .map((d) => d.date)
+async function settingsCol() {
+  const db = await getDb()
+  return db.collection<BookingScheduleDoc>("settings")
 }
 
-// Returns available time slots for a given date
+// The weekly hours customers can book, falling back to the built-in default
+// until Iqra saves her own - so the calendar works with no setup at all.
+export async function getWeeklySchedule(): Promise<string[][]> {
+  const col = await settingsCol()
+  const doc = await col.findOne({ _id: SCHEDULE_ID })
+  if (!doc || !Array.isArray(doc.weekly) || doc.weekly.length !== 7) {
+    return DEFAULT_WEEKLY_SCHEDULE.map((day) => [...day])
+  }
+  return doc.weekly.map((day) => (Array.isArray(day) ? day.filter(isSlot) : []))
+}
+
+export async function setWeeklySchedule(weekly: string[][]): Promise<void> {
+  const col = await settingsCol()
+  await col.updateOne(
+    { _id: SCHEDULE_ID },
+    { $set: { weekly, updatedAt: new Date() } },
+    { upsert: true },
+  )
+}
+
+// Open start times per date in [from, to], once the weekly hours, per-date
+// overrides, existing bookings and the lead time are all applied. Dates with
+// nothing left are omitted; the map iterates in date order.
+async function openSlotsByDate(from: string, to: string): Promise<Map<string, string[]>> {
+  const now = Date.now()
+  const [weekly, overrides, booked] = await Promise.all([
+    getWeeklySchedule(),
+    availabilityCol().then((col) => col.find({ date: { $gte: from, $lte: to } }).toArray()),
+    bookingsCol().then((col) =>
+      col
+        .find({
+          date: { $gte: from, $lte: to },
+          status: { $nin: ["cancelled"] },
+          // Mirrors holdsSlot(): an unpaid booking stops blocking its slot
+          // once its hold (plus grace) has run out.
+          $or: [
+            { paymentStatus: { $ne: "unpaid" } },
+            { holdUntil: { $exists: false } },
+            { holdUntil: { $gt: new Date(now - BOOKING_HOLD_GRACE_MS) } },
+          ],
+        })
+        .project<{ date: string; slot: string }>({ date: 1, slot: 1 })
+        .toArray(),
+    ),
+  ])
+
+  const overrideByDate = new Map<string, string[]>(overrides.map((o) => [o.date, o.slots]))
+  const taken = new Set(booked.map((b) => `${b.date} ${b.slot}`))
+  // Anything starting before this moment (IST) is too soon to arrange - or
+  // already over. One string comparison covers both, across midnight too.
+  const cutoff = istDateTimeKey(new Date(now + BOOKING_LEAD_MINUTES * 60 * 1000))
+
+  const open = new Map<string, string[]>()
+  for (let date = from; date <= to; date = addDays(date, 1)) {
+    // An override replaces that weekday's hours for the one date; [] closes it.
+    const slots = (overrideByDate.get(date) ?? weekly[weekdayOf(date)])
+      .filter((slot) => {
+        const key = `${date} ${slot}`
+        return key > cutoff && !taken.has(key)
+      })
+      .sort()
+    if (slots.length > 0) open.set(date, slots)
+  }
+  return open
+}
+
+// Dates (YYYY-MM-DD, IST) with at least one open slot, from today through the
+// booking window.
+export async function getAvailableDates(): Promise<string[]> {
+  const today = todayInIST()
+  const open = await openSlotsByDate(today, addDays(today, BOOKING_WINDOW_DAYS))
+  return [...open.keys()]
+}
+
+// Open start times for one date. Empty for a malformed date or one outside the
+// booking window, so bookSessionAction's re-check rejects past, closed and
+// too-distant dates - not only taken slots.
 export async function getAvailableSlots(date: string): Promise<string[]> {
-  const col = await availabilityCol()
-  const avail = await col.findOne({ date })
-  if (!avail) return []
-
-  const bookingsDb = await bookingsCol()
-  const booked = await bookingsDb
-    .find({ date, status: { $nin: ["cancelled"] } })
-    .project({ slot: 1 })
-    .toArray()
-  const bookedSlots = new Set((booked as unknown as { slot: string }[]).map((b) => b.slot))
-
-  return avail.slots.filter((s) => !bookedSlots.has(s))
+  const today = todayInIST()
+  if (!isDateKey(date) || date < today || date > addDays(today, BOOKING_WINDOW_DAYS)) return []
+  const open = await openSlotsByDate(date, date)
+  return open.get(date) ?? []
 }
 
 export async function createBooking(
@@ -168,10 +223,31 @@ export async function cancelBooking(id: string, userId: string): Promise<boolean
   if (!ObjectId.isValid(id)) return false
   const col = await bookingsCol()
   const res = await col.updateOne(
-    { _id: new ObjectId(id), userId, status: { $in: ["pending", "confirmed"] } },
+    // Only a session that hasn't happened yet (IST) can be cancelled.
+    {
+      _id: new ObjectId(id),
+      userId,
+      status: { $in: ["pending", "confirmed"] },
+      date: { $gte: todayInIST() },
+    },
     { $set: { status: "cancelled", updatedAt: new Date() } },
   )
   return res.modifiedCount > 0
+}
+
+// Reserve an unpaid booking's slot for a fresh hold period - called when
+// payment starts, so the hold lasts exactly as long as the payment link.
+// Returns when the new hold ends.
+export async function extendBookingHold(id: string): Promise<Date> {
+  const holdUntil = new Date(Date.now() + BOOKING_HOLD_MINUTES * 60 * 1000)
+  if (ObjectId.isValid(id)) {
+    const col = await bookingsCol()
+    await col.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { holdUntil, updatedAt: new Date() } },
+    )
+  }
+  return holdUntil
 }
 
 export async function rescheduleBooking(
@@ -280,7 +356,8 @@ export async function confirmBookingWithMeeting(
   return doc ? toPublicBooking(doc) : null
 }
 
-// Admin: get/set availability
+// Admin: set one date's slots, overriding the weekly hours for that date (an
+// empty list closes the day).
 export async function setAvailability(date: string, slots: string[]): Promise<void> {
   const col = await availabilityCol()
   await col.updateOne(
@@ -290,6 +367,13 @@ export async function setAvailability(date: string, slots: string[]): Promise<vo
   )
 }
 
+// Admin: drop a date's override so it follows the weekly hours again.
+export async function deleteAvailability(date: string): Promise<void> {
+  const col = await availabilityCol()
+  await col.deleteOne({ date })
+}
+
+// Admin: the per-date overrides within a range.
 export async function getAvailability(
   fromDate: string,
   toDate: string,
@@ -297,31 +381,4 @@ export async function getAvailability(
   const col = await availabilityCol()
   const docs = await col.find({ date: { $gte: fromDate, $lte: toDate } }).sort({ date: 1 }).toArray()
   return docs.map(toPublicAvailability)
-}
-
-// Seed default availability (next 30 weekdays, 9am–5pm slots)
-export async function seedAvailability(): Promise<{ seeded: number }> {
-  const col = await availabilityCol()
-  const count = await col.countDocuments()
-  if (count > 0) return { seeded: 0 }
-
-  const slots = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00"]
-  const records: Omit<AvailabilityDoc, "_id">[] = []
-  const today = new Date()
-
-  let added = 0
-  let cursor = new Date(today)
-  cursor.setDate(cursor.getDate() + 1)
-
-  while (added < 30) {
-    const day = cursor.getDay()
-    if (day !== 0 && day !== 6) {
-      records.push({ date: cursor.toISOString().slice(0, 10), slots, createdAt: new Date() })
-      added++
-    }
-    cursor.setDate(cursor.getDate() + 1)
-  }
-
-  if (records.length > 0) await col.insertMany(records)
-  return { seeded: records.length }
 }

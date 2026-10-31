@@ -25,7 +25,15 @@ function googleErrorMessage(code: string): string {
 export function LoginForm() {
   const router = useRouter()
   const params = useSearchParams()
-  const next = params.get("next") || "/account"
+  // Only ever return to a page on this site. "next" also carries Buy Now
+  // checkouts (/checkout?buy=...), and it used to go to router.replace
+  // unchecked - an open redirect. "/\" is rejected too: URL parsing treats
+  // the backslash as a slash, making it protocol-relative.
+  const rawNext = params.get("next")
+  const next =
+    rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//") && !rawNext.startsWith("/\\")
+      ? rawNext
+      : "/account"
   const oauthError = params.get("error")
   const [state, action] = useActionState(loginAction, initial)
 

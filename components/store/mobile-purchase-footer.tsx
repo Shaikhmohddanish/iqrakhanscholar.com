@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { ShoppingBag, Check } from 'lucide-react'
 import { type PublicProduct } from '@/lib/product-types'
 import { useCart } from '@/components/cart/cart-provider'
+import { BuyNowButton } from '@/components/cart/buy-now-button'
 import { ProductPrice } from '@/components/currency/product-price'
 import { cn } from '@/lib/utils'
 
@@ -46,20 +47,28 @@ export function StickyPurchaseBar({ product }: StickyPurchaseBarProps) {
           <p className="truncate text-sm font-medium text-foreground">{product.title}</p>
           <ProductPrice item={product} className="font-heading text-lg font-bold text-foreground" />
         </div>
-        <button
-          type="button"
-          onClick={handleAdd}
-          disabled={soldOut}
-          className="inline-flex h-11 shrink-0 items-center gap-2 rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
-        >
-          {soldOut ? (
-            'Sold Out'
-          ) : added ? (
-            <><Check className="size-4" /> Added</>
-          ) : (
-            <><ShoppingBag className="size-4" /> Add to Cart</>
-          )}
-        </button>
+        {soldOut ? (
+          <button
+            type="button"
+            disabled
+            className="inline-flex h-11 shrink-0 items-center rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground opacity-50"
+          >
+            Sold Out
+          </button>
+        ) : (
+          // Icon-only Add to Cart so Buy Now fits beside it on a phone.
+          <div className="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={handleAdd}
+              aria-label={added ? 'Added to cart' : `Add ${product.title} to cart`}
+              className="inline-flex size-11 items-center justify-center rounded-full border border-primary text-primary transition-colors hover:bg-secondary"
+            >
+              {added ? <Check className="size-4" /> : <ShoppingBag className="size-4" />}
+            </button>
+            <BuyNowButton product={product} className="h-11 px-5" />
+          </div>
+        )}
       </div>
     </div>
   )

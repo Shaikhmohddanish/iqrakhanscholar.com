@@ -3,24 +3,13 @@
 import Link from "next/link"
 import { CheckCircle2, Calendar, Clock, ArrowRight } from "lucide-react"
 import { SESSION_TYPES, type SessionType } from "@/lib/booking-types"
+import { BOOKING_TZ_LABEL, formatBookingDate, formatSlot } from "@/lib/booking-time"
 
 interface BookingConfirmationProps {
   sessionType: SessionType
   date: string
   slot: string
   onBookAgain: () => void
-}
-
-function formatSlot(slot: string): string {
-  const [h, m] = slot.split(":").map(Number)
-  const period = h >= 12 ? "PM" : "AM"
-  const displayH = h > 12 ? h - 12 : h === 0 ? 12 : h
-  return `${displayH}:${String(m).padStart(2, "0")} ${period}`
-}
-
-function formatDateLong(dateStr: string): string {
-  const d = new Date(dateStr + "T00:00:00")
-  return d.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })
 }
 
 export function BookingConfirmation({ sessionType, date, slot, onBookAgain }: BookingConfirmationProps) {
@@ -46,11 +35,13 @@ export function BookingConfirmation({ sessionType, date, slot, onBookAgain }: Bo
         <div className="space-y-3 text-sm">
           <div className="flex items-center gap-3">
             <Calendar className="size-4 shrink-0 text-primary" />
-            <span className="text-foreground">{formatDateLong(date)}</span>
+            <span className="text-foreground">{formatBookingDate(date)}</span>
           </div>
           <div className="flex items-center gap-3">
             <Clock className="size-4 shrink-0 text-primary" />
-            <span className="text-foreground">{formatSlot(slot)} - {session.duration} minutes</span>
+            <span className="text-foreground">
+              {formatSlot(slot)} {BOOKING_TZ_LABEL} - {session.duration} minutes
+            </span>
           </div>
         </div>
       </div>

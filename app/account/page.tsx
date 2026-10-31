@@ -4,6 +4,8 @@ import Image from "next/image"
 import { getCurrentUser, isUserVerified } from "@/lib/session"
 import { getOrdersByUser, getPurchasedProductIds } from "@/lib/orders"
 import { getBookingsByUser } from "@/lib/bookings"
+import { SESSION_TYPES, LEGACY_SESSION_TITLES, holdLapsed } from "@/lib/booking-types"
+import { formatBookingWhen, todayInIST } from "@/lib/booking-time"
 import { getWishlist } from "@/lib/wishlist"
 import { getAllProgress } from "@/lib/reading-progress"
 import { getProductsByIds } from "@/lib/products"
@@ -59,16 +61,27 @@ export default async function AccountOverviewPage({
   const progressMap = Object.fromEntries(allProgress.map((p) => [p.bookId, p]))
   const purchasedProducts = await getProductsByIds(purchasedIds.slice(0, 3))
 
-  const upcomingBookings = bookings.filter(
-    (b) => !["cancelled", "completed"].includes(b.status),
-  ).slice(0, 3)
+  // Same rules as My Bookings: not finished or cancelled, not already past
+  // (IST), and not an unpaid booking whose hold ran out. Soonest first, and
+  // counted before trimming to three - the stat used to count the trimmed list.
+  const today = todayInIST()
+  const now = Date.now()
+  const allUpcomingBookings = bookings
+    .filter(
+      (b) =>
+        !["cancelled", "completed"].includes(b.status) &&
+        b.date >= today &&
+        !holdLapsed(b, now),
+    )
+    .sort((a, b) => `${a.date} ${a.slot}`.localeCompare(`${b.date} ${b.slot}`))
+  const upcomingBookings = allUpcomingBookings.slice(0, 3)
 
   const recentOrders = orders.slice(0, 3)
 
   const STATS = [
     { label: "Books in library", value: purchasedIds.length, icon: BookMarked, href: "/account/library" },
     { label: "Orders placed", value: orders.length, icon: ShoppingBag, href: "/account/orders" },
-    { label: "Upcoming sessions", value: upcomingBookings.length, icon: CalendarClock, href: "/account/bookings" },
+    { label: "Upcoming sessions", value: allUpcomingBookings.length, icon: CalendarClock, href: "/account/bookings" },
     { label: "Wishlist items", value: wishlistIds.length, icon: Heart, href: "/account/wishlist" },
   ]
 
@@ -199,10 +212,15 @@ export default async function AccountOverviewPage({
                     <CalendarClock className="size-4" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-foreground">{booking.sessionType.charAt(0).toUpperCase() + booking.sessionType.slice(1)} session</p>
+                    {/* Was the raw id ("Session-30 session") and "2026-11-05 at 14:00". */}
+                    <p className="text-sm font-medium text-foreground">
+                      {SESSION_TYPES.find((s) => s.id === booking.sessionType)?.title ??
+                        LEGACY_SESSION_TITLES[booking.sessionType] ??
+                        booking.sessionType}
+                    </p>
                     <p className="text-xs text-muted-foreground flex items-center gap-1">
                       <Clock className="size-3" />
-                      {booking.date} at {booking.slot}
+                      {formatBookingWhen(booking.date, booking.slot)}
                     </p>
                   </div>
                 </div>

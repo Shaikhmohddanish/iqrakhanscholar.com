@@ -1,5 +1,7 @@
 import type { Metadata } from "next"
-import { getAllBookings, getAvailability } from "@/lib/bookings"
+import { getAllBookings, getAvailability, getWeeklySchedule } from "@/lib/bookings"
+import { BOOKING_WINDOW_DAYS } from "@/lib/booking-types"
+import { addDays, todayInIST } from "@/lib/booking-time"
 import { AdminBookingsClient } from "./admin-bookings-client"
 
 export const metadata: Metadata = {
@@ -7,15 +9,21 @@ export const metadata: Metadata = {
   robots: { index: false },
 }
 
-export default async function AdminBookingsPage() {
-  const today = new Date().toISOString().slice(0, 10)
-  const cutoff = new Date()
-  cutoff.setDate(cutoff.getDate() + 60)
-  const cutoffStr = cutoff.toISOString().slice(0, 10)
+export default async function AdminBookingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string }>
+}) {
+  // IST like every booking date. This used toISOString(), which gives the UTC
+  // date - a day behind India for the first five and a half hours of each day.
+  const today = todayInIST()
+  const maxDate = addDays(today, BOOKING_WINDOW_DAYS)
 
-  const [{ bookings, total }, availability] = await Promise.all([
+  const [{ bookings, total }, overrides, weekly, { tab }] = await Promise.all([
     getAllBookings({ limit: 100 }),
-    getAvailability(today, cutoffStr),
+    getAvailability(today, maxDate),
+    getWeeklySchedule(),
+    searchParams,
   ])
 
   return (
@@ -24,7 +32,14 @@ export default async function AdminBookingsPage() {
         <h1 className="font-heading text-2xl font-bold text-foreground">Bookings</h1>
         <p className="text-sm text-muted-foreground">{total} total</p>
       </div>
-      <AdminBookingsClient bookings={bookings} availability={availability} />
+      <AdminBookingsClient
+        bookings={bookings}
+        overrides={overrides}
+        weekly={weekly}
+        today={today}
+        maxDate={maxDate}
+        initialTab={tab === "availability" ? "availability" : "bookings"}
+      />
     </div>
   )
 }

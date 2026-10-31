@@ -1,5 +1,6 @@
 import "server-only"
 import nodemailer, { type Transporter } from "nodemailer"
+import { formatBookingWhen } from "./booking-time"
 
 // Email delivery via SMTP (Gmail by default). Configure with env vars:
 //   SMTP_HOST   e.g. smtp.gmail.com
@@ -430,7 +431,10 @@ export async function sendBookingConfirmationEmail(
   input: BookingEmailInput,
 ): Promise<void> {
   const transporter = getTransporter()
-  const subject = `Your session is confirmed — ${input.date} at ${input.slot}`
+  // "Thu, Nov 5, 2026 at 2:00 PM IST" - the raw "2026-11-05 at 14:00" gave no
+  // time zone, which matters to anyone booking from outside India.
+  const when = formatBookingWhen(input.date, input.slot)
+  const subject = `Your session is confirmed — ${when}`
 
   if (!transporter) {
     // eslint-disable-next-line no-console
@@ -458,7 +462,7 @@ export async function sendBookingConfirmationEmail(
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;background:${BRAND.bg};border-radius:8px;">
   <tr><td style="padding:16px 20px;font-size:15px;line-height:1.8;color:${BRAND.ink};">
     <strong>${escapeHtml(input.sessionTitle)}</strong><br>
-    ${escapeHtml(input.date)} at ${escapeHtml(input.slot)}<br>
+    ${escapeHtml(when)}<br>
     ${input.durationMinutes} minutes
   </td></tr>
 </table>
@@ -476,7 +480,7 @@ ${joinBlock}
 Assalamu alaikum ${input.name},
 
 ${input.sessionTitle}
-${input.date} at ${input.slot} (${input.durationMinutes} minutes)
+${when} (${input.durationMinutes} minutes)
 
 ${
   input.meetingUrl

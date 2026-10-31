@@ -36,6 +36,11 @@ export const razorpayProvider: PaymentProvider = {
         // customer could pay a fraction of the total and still trigger the
         // paid event, so the order must be all-or-nothing.
         accept_partial: false,
+        // Links otherwise stay payable for six months. Unix seconds; Razorpay
+        // needs it at least 15 minutes out, which the 30-minute slot hold is.
+        ...(input.expiresAt
+          ? { expire_by: Math.floor(input.expiresAt.getTime() / 1000) }
+          : {}),
       }),
     })
 

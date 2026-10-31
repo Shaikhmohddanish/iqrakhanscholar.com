@@ -5,10 +5,17 @@ import { redirect } from "next/navigation"
 import { headers } from "next/headers"
 import { getCurrentUser, isUserVerified } from "@/lib/session"
 import { readCart, clearCartCookie } from "@/lib/cart"
+import { buyNowHref, purchasableQuantity } from "@/lib/cart-shared"
 import { getActiveCurrency } from "@/lib/currency-server"
 import { resolveCartCurrency, cartLineAmount, shippingForCurrency } from "@/lib/currency"
 import { getProductsByIds } from "@/lib/products"
-import { createOrder, setOrderProvider, type OrderItem, type ShippingAddress } from "@/lib/orders"
+import {
+  createOrder,
+  setOrderProvider,
+  getPurchasedProductIds,
+  type OrderItem,
+  type ShippingAddress,
+} from "@/lib/orders"
 import { selectProvider } from "@/lib/payments"
 import { confirmOrderPaid } from "@/lib/payments/fulfillment"
 
@@ -28,9 +35,17 @@ export async function placeOrderAction(
   _prev: CheckoutState,
   formData: FormData,
 ): Promise<CheckoutState> {
+  // Buy Now posts its one product and quantity; otherwise the order is the cart.
+  const buyNowId = formData.get("buyNow")
+  const buyNow =
+    typeof buyNowId === "string" && buyNowId
+      ? { productId: buyNowId, quantity: formData.get("qty") as unknown }
+      : null
+
   const user = await getCurrentUser()
   if (!user) {
-    redirect("/login?next=/checkout")
+    const here = buyNow ? buyNowHref(buyNow.productId, Number(buyNow.quantity) || 1) : "/checkout"
+    redirect(`/login?next=${encodeURIComponent(here)}`)
   }
 
   // Require a verified email before any purchase (checked against the DB so a
@@ -42,32 +57,49 @@ export async function placeOrderAction(
     }
   }
 
-  const cart = await readCart()
-  if (cart.items.length === 0) {
-    return { error: "Your cart is empty." }
+  // What's being bought: the single Buy Now product, or everything in the cart.
+  let lines: { productId: string; quantity: unknown }[]
+  if (buyNow) {
+    lines = [buyNow]
+  } else {
+    const cart = await readCart()
+    if (cart.items.length === 0) {
+      return { error: "Your cart is empty." }
+    }
+    lines = cart.items
   }
 
   // Re-price against the DB - never trust client-supplied prices.
-  const products = await getProductsByIds(cart.items.map((i) => i.productId))
+  const products = await getProductsByIds(lines.map((i) => i.productId))
   const byId = new Map(products.map((p) => [p.id, p]))
 
   // Derive one currency for the whole order from the visitor's active currency
-  // and the products actually in the cart (authoritative, ignores client input).
+  // and the products actually being bought (authoritative, ignores client input).
   const activeCurrency = await getActiveCurrency()
-  const cartProducts = cart.items
+  const lineProducts = lines
     .map((i) => byId.get(i.productId))
     .filter((p): p is NonNullable<typeof p> => p != null)
-  const currency = resolveCartCurrency(cartProducts, activeCurrency)
+  const currency = resolveCartCurrency(lineProducts, activeCurrency)
+
+  // E-books are bought once. Product pages and Quick View don't know what the
+  // visitor owns, so a repeat purchase is stopped here rather than charged.
+  const owned = lineProducts.some((p) => p.type === "digital")
+    ? new Set(await getPurchasedProductIds(user.id))
+    : new Set<string>()
 
   const items: OrderItem[] = []
-  for (const item of cart.items) {
-    const p = byId.get(item.productId)
+  for (const line of lines) {
+    const p = byId.get(line.productId)
     if (!p) continue
-    let quantity = p.type === "digital" ? 1 : item.quantity
-    if (p.type === "physical" && p.stock != null) {
-      if (p.stock <= 0) return { error: `"${p.title}" is now out of stock.` }
-      quantity = Math.min(quantity, p.stock)
+    if (p.type === "digital" && owned.has(p.id)) {
+      return {
+        error: `You already own "${p.title}" - it's in your library.${buyNow ? "" : " Please remove it from your cart to continue."}`,
+      }
     }
+    // The same rules the Buy Now summary used: e-books are always 1, physical
+    // items a whole number clamped to stock, and 0 means sold out.
+    const quantity = purchasableQuantity(p, line.quantity)
+    if (quantity === 0) return { error: `"${p.title}" is now out of stock.` }
     items.push({
       productId: p.id,
       slug: p.slug,
@@ -79,7 +111,11 @@ export async function placeOrderAction(
     })
   }
 
-  if (items.length === 0) return { error: "None of your cart items are available." }
+  if (items.length === 0) {
+    return {
+      error: buyNow ? "This item is no longer available." : "None of your cart items are available.",
+    }
+  }
 
   const hasPhysical = items.some((i) => i.type === "physical")
   const hasDigital = items.some((i) => i.type === "digital")
@@ -132,6 +168,7 @@ export async function placeOrderAction(
     shippingAddress,
     hasDigital,
     hasPhysical,
+    checkoutSource: buyNow ? "buy-now" : "cart",
   })
 
   const hdrs = await headers()
@@ -144,7 +181,8 @@ export async function placeOrderAction(
   // No real gateway configured: confirm immediately and land on the order page.
   if (provider.name === "simulated") {
     await confirmOrderPaid(order.reference)
-    await clearCartCookie()
+    // A Buy Now order never used the cart, so it mustn't empty it.
+    if (!buyNow) await clearCartCookie()
     redirect(`/order/${order.id}?placed=1`)
   }
 

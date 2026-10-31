@@ -1,9 +1,9 @@
 import "server-only"
 import { ObjectId, type WithId } from "mongodb"
 import { getDb } from "./mongodb"
-import type { OrderStatus, PaymentStatus, PaymentProviderName, OrderItem, ShippingAddress, PublicOrder } from "./order-types"
+import type { OrderStatus, PaymentStatus, PaymentProviderName, CheckoutSource, OrderItem, ShippingAddress, PublicOrder } from "./order-types"
 
-export type { OrderStatus, PaymentStatus, PaymentProviderName, OrderItem, ShippingAddress, PublicOrder }
+export type { OrderStatus, PaymentStatus, PaymentProviderName, CheckoutSource, OrderItem, ShippingAddress, PublicOrder }
 
 export interface OrderDoc {
   _id?: ObjectId
@@ -22,6 +22,8 @@ export interface OrderDoc {
   shippingAddress?: ShippingAddress | null
   hasDigital: boolean
   hasPhysical: boolean
+  // "buy-now" when placed with a product's Buy Now button (see PublicOrder).
+  checkoutSource?: CheckoutSource
   createdAt: Date
   updatedAt: Date
 }

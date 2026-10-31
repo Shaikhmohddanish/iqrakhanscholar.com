@@ -66,7 +66,7 @@ export function ConsultationCta() {
                 <Mic className="size-4 text-accent" /> Audio call on Google Meet
               </span>
               <span className="inline-flex items-center gap-2">
-                <Clock className="size-4 text-accent" /> Flexible time zones
+                <Clock className="size-4 text-accent" /> Session times in IST
               </span>
               <span className="inline-flex items-center gap-2">
                 <CalendarCheck className="size-4 text-accent" /> Easy rescheduling

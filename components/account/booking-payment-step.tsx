@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useTransition } from "react"
-import { SESSION_TYPES, type SessionType } from "@/lib/booking-types"
+import { SESSION_TYPES, BOOKING_HOLD_MINUTES, type SessionType } from "@/lib/booking-types"
+import { BOOKING_TZ_LABEL, formatBookingDate, formatSlot } from "@/lib/booking-time"
 import { formatPrice } from "@/lib/product-types"
 import { resolveProductPrice } from "@/lib/currency"
 import { useCurrency } from "@/components/currency/currency-provider"
@@ -15,13 +16,6 @@ interface BookingPaymentStepProps {
   date: string
   slot: string
   onConfirmed: () => void
-}
-
-function formatSlot(slot: string): string {
-  const [h, m] = slot.split(":").map(Number)
-  const period = h >= 12 ? "PM" : "AM"
-  const displayH = h > 12 ? h - 12 : h === 0 ? 12 : h
-  return `${displayH}:${String(m).padStart(2, "0")} ${period}`
 }
 
 export function BookingPaymentStep({
@@ -97,7 +91,9 @@ export function BookingPaymentStep({
           </div>
           <div className="flex items-center justify-between text-muted-foreground">
             <span>Date</span>
-            <span>{date} at {formatSlot(slot)}</span>
+            <span>
+              {formatBookingDate(date, "short")} at {formatSlot(slot)} {BOOKING_TZ_LABEL}
+            </span>
           </div>
         </div>
         <div className="mt-4 border-t border-border pt-4 flex items-center justify-between">
@@ -113,8 +109,8 @@ export function BookingPaymentStep({
         <Lock className="size-4 shrink-0 text-primary mt-0.5" />
         <p className="text-sm text-foreground">
           You&rsquo;ll be taken to <strong>Razorpay</strong> to pay securely by card, UPI or
-          net banking. Your slot is held while you complete payment, and we never see or
-          store your card details.
+          net banking. Your slot is held for {BOOKING_HOLD_MINUTES} minutes while you complete
+          payment, and we never see or store your card details.
         </p>
       </div>
 

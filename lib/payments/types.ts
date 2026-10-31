@@ -16,6 +16,10 @@ export interface CreatePaymentInput {
   // absolute URLs the provider redirects back to
   successUrl: string
   cancelUrl: string
+  // optional: when the payment page stops accepting payment (a consultation's
+  // link expires with its slot hold). Only Razorpay honours it - bookings are
+  // INR-only, so they never go through Stripe.
+  expiresAt?: Date
 }
 
 export interface CreatePaymentResult {

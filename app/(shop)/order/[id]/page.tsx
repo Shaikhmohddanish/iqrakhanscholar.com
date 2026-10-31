@@ -10,6 +10,7 @@ import { AwaitPaymentRefresh } from "@/components/order/await-payment-refresh"
 import { verifyPaymentLinkReturn } from "@/lib/payments/razorpay"
 import { confirmOrderPaid } from "@/lib/payments/fulfillment"
 import { formatPrice } from "@/lib/product-types"
+import { buyNowHref } from "@/lib/cart-shared"
 
 export const metadata: Metadata = {
   title: "Order Confirmation",
@@ -17,8 +18,10 @@ export const metadata: Metadata = {
 }
 
 type Params = Promise<{ id: string }>
-// Razorpay appends these to callback_url on the customer's return.
+// Razorpay appends these to callback_url on the customer's return. `placed`
+// is on every checkout success URL (ours, Stripe's and Razorpay's).
 type Search = Promise<{
+  placed?: string
   cancelled?: string
   razorpay_payment_id?: string
   razorpay_payment_link_id?: string
@@ -36,7 +39,7 @@ export default async function OrderPage({
 }) {
   const { id } = await params
   const sp = await searchParams
-  const { cancelled } = sp
+  const { cancelled, placed } = sp
   const user = await getCurrentUser()
   if (!user) redirect("/login")
 
@@ -100,9 +103,21 @@ export default async function OrderPage({
   // complete" while nothing on the page ever refreshed it.
   const isAwaitingWebhook = !isPaid && !isCancelled
 
+  const isBuyNow = order.checkoutSource === "buy-now"
+  // Retry the same purchase: the Buy Now item again, or the cart - which is
+  // kept until payment succeeds for exactly this.
+  const retryHref =
+    isBuyNow && order.items[0]
+      ? buyNowHref(order.items[0].productId, order.items[0].quantity)
+      : "/checkout"
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 lg:px-8">
-      <ClearCartOnSuccess paid={isPaid} />
+      {/* Empty the cart only on the return from checkout (?placed=1), and only
+          for a cart order. This ran on every view of any paid order, so opening
+          an old order from an email emptied whatever was in the cart - and a
+          Buy Now order never used the cart at all. */}
+      <ClearCartOnSuccess paid={isPaid && placed === "1" && !isBuyNow} />
       <AwaitPaymentRefresh active={isAwaitingWebhook} />
       <div className="flex flex-col items-center text-center">
         <div className={`flex size-16 items-center justify-center rounded-full ${statusUi.tone}`}>
@@ -178,9 +193,21 @@ export default async function OrderPage({
       )}
 
       <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        {isCancelled && (
+          <Link
+            href={retryHref}
+            className="inline-flex h-11 items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+          >
+            Try again
+          </Link>
+        )}
         <Link
           href="/account/orders"
-          className="inline-flex h-11 items-center justify-center gap-1.5 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+          className={
+            isCancelled
+              ? "inline-flex h-11 items-center justify-center gap-1.5 rounded-full border border-border px-6 text-sm font-medium text-foreground hover:border-primary/40 hover:text-primary"
+              : "inline-flex h-11 items-center justify-center gap-1.5 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+          }
         >
           View my orders <ArrowRight className="size-4" />
         </Link>

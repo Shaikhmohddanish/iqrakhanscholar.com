@@ -8,7 +8,9 @@ import { CURRENCY_COOKIE, currencyForCountry } from "@/lib/currency"
 // prices and Add to Cart) and must stay open - gating it sent every logged-out
 // visitor who clicked "E-books" in the nav straight to /login. Reading a
 // purchased book is gated separately via /read and /reader.
-const PROTECTED = ["/account", "/read", "/reader"]
+// /checkout is here so an expired access token is refreshed (keeping the Buy
+// Now query string) instead of the page bouncing a signed-in shopper to /login.
+const PROTECTED = ["/account", "/read", "/reader", "/checkout"]
 // Routes that require an elevated role.
 const ROLE_GATES: { prefix: string; role: "editor" | "admin" }[] = [
   { prefix: "/admin", role: "admin" },

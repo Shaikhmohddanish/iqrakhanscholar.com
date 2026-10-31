@@ -6,6 +6,8 @@ export type OrderStatus = "processing" | "fulfilled" | "cancelled"
 // was typed as if a refunded order could not exist.
 export type PaymentStatus = "paid" | "pending" | "failed" | "refunded"
 export type PaymentProviderName = "stripe" | "razorpay" | "simulated"
+// How the order was placed: from the cart, or a product's Buy Now button.
+export type CheckoutSource = "cart" | "buy-now"
 
 export interface OrderItem {
   productId: string
@@ -45,6 +47,9 @@ export interface PublicOrder {
   shippingAddress?: ShippingAddress | null
   hasDigital: boolean
   hasPhysical: boolean
+  // A Buy Now order never touched the cart, so the order page must not empty
+  // the cart when it's paid. Absent on orders from before Buy Now (= cart).
+  checkoutSource?: CheckoutSource
   createdAt: Date
   updatedAt: Date
 }

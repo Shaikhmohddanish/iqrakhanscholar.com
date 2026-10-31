@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Minus, Plus, Check, ShoppingBag, Truck, BookOpen } from "lucide-react"
 import { BarLoader } from "@/components/ui/bar-loader"
 import { useCart } from "@/components/cart/cart-provider"
+import { BuyNowButton } from "@/components/cart/buy-now-button"
 import { type PublicProduct } from "@/lib/product-types"
 import { shippingHeadline } from "@/lib/shipping-copy"
 import { ProductPrice } from "@/components/currency/product-price"
@@ -64,26 +65,38 @@ export function ProductBuyPanel({ product }: { product: PublicProduct }) {
         </div>
       )}
 
-      <button
-        type="button"
-        onClick={add}
-        disabled={soldOut}
-        className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground"
-      >
-        {soldOut ? (
-          "Sold Out"
-        ) : isPending && !added ? (
-          <BarLoader size="md" />
-        ) : added ? (
-          <>
-            <Check className="size-4" /> Added to Cart
-          </>
-        ) : (
-          <>
-            <ShoppingBag className="size-4" /> Add to Cart
-          </>
-        )}
-      </button>
+      {soldOut ? (
+        <button
+          type="button"
+          disabled
+          className="mt-6 inline-flex h-12 w-full cursor-not-allowed items-center justify-center rounded-full bg-muted px-6 text-sm font-semibold text-muted-foreground"
+        >
+          Sold Out
+        </button>
+      ) : (
+        // Buy Now is the primary action; Add to Cart stays alongside for
+        // anyone building a bigger order.
+        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+          <button
+            type="button"
+            onClick={add}
+            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full border border-primary px-6 text-sm font-semibold text-primary transition-colors hover:bg-secondary"
+          >
+            {isPending && !added ? (
+              <BarLoader size="md" />
+            ) : added ? (
+              <>
+                <Check className="size-4" /> Added to Cart
+              </>
+            ) : (
+              <>
+                <ShoppingBag className="size-4" /> Add to Cart
+              </>
+            )}
+          </button>
+          <BuyNowButton product={product} quantity={isDigital ? 1 : qty} className="h-12 w-full" />
+        </div>
+      )}
 
       <div className="mt-5 flex items-center gap-2 text-sm text-muted-foreground">
         {/* BookOpen, not Download: e-books are read in the in-browser reader
