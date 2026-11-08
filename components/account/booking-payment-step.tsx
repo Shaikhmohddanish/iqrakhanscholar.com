@@ -38,7 +38,18 @@ export function BookingPaymentStep({
   function handlePay() {
     setError(null)
     startTransition(async () => {
-      const result = await startBookingPaymentAction(bookingId)
+      // Same guard as the wizard: a thrown action shows a message here
+      // rather than taking down the page. Your slot stays held meanwhile.
+      let result: Awaited<ReturnType<typeof startBookingPaymentAction>>
+      try {
+        result = await startBookingPaymentAction(bookingId)
+      } catch (err) {
+        console.error("startBookingPaymentAction failed", err)
+        setError(
+          "We couldn't start the payment. Please refresh the page - you can finish paying from My Bookings.",
+        )
+        return
+      }
       if (result.error) {
         setError(result.error)
         return

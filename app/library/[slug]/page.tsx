@@ -22,7 +22,7 @@ import { BookCard } from '@/components/library/book-card'
 import { BookSection } from '@/components/library/book-section'
 import { ReviewSection } from '@/components/store/review-section'
 import { getProductBySlug, queryProducts } from '@/lib/products'
-import { formatPrice } from '@/lib/product-types'
+import { formatPrice, bookAuthor } from '@/lib/product-types'
 import { resolveProductPrice } from '@/lib/currency'
 import { getActiveCurrency } from '@/lib/currency-server'
 import { getCurrentUser } from '@/lib/session'
@@ -86,7 +86,7 @@ export default async function BookDetailPage({ params }: { params: Params }) {
     '@context': 'https://schema.org',
     '@type': 'Book',
     name: product.title,
-    author: { '@type': 'Person', name: product.author ?? '' },
+    author: { '@type': 'Person', name: bookAuthor(product) },
     image: product.image,
     description: product.description,
     numberOfPages: product.pageCount,
@@ -185,9 +185,7 @@ export default async function BookDetailPage({ params }: { params: Params }) {
               <h1 className="mt-4 font-heading text-3xl font-bold text-foreground sm:text-4xl">
                 {product.title}
               </h1>
-              {product.author && (
-                <p className="mt-2 text-muted-foreground">by {product.author}</p>
-              )}
+              <p className="mt-2 text-muted-foreground">by {bookAuthor(product)}</p>
 
               {/* Rating - hidden until real reviews exist */}
               <ProductRating
@@ -291,11 +289,14 @@ export default async function BookDetailPage({ params }: { params: Params }) {
             <BookTocPreview />
           </div>
 
-          {/* Reviews */}
-          <div className="mt-12">
-            <h2 className="mb-6 font-heading text-2xl font-bold text-foreground">Reader Reviews</h2>
-            <ReviewSection rating={product.rating} reviewCount={product.reviews} />
-          </div>
+          {/* Reviews - only once real ones exist. This used to show three
+              invented reviews on every book. */}
+          {product.reviews > 0 && (
+            <div className="mt-12">
+              <h2 className="mb-6 font-heading text-2xl font-bold text-foreground">Reader Reviews</h2>
+              <ReviewSection rating={product.rating} reviewCount={product.reviews} />
+            </div>
+          )}
 
           {/* Related books */}
           {related.length > 0 && (
@@ -307,7 +308,7 @@ export default async function BookDetailPage({ params }: { params: Params }) {
                     id={b.id}
                     slug={b.slug}
                     title={b.title}
-                    author={b.author ?? ''}
+                    author={bookAuthor(b)}
                     coverImage={b.image}
                     rating={b.rating}
                     reviews={b.reviews}

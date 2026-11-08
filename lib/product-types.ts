@@ -34,6 +34,15 @@ export interface PublicProduct {
   updatedAt?: string
 }
 
+// Byline for e-books with no author entered. Without it the library printed a
+// bare "by" under every book. Applied at display time only, so the admin edit
+// form never silently saves it into the product.
+export const DEFAULT_BOOK_AUTHOR = "IqraKhanScholar"
+
+export function bookAuthor(product: { author?: string | null }): string {
+  return product.author?.trim() || DEFAULT_BOOK_AUTHOR
+}
+
 // Format an amount given in minor units into a localized currency string.
 // Handles 0-decimal (JPY), 2-decimal (USD) and 3-decimal (KWD) currencies, and
 // drops the fraction for whole amounts (e.g. "$14" instead of "$14.00").

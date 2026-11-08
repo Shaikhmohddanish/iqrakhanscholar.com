@@ -1,9 +1,11 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Star, BookOpen } from 'lucide-react'
+import { BookOpen } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { DEFAULT_CURRENCY } from '@/lib/currency'
+import { bookAuthor } from '@/lib/product-types'
 import { ProductPrice } from '@/components/currency/product-price'
+import { ProductRating } from '@/components/store/product-rating'
 
 interface BookCardProps {
   id: string
@@ -84,16 +86,11 @@ export function BookCard({
         <h3 className="font-heading text-sm font-semibold leading-snug text-foreground line-clamp-2 group-hover:text-primary transition-colors">
           {title}
         </h3>
-        <p className="mt-0.5 text-xs text-muted-foreground">{author}</p>
+        <p className="mt-0.5 text-xs text-muted-foreground">{bookAuthor({ author })}</p>
 
-        <div className="mt-1.5 flex items-center gap-1">
-          <div className="flex items-center gap-0.5 text-accent">
-            {Array.from({ length: Math.round(rating) }).map((_, i) => (
-              <Star key={i} className="size-3 fill-current" />
-            ))}
-          </div>
-          <span className="text-[10px] text-muted-foreground">({reviews})</span>
-        </div>
+        {/* Hidden until the book has real reviews; this printed "(0)" under
+            every e-book. */}
+        <ProductRating rating={rating} reviews={reviews} className="mt-1.5" />
 
         <div className="mt-auto pt-2">
           {owned ? (

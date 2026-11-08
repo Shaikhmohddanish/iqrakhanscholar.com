@@ -81,8 +81,9 @@ export function LibraryClient({
       </div>
 
       {isFiltering ? (
-        /* Search / filter results - infinite grid */
-        <div className="mt-8">
+        /* Search / filter results - infinite grid. Shares the "all-books"
+           anchor with the default grid (only one renders at a time). */
+        <div id="all-books" className="mt-8 scroll-mt-28">
           {isLoading ? (
             <GridSkeleton variant="book" count={8} />
           ) : items.length === 0 ? (
@@ -162,7 +163,9 @@ export function LibraryClient({
             ))}
           </BookSection>
 
-          <div>
+          {/* Target of the hero's "Browse All". scroll-mt keeps the heading
+              clear of the sticky header. */}
+          <div id="all-books" className="scroll-mt-28">
             <h2 className="mb-6 font-heading text-xl font-semibold text-foreground">All Books</h2>
             {isLoading ? (
               <GridSkeleton variant="book" count={8} />

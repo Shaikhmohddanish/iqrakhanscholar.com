@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { queryProducts } from '@/lib/products'
+import { bookAuthor } from '@/lib/product-types'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -21,7 +22,7 @@ export async function GET(req: NextRequest) {
     id: p.id,
     slug: p.slug,
     title: p.title,
-    author: p.author ?? '',
+    author: bookAuthor(p),
     coverImage: p.image,
     rating: p.rating,
     reviews: p.reviews,

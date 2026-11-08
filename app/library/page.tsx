@@ -6,6 +6,7 @@ import { LibraryHero } from '@/components/library/library-hero'
 import { LibraryClient, type LibraryItem } from './library-client'
 import { queryProducts, getProductFacets } from '@/lib/products'
 import { SITE_URL } from '@/lib/site-config'
+import { bookAuthor } from '@/lib/product-types'
 
 // This page reads the catalogue but no longer reads cookies, so Next will
 // prerender it. Without a revalidate window that prerender happens once at
@@ -31,7 +32,7 @@ function toLibraryItem(p: { id: string; slug: string; title: string; author?: st
     id: p.id,
     slug: p.slug,
     title: p.title,
-    author: p.author ?? '',
+    author: bookAuthor(p),
     coverImage: p.image,
     rating: p.rating,
     reviews: p.reviews,
@@ -72,7 +73,7 @@ export default async function LibraryPage() {
       item: {
         '@type': 'Book',
         name: b.title,
-        author: { '@type': 'Person', name: b.author ?? '' },
+        author: { '@type': 'Person', name: bookAuthor(b) },
         url: `${SITE_URL}/library/${b.slug}`,
       },
     })),
@@ -105,7 +106,7 @@ export default async function LibraryPage() {
                 book={{
                   slug: featured.slug,
                   title: featured.title,
-                  author: featured.author ?? '',
+                  author: bookAuthor(featured),
                   coverImage: featured.image,
                   description: featured.description,
                   rating: featured.rating,

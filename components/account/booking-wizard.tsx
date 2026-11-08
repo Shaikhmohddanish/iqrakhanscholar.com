@@ -54,7 +54,21 @@ export function BookingWizard() {
     if (!sessionType || !date || !slot) return
     setError(null)
     startTransition(async () => {
-      const result = await bookSessionAction({ sessionType, date, slot, topic })
+      // A thrown action used to escape the transition and replace the whole
+      // page with the error screen. In the one production occurrence the
+      // booking had already been saved - the failure came after, while
+      // rendering the response - so point the visitor at My Bookings, where a
+      // held booking can still be paid for.
+      let result: Awaited<ReturnType<typeof bookSessionAction>>
+      try {
+        result = await bookSessionAction({ sessionType, date, slot, topic })
+      } catch (err) {
+        console.error("bookSessionAction failed", err)
+        setError(
+          "Something went wrong. Please refresh the page - if your booking shows under My Bookings, you can complete payment there.",
+        )
+        return
+      }
       if (result.error) {
         setError(result.error)
       } else if (result.booking) {

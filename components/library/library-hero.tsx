@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Star, ArrowRight, BookOpen } from 'lucide-react'
 import { ProductRating } from '@/components/store/product-rating'
+import { bookAuthor } from '@/lib/product-types'
 
 interface LibraryHeroProps {
   book: {
@@ -47,7 +48,7 @@ export function LibraryHero({ book }: LibraryHeroProps) {
           <h2 className="mt-4 font-heading text-2xl font-bold text-foreground sm:text-3xl">
             {book.title}
           </h2>
-          <p className="mt-1 text-sm text-muted-foreground">by {book.author}</p>
+          <p className="mt-1 text-sm text-muted-foreground">by {bookAuthor(book)}</p>
 
           <ProductRating rating={book.rating} reviews={book.reviews} verbose className="mt-2 sm:justify-start justify-center" />
 
@@ -63,13 +64,16 @@ export function LibraryHero({ book }: LibraryHeroProps) {
               <BookOpen className="size-4" />
               Read More
             </Link>
-            <Link
-              href="/library"
+            {/* Jumps to the All Books grid. It linked to /library - the page
+                it sits on - so clicking it did nothing. A plain <a>: an
+                in-page anchor needs no client-side navigation. */}
+            <a
+              href="#all-books"
               className="inline-flex h-11 items-center gap-2 rounded-lg border border-border px-5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
             >
               Browse All
               <ArrowRight className="size-4" />
-            </Link>
+            </a>
           </div>
         </div>
       </div>

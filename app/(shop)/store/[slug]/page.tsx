@@ -134,11 +134,17 @@ export default async function ProductPage({ params }: { params: Params }) {
         </div>
       ),
     },
-    {
-      id: 'reviews',
-      label: product.reviews > 0 ? `Reviews (${product.reviews})` : 'Reviews',
-      content: <ReviewSection rating={product.rating} reviewCount={product.reviews} />,
-    },
+    // Only once real reviews exist. This tab used to show three invented
+    // reviews on every product.
+    ...(product.reviews > 0
+      ? [
+          {
+            id: 'reviews',
+            label: `Reviews (${product.reviews})`,
+            content: <ReviewSection rating={product.rating} reviewCount={product.reviews} />,
+          },
+        ]
+      : []),
     {
       id: 'shipping',
       label: isDigital ? 'Delivery' : 'Shipping',

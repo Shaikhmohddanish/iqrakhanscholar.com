@@ -3,6 +3,7 @@ import { getCurrentUser } from '@/lib/session'
 import { getPurchasedProductSlugs } from '@/lib/orders'
 import { getDb } from '@/lib/mongodb'
 import type { ProductDoc } from '@/lib/products'
+import { bookAuthor } from '@/lib/product-types'
 import { ReaderShell } from '@/components/reader/reader-shell'
 
 async function findDigitalProduct(bookId: string): Promise<ProductDoc | null> {
@@ -42,7 +43,7 @@ export default async function ReaderPage({
       bookId={bookId}
       bookSlug={product.slug}
       bookTitle={product.title}
-      bookAuthor={product.author ?? ''}
+      bookAuthor={bookAuthor(product)}
       totalPageHint={product.pageCount ?? 0}
       userEmail={user.email}
     />

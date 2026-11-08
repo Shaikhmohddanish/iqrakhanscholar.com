@@ -52,7 +52,16 @@ export function MyBookingsList({ bookings, today, now }: MyBookingsListProps) {
   function handleCancel(id: string) {
     startTransition(async () => {
       setOptimistic((s) => ({ ...s, [id]: "cancelled" }))
-      await cancelBookingAction(id)
+      try {
+        await cancelBookingAction(id)
+      } catch (err) {
+        // Undo the optimistic "Cancelled" rather than crash the page.
+        console.error("cancelBookingAction failed", err)
+        setOptimistic((s) => {
+          const { [id]: _undo, ...rest } = s
+          return rest
+        })
+      }
     })
   }
 
@@ -134,7 +143,14 @@ function BookingCard({
   function handlePay() {
     setPayError(null)
     startPaying(async () => {
-      const result = await startBookingPaymentAction(booking.id)
+      let result: Awaited<ReturnType<typeof startBookingPaymentAction>>
+      try {
+        result = await startBookingPaymentAction(booking.id)
+      } catch (err) {
+        console.error("startBookingPaymentAction failed", err)
+        setPayError("We couldn't start the payment. Please refresh the page and try again.")
+        return
+      }
       if (result.error) {
         setPayError(result.error)
         return
